@@ -1,35 +1,35 @@
 variable "project_name" {
-    description = "Name of the project goes here"
-    type = string
+  description = "Name of the project goes here"
+  type        = string
 }
 
 variable "environment" {
   description = "Environment of the project"
-  type = string
+  type        = string
   validation {
-    condition = contains(["dev", "staging", "prod"], var.environment)
+    condition     = contains(["dev", "staging", "prod"], var.environment)
     error_message = "Environment can only be: dev, prod or staging"
   }
 }
 
 variable "aws_region" {
   description = "AWS Region"
-  type = string
+  type        = string
 }
 
 variable "vpc_cidr" {
   description = "Main CIDR Block for the VPC"
-  type = string
+  type        = string
   validation {
-    condition = can(cidrhost(var.vpc_cidr, 0))
+    condition     = can(cidrhost(var.vpc_cidr, 0))
     error_message = "vpc_cidr must be a valid CIDR block."
   }
 }
 
 variable "instance_tenancy" {
   description = "Instance tenancy for the VPC"
-  type = string
-  default = "default"
+  type        = string
+  default     = "default"
   validation {
     condition = contains(
       ["default", "dedicated"],
@@ -42,35 +42,36 @@ variable "instance_tenancy" {
 
 variable "dns_support" {
   description = "Enable DNS resolution"
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }
 
 variable "dns_hostnames" {
   description = "Enable DNS Hostnames"
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }
 
 variable "availability_zones" {
   description = "Availability zones used by the networking module"
-  type = list(string)
+  type        = list(string)
   validation {
-    condition = length(var.availability_zones) >=2 
+    condition     = length(var.availability_zones) >= 2
     error_message = "At least two AZs are required"
   }
 }
 
 variable "nat_gateway" {
-  description = "NAT Gateway configuration."
+  description = "NAT Gateway configuration"
 
   type = object({
-    mode = string # "single" or "ha"
+    enabled    = bool
+    single_nat = bool
   })
 
-  validation {
-    condition     = contains(["single", "ha"], var.nat_gateway.mode)
-    error_message = "NAT Gateway mode must be 'single' or 'ha'."
+  default = {
+    enabled    = true
+    single_nat = true
   }
 }
 
@@ -91,15 +92,15 @@ variable "subnets" {
 }
 
 variable "metadata" {
-    description = "Metadata for the AWS resources"
+  description = "Metadata for the AWS resources"
   type = object({
-    owner = string
+    owner      = string
     repository = string
   })
 }
 
 variable "common_tags" {
-    description = "Additional tags applied to all resources."
+  description = "Additional tags applied to all resources."
   type        = map(string)
   default     = {}
 }
