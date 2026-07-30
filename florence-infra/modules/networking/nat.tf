@@ -9,7 +9,7 @@ resource "aws_nat_gateway" "this" {
   tags = merge(
     local.common_tags,
     {
-      Name = "${local.name_prefix}-nat"
+      Name = local.names.nat
     }
   )
 }
