@@ -8,7 +8,9 @@ locals {
     public_rt      = "${local.name_prefix}-public-rt"
     private_app_rt = "${local.name_prefix}-private-app-rt"
     private_db_rt  = "${local.name_prefix}-db-rt"
-
+    public_nacls = "${local.name_prefix}-public-nacl"
+    app_nacls =  "${local.name_prefix}-app-nacl"
+    db_nacls = "${local.name_prefix}-database-nacl"
   }
   # Subnet Collections
   public_subnets = {
@@ -57,6 +59,10 @@ locals {
   nat_public_subnet = keys(local.public_subnets)[0]
 
   ipv6_enabled = var.assign_generated_ipv6_cidr_block
+  internet_cidr = "0.0.0.0/0"
+
+  tcp_ip_protocol = "tcp"
+  db_port = var.db_port
 
   common_tags = merge(var.common_tags,
     {

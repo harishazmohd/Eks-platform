@@ -99,6 +99,11 @@ variable "metadata" {
   })
 }
 
+variable "db_port" {
+  description = "Database Port to be used"
+  type = number
+}
+
 variable "common_tags" {
   description = "Additional tags applied to all resources."
   type        = map(string)
