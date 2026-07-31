@@ -101,7 +101,7 @@ variable "metadata" {
 
 variable "db_port" {
   description = "Database Port to be used"
-  type = number
+  type        = number
 }
 
 variable "common_tags" {
