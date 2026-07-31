@@ -4,7 +4,7 @@ locals {
   names = {
     vpc            = "${local.name_prefix}-vpc"
     igw            = "${local.name_prefix}-igw"
-    nat            = "${local.name_prefix}-igw"
+    nat            = "${local.name_prefix}-nat"
     public_rt      = "${local.name_prefix}-public-rt"
     private_app_rt = "${local.name_prefix}-private-app-rt"
     private_db_rt  = "${local.name_prefix}-db-rt"

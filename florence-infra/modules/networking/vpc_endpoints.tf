@@ -25,7 +25,7 @@ resource "aws_vpc_endpoint" "interface" {
   service_name = "com.amazonaws.${var.aws_region}.${each.value}"
 
   subnet_ids = [
-    for name, subnet in local.local.app_subnets :
+    for name, subnet in local.app_subnets :
     aws_subnet.this[name].id
   ]
 
@@ -36,7 +36,7 @@ resource "aws_vpc_endpoint" "interface" {
   private_dns_enabled = true
 
   tags = merge(
-    local.common_tags,
+  local.common_tags,
     {
       Name = "${local.name_prefix}-${replace(each.value, ".", "-")}-vpce"
     }

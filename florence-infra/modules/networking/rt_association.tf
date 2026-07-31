@@ -5,7 +5,7 @@ resource "aws_route_table_association" "public" {
 }
 
 resource "aws_route_table_association" "application" {
-  for_each       = local.public_subnets
+  for_each       = local.app_subnets
   subnet_id      = aws_subnet.this[each.key].id
   route_table_id = aws_route_table.application.id
 }
