@@ -58,8 +58,8 @@ output "security_groups_id" {
     description = "The ID of the security groups"
     value = {
         alb = aws_security_group.alb.id
-        app = aws_security_group.app.id
-        db  = aws_security_group.db.id
+        app = aws_security_group.application.id
+        db  = aws_security_group.database.id
         bastion = aws_security_group.bastion.id
         endpoint = aws_security_group.vpc_endpoint.id
     }

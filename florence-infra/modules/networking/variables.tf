@@ -84,10 +84,10 @@ variable "assign_generated_ipv6_cidr_block" {
 variable "subnets" {
   description = "Subnets used in the networking module"
   type = map(object({
-    cidr_block        = string
-    availability_zone = string
-    type              = string
-    map_public_ip     = bool
+    cidr_block    = string
+    az_index      = number
+    type          = string
+    map_public_ip = bool
   }))
 }
 
