@@ -34,6 +34,16 @@ variable "encryption_configuration" {
   })
 }
 
+variable "registry_config" {
+  description = "Amazon ECR registry configuration"
+  type = object({
+    scan_type = string
+    scan_frequency = string
+    repository_filter = string
+    repository_filter_type = string
+  })
+
+}
 
 
 variable "common_tags" {
