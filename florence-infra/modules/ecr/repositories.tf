@@ -1,17 +1,20 @@
 resource "aws_ecr_repository" "this" {
-  for_each             = toset(var.repositories)
-  name                 = "${var.project_name}-${var.environment}-${each.value}"
-  image_tag_mutability = "MUTABLE"
-
-  image_scanning_configuration {
-    scan_on_push = true
+  for_each = var.repositories
+  name = "${local.name_prefix}-${each.key}"
+  image_tag_mutability = each.value.image_tag_mutability
+  encryption_configuration {
+    encryption_type = var.encryption_configuration.encryption_type
+    kms_key = (
+      var.encryption_configuration.encryption_type == "KMS"
+      ? var.encryption_configuration.kms_key 
+      : null
+    )
   }
-
   tags = merge(
-    var.common_tags,
+    local.common_tags,
     {
-      Name    = "${var.project_name}-${var.environment}-${each.value}"
-      Service = each.value
+      Name = "${local.name_prefix}-${each.key}"
+      Service = each.key
     }
   )
 }
