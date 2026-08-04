@@ -3,7 +3,7 @@ environment  = "dev"
 aws_region   = "ap-south-1"
 metadata = {
   owner      = "Haris"
-  repository = "project-florence"
+  repository = "https://github.com/muhdhares/florence"
 }
 
 subnets = {
