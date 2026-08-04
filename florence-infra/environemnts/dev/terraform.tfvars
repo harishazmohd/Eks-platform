@@ -75,11 +75,11 @@ registry_config = {
 
 keys = {
   "ecr" = {
-    description = "KMS key for ECR"
-    enable_key_rotation = true
-    deletion_window_in_days = 30
-    multi_region = false
-    key_usage = "ENCRYPT_DECRYPT"
+    description              = "KMS key for ECR"
+    enable_key_rotation      = true
+    deletion_window_in_days  = 30
+    multi_region             = false
+    key_usage                = "ENCRYPT_DECRYPT"
     customer_master_key_spec = "SYMMETRIC_DEFAULT"
   }
 }

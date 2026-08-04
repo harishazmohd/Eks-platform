@@ -52,7 +52,7 @@ locals {
 
   encryption_configuration = {
     encryption_type = "KMS"
-    kms_key = module.kms.kms["ecr"].arn
+    kms_key         = module.kms.kms["ecr"].arn
   }
 
   common_tags = merge(var.common_tags,
