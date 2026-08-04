@@ -24,7 +24,7 @@ variable "vpc_id" {
 
 variable "subnet_ids" {
   description = "Map of subnets used in this project"
-  type = list(string)
+  type        = list(string)
 }
 
 variable "security_group_ids" {
@@ -34,7 +34,7 @@ variable "security_group_ids" {
 
 variable "kms_key_arn" {
   description = "KMS Key for the database"
-  type = string
+  type        = string
 }
 
 variable "database_config" {
@@ -42,26 +42,38 @@ variable "database_config" {
   type = object({
     instance_config = {
       instance_class = string
-      engine = string
+      engine         = string
       engine_version = string
     }
     storage_config = {
-      allocated_storage = number
+      allocated_storage     = number
       max_allocated_storage = optional(number)
-      storage_type      = string
-      storage_encrypted = bool
-      iops              = optional(number)
+      storage_type          = string
+      storage_encrypted     = bool
+      iops                  = optional(number)
     }
-    multiaz = bool
-    backup_retention_period = number
-    deletion_protection      = bool
+    multiaz                      = bool
+    backup_retention_period      = number
+    deletion_protection          = bool
     performance_insights_enabled = bool
-    monitoring_interval        = number
-    auto_minor_version_upgrade = bool
-    apply_immediately          = bool
-    port                       = number
+    monitoring_interval          = number
+    auto_minor_version_upgrade   = bool
+    apply_immediately            = bool
+    port                         = number
   })
 }
+
+variable "parameter_group_config" {
+  description = "PostgreSQL parameter group configuration"
+  type = object({
+    family = string
+    parameters = map(object({
+      value        = string
+      apply_method = string
+    }))
+  })
+}
+
 
 variable "metadata" {
   description = "Metadata for the AWS resources"
