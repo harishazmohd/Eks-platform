@@ -10,3 +10,15 @@ module "vpc" {
   availability_zones = local.availability_zone
   common_tags        = local.common_tags
 }
+
+module "ecr" {
+  source                   = "../../modules/ecr"
+  project_name             = var.project_name
+  environment              = var.environment
+  aws_region               = var.aws_region
+  repositories             = var.repositories
+  encryption_configuration = var.encryption_configuration
+  registry_config          = var.registry_config
+  metadata                 = var.metadata
+  common_tags              = local.common_tags
+} 

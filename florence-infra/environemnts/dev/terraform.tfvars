@@ -53,6 +53,30 @@ subnets = {
 }
 vpc_cidr_blocks = "10.0.0.0/16"
 
+repositories = {
+  "frontend" = {
+    image_tag_mutability = "IMMUTABLE"
+    scan_on_push         = true
+    keep_last_images     = 20
+  }
+  "backend" = {
+    image_tag_mutability = "IMMUTABLE"
+    scan_on_push         = true
+    keep_last_images     = 20
+  }
+}
+
+encryption_configuration = {
+  encryption_type = "AES256"
+}
+
+registry_config = {
+  scan_type              = "BASIC"
+  scan_frequency         = "CONTINUOUS_SCAN"
+  repository_filter      = "*"
+  repository_filter_type = "WILDCARD"
+}
+
 common_tags = {
   "CostCenter" = "Engineering"
 }
