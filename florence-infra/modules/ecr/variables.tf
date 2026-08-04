@@ -19,10 +19,10 @@ variable "aws_region" {
 
 variable "repositories" {
   description = "Amazon ECR Repositories"
-  type        = map(object({
+  type = map(object({
     image_tag_mutability = string
     scan_on_push         = bool
-    keep_last_images = number
+    keep_last_images     = number
   }))
 }
 
@@ -30,21 +30,28 @@ variable "encryption_configuration" {
   description = "Repository encrption configuration"
   type = object({
     encryption_type = string
-    kms_key = optional(string)
+    kms_key         = optional(string)
   })
 }
 
 variable "registry_config" {
   description = "Amazon ECR registry configuration"
   type = object({
-    scan_type = string
-    scan_frequency = string
-    repository_filter = string
+    scan_type              = string
+    scan_frequency         = string
+    repository_filter      = string
     repository_filter_type = string
   })
 
 }
 
+variable "metadata" {
+  description = "Metadata for the AWS resources"
+  type = object({
+    owner      = string
+    repository = string
+  })
+}
 
 variable "common_tags" {
   description = "Additional tags applied to all resources."
