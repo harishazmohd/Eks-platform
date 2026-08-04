@@ -6,6 +6,7 @@ resource "aws_kms_key" "this" {
   multi_region             = each.value.multi_region
   key_usage                = each.value.key_usage
   customer_master_key_spec = each.value.customer_master_key_spec
+  policy = data.aws_iam_policy_document.kms[each.key].json
   tags = merge(local.common_tags, {
     Name = local.names.alias_names[each.key]
     Key  = each.key

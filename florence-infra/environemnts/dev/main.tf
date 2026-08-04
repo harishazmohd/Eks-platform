@@ -21,4 +21,14 @@ module "ecr" {
   registry_config          = var.registry_config
   metadata                 = var.metadata
   common_tags              = local.common_tags
-} 
+}
+
+module "kms" {
+  source = "../../modules/kms"
+  project_name = var.project_name
+  environment = var.environment
+  aws_region = var.aws_region
+  common_tags = local.common_tags
+  metadata = var.metadata
+  keys = var.keys
+}

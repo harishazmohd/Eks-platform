@@ -66,16 +66,24 @@ repositories = {
   }
 }
 
-encryption_configuration = {
-  encryption_type = "AES256"
-}
-
 registry_config = {
   scan_type              = "BASIC"
   scan_frequency         = "CONTINUOUS_SCAN"
   repository_filter      = "*"
   repository_filter_type = "WILDCARD"
 }
+
+keys = {
+  "ecr" = {
+    description = "KMS key for ECR"
+    enable_key_rotation = true
+    deletion_window_in_days = 30
+    multi_region = false
+    key_usage = "ENCRYPT_DECRYPT"
+    customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  }
+}
+
 
 common_tags = {
   "CostCenter" = "Engineering"

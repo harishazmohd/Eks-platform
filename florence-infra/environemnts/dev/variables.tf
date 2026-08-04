@@ -60,6 +60,17 @@ variable "registry_config" {
 
 }
 
+variable "keys" {
+  description = "KMS keys configuration"
+  type = map(object({
+    description              = string
+    deletion_window_in_days  = number
+    key_usage                = string
+    enable_key_rotation      = bool
+    multi_region             = bool
+    customer_master_key_spec = string
+  }))
+}
 
 variable "metadata" {
   description = "Metadata for the AWS resources"
