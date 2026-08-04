@@ -41,13 +41,13 @@ variable "repositories" {
   }))
 }
 
-variable "encryption_configuration" {
-  description = "Repository encrption configuration"
-  type = object({
-    encryption_type = string
-    kms_key         = optional(string)
-  })
-}
+# variable "encryption_configuration" {
+#   description = "Repository encrption configuration"
+#   type = object({
+#     encryption_type = string
+#     kms_key         = optional(string)
+#   })
+# }
 
 variable "registry_config" {
   description = "Amazon ECR registry configuration"
