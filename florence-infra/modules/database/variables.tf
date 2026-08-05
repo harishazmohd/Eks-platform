@@ -41,7 +41,7 @@ variable "database_config" {
   description = "Database configuration"
   type = object({
     instance_config = {
-      db_name = string
+      db_name        = string
       identifier     = string
       instance_class = string
       engine         = string
