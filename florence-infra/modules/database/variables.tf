@@ -41,13 +41,13 @@ variable "database_config" {
   description = "Database configuration"
   type = object({
     instance_config = {
-      identifier = string
+      identifier     = string
       instance_class = string
       engine         = string
       engine_version = string
     }
 
-   kms_key_id = string
+    kms_key_id = string
 
     storage_config = {
       allocated_storage     = number
@@ -56,19 +56,19 @@ variable "database_config" {
       storage_encrypted     = bool
       iops                  = optional(number)
     }
-    multi_az                      = bool
+    multi_az = bool
 
-    backup_retention_period      = number
-    deletion_protection          = bool
-    maintenance_window          = string
+    backup_retention_period = number
+    deletion_protection     = bool
+    maintenance_window      = string
 
     performance_insights_enabled = bool
     monitoring_interval          = number
     auto_minor_version_upgrade   = bool
     apply_immediately            = bool
-    skip_final_snapshot = bool
+    skip_final_snapshot          = bool
 
-    port                         = number
+    port                = number
     publicly_accessible = bool
   })
 }
