@@ -74,7 +74,7 @@ locals {
       db_name = "florencedb"
       identifier = "${local.name_prefix}-postgres"
       engine = "postgres"
-      engine_version = "17.4"
+      engine_version = "18.3"
       instance_class = "db.t4g.micro"
     }
     credentials_config = {
@@ -86,11 +86,10 @@ locals {
       max_allocated_storage = 100
       storage_type = "gp3"
       storage_encrypted = true
-      iops = 3000
     }
 
     multi_az = true
-    backup_retention_period = 7
+    backup_retention_period = 1
     deletion_protection = false
     maintenance_window = "Sun:04:30-Sun:05:30"
     performance_insights_enabled = true
@@ -112,3 +111,5 @@ locals {
     }
   )
 }
+
+

@@ -40,13 +40,13 @@ variable "kms_key_id" {
 variable "database_config" {
   description = "Database configuration"
   type = object({
-    instance_config = {
+    instance_config = object({
       db_name        = string
       identifier     = string
       instance_class = string
       engine         = string
       engine_version = string
-    }
+    })
 
     credentials_config = object({
       username = string

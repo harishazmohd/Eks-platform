@@ -95,14 +95,14 @@ keys = {
 
 # Database
 parameter_group_config = {
-  family = "postgres17"
+  family = "postgres18"
   parameters = {
     "log_connections" = {
-      value = 1
+      value = "all"
       apply_method = "immediate"
     }
     "log_disconnections" = {
-      value = 1
+      value = "on"
       apply_method = "immediate"
     }
     "log_statement" = {
@@ -115,7 +115,7 @@ parameter_group_config = {
     }
 
     "log_lock_waits" = {
-      value        = "1"
+      value        = "on"
       apply_method = "immediate"
     }
 

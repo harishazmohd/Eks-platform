@@ -42,7 +42,7 @@ module "rds" {
   metadata = var.metadata
   kms_key_id = local.kms_keys.database
   vpc_id = local.vpc_id
-  security_group_ids = local.security_group_ids.db
+  security_group_ids = [local.security_group_ids.db]
   subnet_ids = module.vpc.database_subnet_ids
   parameter_group_config = var.parameter_group_config
   database_config = local.db_config
