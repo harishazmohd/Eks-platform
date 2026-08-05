@@ -82,8 +82,54 @@ keys = {
     key_usage                = "ENCRYPT_DECRYPT"
     customer_master_key_spec = "SYMMETRIC_DEFAULT"
   }
+
+  "rds" = {
+    description              = "KMS key for RDS"
+    enable_key_rotation      = true
+    deletion_window_in_days  = 30
+    multi_region             = false
+    key_usage                = "ENCRYPT_DECRYPT"
+    customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  }
 }
 
+# Database
+parameter_group_config = {
+  family = "postgres18"
+  parameters = {
+    "log_connections" = {
+      value = "all"
+      apply_method = "immediate"
+    }
+    "log_disconnections" = {
+      value = "on"
+      apply_method = "immediate"
+    }
+    "log_statement" = {
+      value = "ddl"
+      apply_method = "immediate"
+    }
+    "log_min_duration_statement" = {
+      value        = "1000"
+      apply_method = "immediate"
+    }
+
+    "log_lock_waits" = {
+      value        = "on"
+      apply_method = "immediate"
+    }
+
+    "idle_in_transaction_session_timeout" = {
+      value        = "300000"
+      apply_method = "immediate"
+    }
+
+    "statement_timeout" = {
+      value        = "60000"
+      apply_method = "immediate"
+    }
+  }
+}
 
 common_tags = {
   "CostCenter" = "Engineering"

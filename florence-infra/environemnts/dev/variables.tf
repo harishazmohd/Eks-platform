@@ -41,13 +41,6 @@ variable "repositories" {
   }))
 }
 
-# variable "encryption_configuration" {
-#   description = "Repository encrption configuration"
-#   type = object({
-#     encryption_type = string
-#     kms_key         = optional(string)
-#   })
-# }
 
 variable "registry_config" {
   description = "Amazon ECR registry configuration"
@@ -71,6 +64,18 @@ variable "keys" {
     customer_master_key_spec = string
   }))
 }
+
+variable "parameter_group_config" {
+  description = "RDS parameter group configuration"
+  type = object({
+    family = string
+    parameters = map(object({
+      value        = string
+      apply_method = string
+    }))
+  })
+}
+
 
 variable "metadata" {
   description = "Metadata for the AWS resources"
