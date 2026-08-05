@@ -6,7 +6,7 @@ locals {
     subnet          = "${local.name_prefix}-subnet-group"
     parameter_group = "${local.name_prefix}-parameter-group"
     option_group    = "${local.name_prefix}-option-group"
-    database        = "${local.name_prefix}-postgress-database"
+    database        = "${local.name_prefix}-postgres-database"
     monitoring      = "${local.name_prefix}-rds-monitoring-role"
   }
 

@@ -41,21 +41,24 @@ variable "database_config" {
   description = "Database configuration"
   type = object({
     instance_config = {
+      db_name = string
       identifier     = string
       instance_class = string
       engine         = string
       engine_version = string
     }
 
-    kms_key_id = string
+    credentials_config = object({
+      username = string
+    })
 
-    storage_config = {
+    storage_config = object({
       allocated_storage     = number
       max_allocated_storage = optional(number)
       storage_type          = string
       storage_encrypted     = bool
       iops                  = optional(number)
-    }
+    })
     multi_az = bool
 
     backup_retention_period = number
@@ -67,6 +70,7 @@ variable "database_config" {
     auto_minor_version_upgrade   = bool
     apply_immediately            = bool
     skip_final_snapshot          = bool
+
 
     port                = number
     publicly_accessible = bool
