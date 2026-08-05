@@ -32,3 +32,18 @@ module "kms" {
   metadata     = var.metadata
   keys         = var.keys
 }
+
+module "rds" {
+  source = "../../modules/database"
+  aws_region = var.aws_region
+  project_name = var.project_name
+  environment = var.environment
+  common_tags = local.common_tags
+  metadata = var.metadata
+  kms_key_id = local.kms_keys.database
+  vpc_id = local.vpc_id
+  security_group_ids = local.security_group_ids.db
+  subnet_ids = module.vpc.database_subnet_ids
+  parameter_group_config = var.parameter_group_config
+  database_config = local.db_config
+}

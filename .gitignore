@@ -44,3 +44,33 @@ tfplan
 # Optional: ignore plan files saved before destroying Terraform configuration
 # Uncomment the line below if you want to ignore planout files.
 # planout
+
+# Additional common sensitive or machine-specific files not for VCS
+# IDE/editor settings
+.vscode/
+.idea/
+
+# Environment and secret files
+.env
+.env.*
+*.pem
+*.key
+*.crt
+*.secret
+secrets*
+
+# Terraform plan output files (explicitly ignore any saved plans)
+*.tfplan
+*.tfplan.*
+tfplan
+
+# OS artifacts
+.DS_Store
+Thumbs.db
+
+# Python virtualenv
+.venv/
+venv/
+
+# Node modules
+node_modules/
