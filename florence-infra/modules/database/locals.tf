@@ -7,6 +7,7 @@ locals {
     parameter_group = "${local.name_prefix}-parameter-group"
     option_group    = "${local.name_prefix}-option-group"
     database        = "${local.name_prefix}-postgress-database"
+    monitoring =  "${local.name_prefix}-rds-monitoring-role"
   }
 
   common_tags = merge(var.common_tags,

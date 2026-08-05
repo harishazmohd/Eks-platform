@@ -32,7 +32,7 @@ variable "security_group_ids" {
   type        = list(string)
 }
 
-variable "kms_key_arn" {
+variable "kms_key_id" {
   description = "KMS Key for the database"
   type        = string
 }
@@ -41,10 +41,14 @@ variable "database_config" {
   description = "Database configuration"
   type = object({
     instance_config = {
+      identifier = string
       instance_class = string
       engine         = string
       engine_version = string
     }
+
+   kms_key_id = string
+
     storage_config = {
       allocated_storage     = number
       max_allocated_storage = optional(number)
@@ -52,14 +56,20 @@ variable "database_config" {
       storage_encrypted     = bool
       iops                  = optional(number)
     }
-    multiaz                      = bool
+    multi_az                      = bool
+
     backup_retention_period      = number
     deletion_protection          = bool
+    maintenance_window          = string
+
     performance_insights_enabled = bool
     monitoring_interval          = number
     auto_minor_version_upgrade   = bool
     apply_immediately            = bool
+    skip_final_snapshot = bool
+
     port                         = number
+    publicly_accessible = bool
   })
 }
 
