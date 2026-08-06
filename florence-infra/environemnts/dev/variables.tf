@@ -53,6 +53,11 @@ variable "registry_config" {
 
 }
 
+variable "db_port" {
+  description = "Database port"
+  type        = number
+ }
+
 variable "keys" {
   description = "KMS keys configuration"
   type = map(object({

@@ -6,6 +6,8 @@ metadata = {
   repository = "https://github.com/muhdhares/florence"
 }
 
+db_port = 5432
+
 subnets = {
 
   public_a = {

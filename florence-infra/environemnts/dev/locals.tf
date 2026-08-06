@@ -98,7 +98,7 @@ locals {
     apply_immediately = false
     skip_final_snapshot = true
 
-    port = 5432
+    port = var.db_port
     publicly_accessible = false
   }
   common_tags = merge(var.common_tags,
