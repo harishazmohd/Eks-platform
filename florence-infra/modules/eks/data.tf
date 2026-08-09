@@ -1,0 +1,17 @@
+data "aws_availability_zones" "current" {
+  state = "available"
+}
+
+data "aws_caller_identity" "current" {}
+
+data "aws_partition" "current" {}
+
+data "aws_iam_policy_document" "eks_cluster_assume_role" {
+  statement {
+    effect = "Allow"
+    actions = ["sts:AssumeRole"]
+    principals {
+      type = "Service"
+      identifiers = ["eks.amazonaws.com"]
+    }
+}
