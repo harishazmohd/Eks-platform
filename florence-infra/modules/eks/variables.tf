@@ -17,6 +17,46 @@ variable "aws_region" {
   type        = string
 }
 
+variable "vpc_id" {
+  description = "AWS VPC id"
+  type        = string
+}
+
+variable "private_subnet_ids" {
+  description = "AWS Subnet ids"
+  type        = list(string)
+}
+
+variable "cluster_name" {
+  description = "Name of the cluster"
+  type        = string
+}
+
+variable "cluster_version" {
+  description = "Kubernetes Cluster Version"
+  type        = string
+}
+
+variable "cluster_endpoint_config" {
+  description = "EKS Cluster Endpoint Config"
+  type = object({
+    endpoint_private_access = bool
+    endpoint_public_access  = bool
+  })
+}
+
+variable "enable_cluster_logging_types" {
+  description = "EKS Cluster Logging"
+  type        = list(string)
+}
+
+variable "kms_key_arn" {
+  description = "KMS Key ARN"
+  type        = string
+}
+
+
+
 variable "metadata" {
   description = "Metadata for the AWS resources"
   type = object({
