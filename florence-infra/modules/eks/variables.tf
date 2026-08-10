@@ -56,6 +56,16 @@ variable "node_config" {
   })
 }
 
+variable "addons_config" {
+  description = "EKS Addon configuration"
+  type = map(object({
+    addon_name                  = string
+    addon_version               = string
+    resolve_conflicts_on_create = string
+    resolve_conflicts_on_update = string
+  }))
+}
+
 variable "metadata" {
   description = "Metadata for the AWS resources"
   type = object({
