@@ -29,14 +29,12 @@ resource "aws_vpc_endpoint" "interface" {
     aws_subnet.this[name].id
   ]
 
-  security_group_ids = [
-    aws_security_group.vpc_endpoint.id
-  ]
+  security_group_ids = [aws_security_group.vpc_endpoint.id]
 
   private_dns_enabled = true
 
   tags = merge(
-  local.common_tags,
+    local.common_tags,
     {
       Name = "${local.name_prefix}-${replace(each.value, ".", "-")}-vpce"
     }
