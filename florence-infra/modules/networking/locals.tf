@@ -11,6 +11,9 @@ locals {
     public_nacls   = "${local.name_prefix}-public-nacl"
     app_nacls      = "${local.name_prefix}-app-nacl"
     db_nacls       = "${local.name_prefix}-database-nacl"
+    alb            = "${local.name_prefix}-alb-sg"
+    database       = "${local.name_prefix}-db-sg"
+    bastion        = "${local.name_prefix}-bastion-sg"
     vpc_endpoint   = "${local.name_prefix}-vpce-sg"
   }
   # Subnet Collections
@@ -65,8 +68,6 @@ locals {
   internet_cidr = "0.0.0.0/0"
 
   tcp_ip_protocol = "tcp"
-  db_port         = var.db_port
-
   interface_endpoints = toset([
     "ssm",
     "ssmmessages",

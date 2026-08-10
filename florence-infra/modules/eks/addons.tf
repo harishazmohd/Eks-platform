@@ -5,6 +5,7 @@ resource "aws_eks_addon" "this" {
   addon_version               = each.value.addon_version
   resolve_conflicts_on_create = each.value.resolve_conflicts_on_create
   resolve_conflicts_on_update = each.value.resolve_conflicts_on_update
+  depends_on                  = [aws_eks_node_group.this]
 
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}-${each.value.addon_name}"

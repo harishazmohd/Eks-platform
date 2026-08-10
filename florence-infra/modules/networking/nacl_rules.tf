@@ -55,6 +55,17 @@ resource "aws_network_acl_rule" "app_ingress_vpc" {
   to_port        = 0
 }
 
+resource "aws_network_acl_rule" "app_ingress_ephemeral" {
+  network_acl_id = aws_network_acl.application.id
+  egress         = false
+  rule_number    = 110
+  protocol       = "tcp"
+  rule_action    = "allow"
+  cidr_block     = local.internet_cidr
+  from_port      = 1024
+  to_port        = 65535
+}
+
 resource "aws_network_acl_rule" "app_egress_vpc" {
   network_acl_id = aws_network_acl.application.id
   egress         = true

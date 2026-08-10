@@ -17,6 +17,7 @@ resource "aws_eks_node_group" "this" {
     max_size     = var.node_config.node_max_size
   }
 
+
   tags = merge(local.common_tags, {
     Name = local.names.node_group_name
 

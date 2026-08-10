@@ -15,7 +15,7 @@ locals {
     node_group_role = {
       name        = "${local.name_prefix}-eks-node-group-role"
       role_policy = data.aws_iam_policy_document.node_group_assume_role.json
-      policy_arns = ["AmazonEKSWorkerNodePolicy", "AmazonEC2ContainerRegistryReadOnly"]
+      policy_arns = ["AmazonEKSWorkerNodePolicy", "AmazonEC2ContainerRegistryReadOnly", "AmazonEKS_CNI_Policy"]
     }
   }
 

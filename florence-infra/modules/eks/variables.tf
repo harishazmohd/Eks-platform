@@ -12,15 +12,6 @@ variable "environment" {
   }
 }
 
-variable "aws_region" {
-  description = "AWS Region"
-  type        = string
-}
-
-variable "vpc_id" {
-  description = "AWS VPC id"
-  type        = string
-}
 
 variable "cluster_config" {
   description = "EKS Cluster configuration"

@@ -17,6 +17,26 @@ variable "aws_region" {
   type        = string
 }
 
+variable "database_sg_id" {
+  description = "Database Security Group ID"
+  type        = string
+}
+
+variable "vpc_endpoint_sg_id" {
+  description = "VPC Endpoint Security Group ID"
+  type        = string
+}
+
+variable "eks_cluster_sg_id" {
+  description = "EKS cluster security group ID representing workload traffic"
+  type        = string
+}
+
+variable "db_port" {
+  description = "Database port"
+  type        = number
+}
+
 variable "metadata" {
   description = "Metadata for the AWS resources"
   type = object({
