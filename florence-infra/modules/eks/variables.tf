@@ -22,32 +22,18 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "private_subnet_ids" {
-  description = "AWS Subnet ids"
-  type        = list(string)
-}
-
-variable "cluster_name" {
-  description = "Name of the cluster"
-  type        = string
-}
-
-variable "cluster_version" {
-  description = "Kubernetes Cluster Version"
-  type        = string
-}
-
-variable "cluster_endpoint_config" {
-  description = "EKS Cluster Endpoint Config"
+variable "cluster_config" {
+  description = "EKS Cluster configuration"
   type = object({
-    endpoint_private_access = bool
-    endpoint_public_access  = bool
+    subnet_ids      = list(string)
+    cluster_name    = string
+    cluster_version = string
+    cluster_endpoint_config = object({
+      endpoint_private_access = bool
+      endpoint_public_access  = bool
+    })
+    enable_cluster_logging_types = list(string)
   })
-}
-
-variable "enable_cluster_logging_types" {
-  description = "EKS Cluster Logging"
-  type        = list(string)
 }
 
 variable "kms_key_arn" {
@@ -55,7 +41,20 @@ variable "kms_key_arn" {
   type        = string
 }
 
+variable "node_config" {
+  description = "Node group configuration"
+  type = object({
+    private_subnet_ids = list(string)
+    node_instance_type = list(string)
+    capacity_type      = list(string)
+    node_min_size      = number
+    node_max_size      = number
+    node_desired_size  = number
 
+    disk_size   = number
+    node_labels = map(string)
+  })
+}
 
 variable "metadata" {
   description = "Metadata for the AWS resources"

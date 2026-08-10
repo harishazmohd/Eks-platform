@@ -1,12 +1,15 @@
-resource "aws_iam_role" "eks_cluster_role" {
-  name               = local.names.eks_cluster_role
-  assume_role_policy = data.aws_iam_policy_document.eks_cluster_assume_role.json
+
+resource "aws_iam_role" "this" {
+  for_each           = local.role_config
+  name               = each.value.name
+  assume_role_policy = each.value.role_policy
   tags = merge(local.common_tags, {
-    Name = local.names.eks_cluster_role
+    Name = each.value.name
   })
 }
 
 resource "aws_iam_role_policy_attachment" "eks_cluster" {
-  role       = aws_iam_role.eks_cluster_role.name
-  policy_arn = "arn:${data.aws_partition.current.partition}::iam:aws:policy/AmazonEKSClusterPolicy"
+  for_each   = local.iam_role_attachment
+  role       = aws_iam_role.this[each.value.role_key].name
+  policy_arn = each.value.policy_arn
 }
