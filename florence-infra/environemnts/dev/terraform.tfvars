@@ -5,7 +5,7 @@ metadata = {
   owner      = "Haris"
   repository = "https://github.com/muhdhares/florence"
 }
-
+# Network Configuration
 db_port = 5432
 
 subnets = {
@@ -55,6 +55,7 @@ subnets = {
 }
 vpc_cidr_blocks = "10.0.0.0/16"
 
+# ECR Config
 repositories = {
   "frontend" = {
     image_tag_mutability = "IMMUTABLE"
@@ -75,6 +76,7 @@ registry_config = {
   repository_filter_type = "WILDCARD"
 }
 
+# KMS Config
 keys = {
   "ecr" = {
     description              = "KMS key for ECR"
@@ -93,6 +95,14 @@ keys = {
     key_usage                = "ENCRYPT_DECRYPT"
     customer_master_key_spec = "SYMMETRIC_DEFAULT"
   }
+  "eks" = {
+    description              = "EKS key for RDS"
+    enable_key_rotation      = true
+    deletion_window_in_days  = 30
+    multi_region             = false
+    key_usage                = "ENCRYPT_DECRYPT"
+    customer_master_key_spec = "SYMMETRIC_DEFAULT"
+  }
 }
 
 # Database
@@ -100,15 +110,15 @@ parameter_group_config = {
   family = "postgres18"
   parameters = {
     "log_connections" = {
-      value = "all"
+      value        = "all"
       apply_method = "immediate"
     }
     "log_disconnections" = {
-      value = "on"
+      value        = "on"
       apply_method = "immediate"
     }
     "log_statement" = {
-      value = "ddl"
+      value        = "ddl"
       apply_method = "immediate"
     }
     "log_min_duration_statement" = {
