@@ -31,6 +31,8 @@ locals {
     ]) : attachment.key => attachment
   }
 
+  oidc_host = replace(aws_iam_openid_connect_provider.this.url, "https://", "")
+
   common_tags = merge(var.common_tags,
     {
       Project     = var.project_name

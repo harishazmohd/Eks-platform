@@ -27,3 +27,11 @@ output "cluster_security_group_id" {
   value       = aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
 }
 
+output "oidc" {
+  description = "OIDC provider"
+  value = {
+    oidc_provider_arn  = aws_iam_openid_connect_provider.this.arn
+    oidc_provider_url  = aws_iam_openid_connect_provider.this.url
+    oidc_provider_host = local.oidc_host
+  }
+}
