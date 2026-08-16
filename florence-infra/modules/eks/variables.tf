@@ -57,6 +57,14 @@ variable "addons_config" {
   }))
 }
 
+variable "alb_controller" {
+  description = ""
+  type        = object({
+    name = optional(string, "aws-alb-controller")
+    enabled = optional(bool, true)
+  })
+}
+
 variable "metadata" {
   description = "Metadata for the AWS resources"
   type = object({

@@ -31,6 +31,7 @@ locals {
     ]) : attachment.key => attachment
   }
 
+  alb_controller_subject = "system:serviceaccount:kube-system:${var.alb_controller.name}"
   oidc_host = replace(aws_iam_openid_connect_provider.this.url, "https://", "")
 
   common_tags = merge(var.common_tags,
