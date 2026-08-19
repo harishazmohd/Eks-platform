@@ -1,6 +1,6 @@
-# Florence Infrastructure - Complete Technical Reference & Operational Manual
+# EKS-Platform Infrastructure - Complete Technical Reference & Operational Manual
 
-This manual provides an exhaustive architectural reference and operational manual for the **Florence Infrastructure** Terraform repository. It documents the overall project architecture, directory layout, module composition, input/output interfaces, inter-module data flow, security architecture, and end-to-end deployment workflow.
+This manual provides an exhaustive architectural reference and operational manual for the **EKS-Platform Infrastructure** Terraform repository. It documents the overall project architecture, directory layout, module composition, input/output interfaces, inter-module data flow, security architecture, and end-to-end deployment workflow.
 
 ---
 
@@ -24,10 +24,10 @@ This manual provides an exhaustive architectural reference and operational manua
 
 ## 1. Full Repository Directory Tree
 
-Below is the complete filesystem layout of the `florence-infra` codebase:
+Below is the complete filesystem layout of the `eks-platform-infra` codebase:
 
 ```
-florence-infra/
+eks-platform-infra/
 ├── README.md                           # Comprehensive Technical Reference & Operations Manual
 ├── bootstrap/                          # S3 Bucket & KMS Key for Remote Terraform State
 │   ├── data.tf                         # Caller identity & partition data sources
@@ -198,7 +198,7 @@ graph TD
 The `bootstrap` directory provisions the remote state bucket and KMS master encryption key before any environment is created.
 
 ### Resources & Functions:
-1. **`aws_s3_bucket.backend_bucket`** (`s3.tf`): Creates `florence-dev-${account_id}-${region}` to store Terraform state files.
+1. **`aws_s3_bucket.backend_bucket`** (`s3.tf`): Creates `eks-platform-dev-${account_id}-${region}` to store Terraform state files.
 2. **`aws_s3_bucket_versioning.backend_versioning`** (`s3.tf`): Enables object versioning (`status = "Enabled"`) to preserve state history.
 3. **`aws_s3_bucket_public_access_block.backend_access`** (`s3.tf`): Blocks all public ACLs and bucket policies (`block_public_acls = true`, `ignore_public_acls = true`, `block_public_policy = true`, `restrict_public_buckets = true`).
 4. **`aws_s3_bucket_server_side_encryption_configuration.backend_encryption`** (`s3.tf`): Enforces default server-side encryption using Customer Managed KMS Key (`aws:kms`).
@@ -215,7 +215,7 @@ The `environemnts/dev` environment composes the active development stack:
   ```hcl
   terraform {
     backend "s3" {
-      bucket       = "florence-dev-020139096715-ap-south-1"
+      bucket       = "eks-platform-dev-020139096715-ap-south-1"
       key          = "dev/terraform.tfstate"
       region       = "ap-south-1"
       use_lockfile = true
@@ -390,7 +390,7 @@ terraform apply tfplan
 
 1. **Configure `kubectl` Context**:
    ```bash
-   aws eks update-kubeconfig --region ap-south-1 --name florence-dev-cluster
+   aws eks update-kubeconfig --region ap-south-1 --name eks-platform-dev-cluster
    ```
 
 2. **Verify Cluster Health**:
@@ -401,7 +401,7 @@ terraform apply tfplan
 
 3. **Verify Database Accessibility & KMS Encryption**:
    ```bash
-   aws rds describe-db-instances --db-instance-identifier florence-dev-postgres --query "DBInstances[0].[DBInstanceStatus, StorageEncrypted, MultiAZ]"
+   aws rds describe-db-instances --db-instance-identifier eks-platform-dev-postgres --query "DBInstances[0].[DBInstanceStatus, StorageEncrypted, MultiAZ]"
    ```
 
 ---
@@ -438,4 +438,4 @@ terraform destroy -auto-approve
 ```
 
 ---
-*Manual compiled for Florence Infrastructure Operations.*
+*Manual compiled for EKS-Platform Infrastructure Operations.*

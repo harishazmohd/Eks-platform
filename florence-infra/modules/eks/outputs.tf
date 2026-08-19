@@ -35,3 +35,10 @@ output "oidc" {
     oidc_provider_host = local.oidc_host
   }
 }
+
+output "alb_controller" {
+  value = try({
+    role_arn  = aws_iam_role.alb_role[0].arn
+    role_name = aws_iam_role.alb_role[0].name
+  })
+}

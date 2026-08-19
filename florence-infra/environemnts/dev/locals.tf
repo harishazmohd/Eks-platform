@@ -25,14 +25,14 @@ locals {
   # Database configuration
   db_config = {
     instance_config = {
-      db_name        = "florencedb"
+      db_name        = "eks-platformdb"
       identifier     = "${local.name_prefix}-postgres"
       engine         = "postgres"
       engine_version = "18.3"
       instance_class = "db.t4g.micro"
     }
     credentials_config = {
-      username = "florenceadmin"
+      username = "eks-platformadmin"
     }
 
     storage_config = {

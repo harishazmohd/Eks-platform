@@ -1,9 +1,9 @@
-project_name = "florence"
+project_name = "eks-platform"
 environment  = "dev"
 aws_region   = "ap-south-1"
 metadata = {
   owner      = "Haris"
-  repository = "https://github.com/muhdhares/florence"
+  repository = "https://github.com/muhdhares/eks-platform"
 }
 # Network Configuration
 db_port = 5432
@@ -141,6 +141,12 @@ parameter_group_config = {
       apply_method = "immediate"
     }
   }
+}
+
+alb_controller = {
+  name          = "aws-load-balancer-controller"
+  chart_version = "3.5.0"
+  enabled       = true
 }
 
 common_tags = {
