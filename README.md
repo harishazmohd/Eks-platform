@@ -1,4 +1,4 @@
-# Production-Grade DevOps CI/CD Pipeline
+# Production-Grade EKS Platform
 
 > **Project Florence** — An AI-assisted, production-oriented AWS cloud platform built with **Terraform, Amazon EKS, Kubernetes, Amazon ECR, AWS KMS, Amazon RDS, and modern DevOps practices**.
 
