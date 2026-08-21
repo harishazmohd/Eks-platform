@@ -1,6 +1,6 @@
 # Production-Grade AWS Cloud Platform
 
-> **Project Florence** — An AI-assisted, production-oriented AWS cloud platform built with **Terraform, Amazon EKS, Kubernetes, Amazon ECR, AWS KMS, Amazon RDS, and modern DevOps practices**.
+> **Project EKS-Platform** — An AI-assisted, production-oriented AWS cloud platform built with **Terraform, Amazon EKS, Kubernetes, Amazon ECR, AWS KMS, Amazon RDS, and modern DevOps practices**.
 
 ![AWS](https://img.shields.io/badge/AWS-Cloud-orange)
 ![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC)
@@ -14,7 +14,7 @@
 
 ## 📌 Overview
 
-**Project Florence** is a production-grade AWS cloud platform designed to demonstrate how a modern application environment can be **architected, provisioned, secured, deployed, and operated using Infrastructure as Code and Kubernetes**.
+**Project EKS-Platform** is a production-grade AWS cloud platform designed to demonstrate how a modern application environment can be **architected, provisioned, secured, deployed, and operated using Infrastructure as Code and Kubernetes**.
 
 The platform is being built incrementally through independent infrastructure phases, with clear ownership boundaries between networking, security, container infrastructure, databases, and Kubernetes.
 
@@ -32,7 +32,7 @@ The infrastructure is managed entirely through **Terraform modules**, allowing t
 
 # 🎯 Project Goals
 
-Florence is designed to demonstrate practical knowledge of:
+EKS-Platform is designed to demonstrate practical knowledge of:
 
 * AWS cloud architecture
 * Infrastructure as Code
@@ -113,7 +113,7 @@ Additional components will be introduced as the platform evolves.
 
 # 🏛️ Infrastructure Architecture
 
-Florence follows a modular Terraform architecture.
+EKS-Platform follows a modular Terraform architecture.
 
 ```text
 Terraform Root
@@ -152,7 +152,7 @@ Each module has a clearly defined responsibility.
 
 # 🧱 Infrastructure Module Philosophy
 
-A core architectural principle of Florence is:
+A core architectural principle of EKS-Platform is:
 
 > **A module should own the resources belonging to its domain and consume shared infrastructure from other modules.**
 
@@ -267,7 +267,7 @@ The project follows the principle of:
 
 # 🔑 Centralized KMS Architecture
 
-Florence uses a centralized Customer Managed KMS key rather than creating an independent key for every module.
+EKS-Platform uses a centralized Customer Managed KMS key rather than creating an independent key for every module.
 
 ```text
                   AWS KMS
@@ -376,7 +376,7 @@ The EKS cluster is responsible for running the application workloads.
 
 # Kubernetes Application Architecture
 
-Florence is designed around independent services.
+EKS-Platform is designed around independent services.
 
 ```text
                     EKS
@@ -431,7 +431,7 @@ The Service provides a stable abstraction.
 
 # 🤖 AI Service
 
-Florence includes a dedicated AI service as an independent application workload.
+EKS-Platform includes a dedicated AI service as an independent application workload.
 
 ```text
 Frontend
@@ -460,7 +460,7 @@ This also provides a foundation for future AI/ML infrastructure.
 
 AI plays a second role in the project beyond the application AI service.
 
-Florence is developed using an **AI-assisted engineering workflow**.
+EKS-Platform is developed using an **AI-assisted engineering workflow**.
 
 AI is used as an engineering copilot for:
 
@@ -648,7 +648,7 @@ AWS Infrastructure
 
 # 🏗️ Infrastructure Development Phases
 
-Florence is being implemented incrementally.
+EKS-Platform is being implemented incrementally.
 
 ## Phase 0 — Terraform Foundation
 
@@ -756,7 +756,7 @@ CNI, kube-proxy, CoreDNS, ingress, and NetworkPolicies.
 
 ### K11 — Application Deployment
 
-Deployment of Florence Frontend, Backend, and AI workloads.
+Deployment of EKS-Platform Frontend, Backend, and AI workloads.
 
 ### K12 — EKS Architecture
 
@@ -842,7 +842,7 @@ Each file is responsible for a specific part of the EKS platform.
 
 # 📋 Architecture Decision Records
 
-Florence uses ADRs to document significant architecture decisions.
+EKS-Platform uses ADRs to document significant architecture decisions.
 
 Example:
 
@@ -870,7 +870,7 @@ This prevents architectural decisions from existing only inside source code or d
 
 # 🛡️ Production Engineering Principles
 
-Florence follows several core principles.
+EKS-Platform follows several core principles.
 
 ### 1. Infrastructure as Code
 
@@ -934,7 +934,7 @@ Observability              ⏳
 Disaster Recovery          ⏳
 ```
 
-Florence is an **actively evolving project** rather than a finished static infrastructure deployment.
+EKS-Platform is an **actively evolving project** rather than a finished static infrastructure deployment.
 
 ---
 
@@ -943,7 +943,7 @@ Florence is an **actively evolving project** rather than a finished static infra
 The platform will eventually incorporate:
 
 ```text
-                    Project Florence
+                    Project EKS-Platform
                            │
        ┌───────────────────┼───────────────────┐
        │                   │                   │
@@ -977,7 +977,7 @@ Future technologies include:
 
 # 🎓 What This Project Demonstrates
 
-Project Florence is designed to demonstrate practical capability across:
+Project EKS-Platform is designed to demonstrate practical capability across:
 
 ```text
 AWS
@@ -1023,7 +1023,7 @@ The objective is to demonstrate the ability to **design and operate a complete c
 
 > **Build it like production, understand it like an engineer, and document it like a platform team.**
 
-Florence combines infrastructure engineering, Kubernetes, application architecture, security, automation, and AI-assisted development into a single evolving cloud platform.
+EKS-Platform combines infrastructure engineering, Kubernetes, application architecture, security, automation, and AI-assisted development into a single evolving cloud platform.
 
 ---
 
@@ -1031,4 +1031,4 @@ Florence combines infrastructure engineering, Kubernetes, application architectu
 
 **🚧 Active Development**
 
-Project Florence is continuously evolving as additional infrastructure, Kubernetes capabilities, DevOps automation, observability, and disaster-recovery capabilities are implemented.
+Project EKS-Platform is continuously evolving as additional infrastructure, Kubernetes capabilities, DevOps automation, observability, and disaster-recovery capabilities are implemented.
