@@ -27,8 +27,8 @@ spec:
       terminationGracePeriodSeconds: 30
       containers:
         - name: backend
-          image: image
-          imagePullPolicy: ifNotPresent
+          image: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-backend:latest
+          imagePullPolicy: IfNotPresent
 
           ports:
             - name: http

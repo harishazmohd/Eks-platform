@@ -5,7 +5,7 @@ variable "project_name" {
 
 variable "aws_region" {
   description = "AWS Region"
-  type = string
+  type        = string
 }
 
 variable "vpc_id" {
@@ -78,6 +78,10 @@ variable "alb_controller" {
 
 }
 
+variable "rds_kms_key_arn" {
+  type = string
+}
+
 variable "metadata" {
   description = "Metadata for the AWS resources"
   type = object({
@@ -95,6 +99,11 @@ variable "db_instance_master_secret_arn" {
   description = "DB Instance Master Secret ARN"
   type        = string
 }
+
+# variable "namespaces" {
+#   description = "Namespaces to be created in EKS cluster"
+#   type = map(string)
+# }
 
 
 variable "common_tags" {

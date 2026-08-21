@@ -63,7 +63,7 @@ data "aws_iam_policy_document" "alb_assume_role" {
   statement {
     sid     = "AllowServiceAccountAssumeRole"
     effect  = "Allow"
-    actions = ["sts:AssumeRole"]
+    actions = ["sts:AssumeRoleWithWebIdentity"]
     principals {
       type        = "Federated"
       identifiers = [aws_iam_openid_connect_provider.this.arn]
@@ -71,12 +71,12 @@ data "aws_iam_policy_document" "alb_assume_role" {
     condition {
       test     = "StringEquals"
       variable = "${local.oidc_host}:aud"
-      values   = ["sts:amazonaws.com"]
-       }
+      values   = ["sts.amazonaws.com"]
+    }
     condition {
       test     = "StringEquals"
       variable = "${local.oidc_host}:sub"
-      values   = [var.alb_controller.name]
+      values   = ["system:serviceaccount:kube-system:${var.alb_controller.name}"]
     }
   }
 }
@@ -84,7 +84,7 @@ data "aws_iam_policy_document" "alb_assume_role" {
 
 # ALB Controller Policies
 data "aws_iam_policy_document" "alb_controller_permissions" {
-  count = var.alb_controller.enabled ? 1 : 0
+  count                   = var.alb_controller.enabled ? 1 : 0
   source_policy_documents = [file("${path.module}/policy/alb_policy.json")]
 }
 
@@ -93,19 +93,19 @@ data "aws_iam_policy_document" "external_secrets_assume_role" {
   statement {
     effect = "Allow"
     principals {
-      type = "Federated"
+      type        = "Federated"
       identifiers = [aws_iam_openid_connect_provider.this.arn]
     }
     actions = ["sts:AssumeRoleWithWebIdentity"]
-  condition {
-    test = "StringEquals"
-    variable = "${local.oidc_host}:aud"
-    values   = ["sts:amazonaws.com"]
-  }
-  condition {
-    test     = "StringEquals"
-    variable = "${local.oidc_host}:sub"
-    values   = ["system:serviceaccount:external-secrets:external-secrets"]
-  }
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_host}:aud"
+      values   = ["sts.amazonaws.com"]
+    }
+    condition {
+      test     = "StringEquals"
+      variable = "${local.oidc_host}:sub"
+      values   = ["system:serviceaccount:external-secrets:external-secrets"]
+    }
   }
 }

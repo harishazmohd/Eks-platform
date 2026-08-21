@@ -1,6 +1,6 @@
 # ALB Controller
 resource "helm_release" "aws_load_balancer_controller" {
-  name       = "${local.name_prefix}"
+  name       = local.name_prefix
   namespace  = "kube-system"
   repository = "https://aws.github.io/eks-charts"
   chart      = "aws-load-balancer-controller"
@@ -11,21 +11,21 @@ resource "helm_release" "aws_load_balancer_controller" {
     region               = var.aws_region
     vpc_id               = var.vpc_id
     service_account_name = "aws-load-balancer-controller"
-    aws_iam_role_arn         = aws_iam_role.alb_role[0].arn
+    aws_iam_role_arn     = aws_iam_role.alb_role[0].arn
   })]
-  depends_on = [aws_eks_cluster.this]
+  depends_on = [aws_eks_cluster.this, aws_eks_node_group.this]
 }
 
 # External Secrets
 resource "helm_release" "external_secrets" {
-  name = "external-secrets"
+  name             = "external-secrets"
   namespace        = "external-secrets"
   create_namespace = true
-  repository = "https://charts.external-secrets.io"
-  chart = "external-secrets"
-  version = "2.9.0"
+  repository       = "https://charts.external-secrets.io"
+  chart            = "external-secrets"
+  version          = "2.9.0"
 
-  wait = true
+  wait    = true
   timeout = 600
 
   values = [yamlencode({
@@ -40,5 +40,5 @@ resource "helm_release" "external_secrets" {
 
   })]
 
-  depends_on = [aws_eks_cluster.this]
+  depends_on = [aws_eks_cluster.this, helm_release.aws_load_balancer_controller]
 }

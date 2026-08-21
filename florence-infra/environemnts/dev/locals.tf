@@ -25,14 +25,14 @@ locals {
   # Database configuration
   db_config = {
     instance_config = {
-      db_name        = "eks-platformdb"
+      db_name        = "bankdb"
       identifier     = "${local.name_prefix}-postgres"
       engine         = "postgres"
       engine_version = "18.3"
       instance_class = "db.t4g.micro"
     }
     credentials_config = {
-      username = "eks-platformadmin"
+      username = "bankdbadmin"
     }
 
     storage_config = {
@@ -109,6 +109,10 @@ locals {
     }
   }
 
+  namespcaces = {
+    bankapp = "bankapp"
+  }
+
   # Tags & Metadata
   common_tags = merge(var.common_tags,
     {
@@ -120,5 +124,3 @@ locals {
     }
   )
 }
-
-

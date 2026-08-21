@@ -28,7 +28,7 @@ resource "aws_iam_role" "alb_role" {
 
 resource "aws_iam_role_policy" "alb_controller" {
   count  = var.alb_controller.enabled ? 1 : 0
-  name = "${var.alb_controller.name}-policy"
+  name   = "${var.alb_controller.name}-policy"
   role   = aws_iam_role.alb_role[0].name
   policy = (data.aws_iam_policy_document.alb_controller_permissions[0].json)
 }
@@ -36,7 +36,7 @@ resource "aws_iam_role_policy" "alb_controller" {
 
 # IAM role for External Secrets
 resource "aws_iam_role" "external_secrets" {
-  name = "${local.name_prefix}-external-secrets"
+  name               = "${local.name_prefix}-external-secrets"
   assume_role_policy = data.aws_iam_policy_document.external_secrets_assume_role.json
   description        = "IAM role for External Secrets"
   tags = merge(local.common_tags, {
@@ -45,21 +45,22 @@ resource "aws_iam_role" "external_secrets" {
 }
 
 resource "aws_iam_role_policy" "external_secrets" {
-  role       = aws_iam_role.external_secrets.name
-  policy     = jsonencode({
-      Version = "2012-10-17"
+  role = aws_iam_role.external_secrets.name
+  policy = jsonencode({
+    Version = "2012-10-17"
 
-      Statement = [
-        {
-          Effect = "Allow"
+    Statement = [
+      {
+        Effect = "Allow"
 
-          Action = [
-            "secretsmanager:GetSecretValue",
-            "secretsmanager:DescribeSecret"
-          ]
+        Action = [
+          "secretsmanager:GetSecretValue",
+          "secretsmanager:DescribeSecret",
+          "kms:Decrypt"
+        ]
 
-          Resource = [var.secrets_manager_arn, var.db_instance_master_secret_arn]
-        }
-      ]
-    })
+        Resource = [var.secrets_manager_arn, var.db_instance_master_secret_arn, var.rds_kms_key_arn]
+      }
+    ]
+  })
 }
