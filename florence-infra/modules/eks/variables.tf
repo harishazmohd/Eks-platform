@@ -3,6 +3,17 @@ variable "project_name" {
   type        = string
 }
 
+variable "aws_region" {
+  description = "AWS Region"
+  type        = string
+}
+
+variable "vpc_id" {
+  description = "VPC ID"
+  type        = string
+}
+
+
 variable "environment" {
   description = "Environment of the project"
   type        = string
@@ -59,10 +70,16 @@ variable "addons_config" {
 
 variable "alb_controller" {
   description = ""
-  type        = object({
-    name = optional(string, "aws-alb-controller")
-    enabled = optional(bool, true)
+  type = object({
+    name          = optional(string, "aws-alb-controller")
+    chart_version = optional(string, "")
+    enabled       = optional(bool, true)
   })
+
+}
+
+variable "rds_kms_key_arn" {
+  type = string
 }
 
 variable "metadata" {
@@ -72,6 +89,22 @@ variable "metadata" {
     repository = string
   })
 }
+
+variable "secrets_manager_arn" {
+  description = "Secrets Manager ARN"
+  type        = string
+}
+
+variable "db_instance_master_secret_arn" {
+  description = "DB Instance Master Secret ARN"
+  type        = string
+}
+
+# variable "namespaces" {
+#   description = "Namespaces to be created in EKS cluster"
+#   type = map(string)
+# }
+
 
 variable "common_tags" {
   description = "Additional tags applied to all resources."

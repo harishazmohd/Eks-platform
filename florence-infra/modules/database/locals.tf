@@ -10,6 +10,8 @@ locals {
     monitoring      = "${local.name_prefix}-rds-monitoring-role"
   }
 
+  secrets = ["host", "port", "username", "password", "database"]
+
   common_tags = merge(var.common_tags,
     {
       Project     = var.project_name

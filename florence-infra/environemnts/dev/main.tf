@@ -61,13 +61,19 @@ module "rds" {
 }
 
 module "eks" {
-  source         = "../../modules/eks"
-  project_name   = var.project_name
-  environment    = var.environment
-  metadata       = var.metadata
-  common_tags    = var.common_tags
-  cluster_config = local.eks_cluster_config
-  node_config    = local.node_group_config
-  kms_key_arn    = local.kms_keys.eks
-  addons_config  = local.addons_config
+  source                        = "../../modules/eks"
+  project_name                  = var.project_name
+  environment                   = var.environment
+  vpc_id                        = module.vpc.vpc_id
+  aws_region                    = var.aws_region
+  metadata                      = var.metadata
+  common_tags                   = var.common_tags
+  db_instance_master_secret_arn = module.rds.rds.instance.db_master_secret_arn
+  secrets_manager_arn           = module.rds.rds.secrets_manager_arn
+  cluster_config                = local.eks_cluster_config
+  node_config                   = local.node_group_config
+  kms_key_arn                   = local.kms_keys.eks
+  rds_kms_key_arn               = module.kms.kms["rds"].arn
+  addons_config                 = local.addons_config
+  alb_controller                = var.alb_controller
 }

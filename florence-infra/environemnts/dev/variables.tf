@@ -81,6 +81,14 @@ variable "parameter_group_config" {
   })
 }
 
+variable "alb_controller" {
+  description = ""
+  type = object({
+    name          = optional(string, "aws-alb-controller")
+    chart_version = optional(string, "")
+    enabled       = optional(bool, true)
+  })
+}
 
 variable "metadata" {
   description = "Metadata for the AWS resources"
