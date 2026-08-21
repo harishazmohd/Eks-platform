@@ -1,5 +1,6 @@
 # Production-Grade EKS Platform
 
+> **Project EKS-Platform** — An AI-assisted, production-oriented AWS cloud platform built with **Terraform, Amazon EKS, Kubernetes, Amazon ECR, AWS KMS, Amazon RDS, and modern DevOps practices**.
 
 ![AWS](https://img.shields.io/badge/AWS-Cloud-orange)
 ![Terraform](https://img.shields.io/badge/Terraform-IaC-7B42BC)

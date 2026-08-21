@@ -2,7 +2,7 @@
 
 - **Status:** Accepted
 - **Date:** 2026-08-06
-- **Authors:** Project Florence
+- **Authors:** Project EKS-Platform
 - **Decision Type:** Architecture
 - **Related Modules:** Networking, AWS KMS, Amazon EKS, External Secrets
 
@@ -10,7 +10,7 @@
 
 # Context
 
-Project Florence requires a production-grade relational database platform for stateful application workloads.
+Project EKS-Platform requires a production-grade relational database platform for stateful application workloads.
 
 The backend service running on Amazon EKS requires:
 
@@ -21,13 +21,13 @@ The backend service running on Amazon EKS requires:
 - Enhanced monitoring
 - Secure credential management
 
-The database platform must integrate with the existing Florence architecture while preserving module ownership boundaries.
+The database platform must integrate with the existing EKS-Platform architecture while preserving module ownership boundaries.
 
 ---
 
 # Problem Statement
 
-How should the relational database platform be implemented without violating Florence's architectural principles?
+How should the relational database platform be implemented without violating EKS-Platform's architectural principles?
 
 The solution must:
 
@@ -66,7 +66,7 @@ The module explicitly does **not** own:
 - KMS Keys
 - Container Registry
 
-These resources are consumed from existing Florence modules.
+These resources are consumed from existing EKS-Platform modules.
 
 ---
 
@@ -251,7 +251,7 @@ Reason:
 
 Networking owns all networking resources.
 
-Creating security groups in the RDS module would violate Florence's ownership model.
+Creating security groups in the RDS module would violate EKS-Platform's ownership model.
 
 ---
 
@@ -261,7 +261,7 @@ Rejected.
 
 Reason:
 
-Florence uses a centralized encryption platform.
+EKS-Platform uses a centralized encryption platform.
 
 One shared platform key reduces operational complexity while satisfying the project's security requirements.
 
@@ -341,4 +341,4 @@ No architectural changes to the RDS module are expected for these integrations.
 
 Accepted.
 
-This ADR establishes the long-term architecture for the Amazon RDS module in Project Florence.
+This ADR establishes the long-term architecture for the Amazon RDS module in Project EKS-Platform.
