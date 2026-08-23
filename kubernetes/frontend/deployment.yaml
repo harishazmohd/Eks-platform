@@ -7,7 +7,8 @@ metadata:
     app: frontend
 spec:
   replicas: 2
-
+  serviceAccountName: frontend
+  automountServiceAccountToken: false
   strategy:
     type: RollingUpdate
     rollingUpdate:

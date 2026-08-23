@@ -8,6 +8,9 @@ metadata:
 spec:
   replicas: 2
 
+  serviceAccountName: backend
+  automountServiceAccountToken: false
+
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -34,6 +37,8 @@ spec:
             - name: http
               containerPort: 8080
               protocol: TCP
+
+          # Here we are using external secrets to get the database credentials from AWS Secrets Manager
           env:
             - name: DB_HOST
               valueFrom:
