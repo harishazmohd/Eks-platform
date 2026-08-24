@@ -103,6 +103,7 @@ def bootstrap():
 def cleanup():
     print("\nRunning terraform destroy...")
 
+    s3.objects.all().delete()
     result = subprocess.run(
         [
             "terraform",
