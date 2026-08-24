@@ -1,0 +1,85 @@
+nameOverride: bankapp
+
+frontend:
+  enabled: true
+  replicaCount: 2
+  images:
+    repository: "repo"
+    tag: "v1"
+    pullPolicy: IfNotPresent
+
+  containerPort: 3000
+
+  service:
+    type: ClusterIP
+    port: 80
+    targetPort: 3000
+
+  resources:
+    requests:
+      cpu: 150m
+      memory: 150Mi
+    limits:
+      cpu: 300m
+      memory: 300Mi
+
+backend:
+  enabled: true
+  replicaCount: 2
+  images:
+    repository: "repo"
+    tag: "v1"
+    pullPolicy: IfNotPresent
+
+  containerPort: 8080
+
+  service:
+    type: ClusterIP
+    port: 8080
+    targetPort: 8080
+
+  resources:
+    requests:
+      cpu: 100m
+      memory: 120Mi
+    limits:
+      cpu: 300m
+      memory: 256Mi
+
+externalSecret:
+  enabled: true
+  name: "backend-secrets"
+
+ingress:
+  enabled: true
+  className: alb
+  annotations:
+    alb.ingress.kubernetes.io/scheme: internet-facing
+    alb.ingress.kubernetes.io/target-type: ip
+    alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/success-codes: "200-399"
+
+  # host: ""
+
+  frontendPath: /
+  backendPath: /api
+
+
+
+externalSecrets:
+  enabled: true
+  name: backend-secrets
+  refreshInterval: 1h
+  secretStoreRef:
+    name: aws-secrets
+    kind: ClusterSecretStore
+
+  databaseSecretKey: eks-platform-dev-database
+  rdsPasswordSecretKey: password
+
+  hostProperty: host
+  usernameProperty: username
+  portProperty: port
+  dbnameProperty: db_name
+  passwordProperty: password

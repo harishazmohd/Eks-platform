@@ -40,5 +40,30 @@ resource "helm_release" "external_secrets" {
 
   })]
 
-  depends_on = [aws_eks_cluster.this, helm_release.aws_load_balancer_controller]
+  depends_on = [aws_eks_cluster.this, aws_eks_node_group.this]
+}
+
+# ArgoCD
+resource "helm_release" "argocd" {
+  name             = "argocd"
+  namespace        = "argocd"
+  create_namespace = true
+  repository       = "https://argoproj.github.io/argo-helm"
+  chart            = "argo-cd"
+
+  wait    = true
+  timeout = 600
+
+  values = templatefile("${path.module}/helm/argocd-values.yaml.tfpl", {
+    name            = "bankapp-dev"
+    argocdNamespace = "argocd"
+    repoURL         = "https://github.com/muhdhares/Eks-platform.git"
+    targetRevision  = "main"
+    path            = "bank-app"
+    valueFiles      = ["${path.module}/helm/argocd-values.yaml.tfpl"]
+    server          = "https://kubernetes.default.svc"
+    namespace       = "bankapp"
+  })
+
+  depends_on = [aws_eks_cluster.this, aws_eks_node_group.this, helm_release.external_secrets]
 }
