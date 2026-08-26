@@ -4,6 +4,7 @@ kind: Application
 metadata:
    name: ${name}
    namespace: ${argocdNamespace}
+
 spec:
    project: default
    source:
