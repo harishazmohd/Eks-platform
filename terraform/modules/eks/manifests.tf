@@ -1,10 +1,3 @@
-resource "kubernetes_namespace_v1" "bankapp" {
-  metadata {
-    name = "bankapp"
-  }
-  depends_on = [ aws_eks_node_group.this ]
-}
-
 resource "kubectl_manifest" "argocd" {
   yaml_body = templatefile("${path.module}/helm/argocd.yaml.tfpl", {
     name            = "argo-cd"

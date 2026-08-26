@@ -36,6 +36,7 @@ resource "helm_release" "external_secrets" {
       annotations = {
         "eks.amazonaws.com/role-arn" = aws_iam_role.external_secrets.arn
       }
+
     }
 
   })]
