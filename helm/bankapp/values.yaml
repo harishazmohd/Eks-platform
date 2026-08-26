@@ -4,8 +4,8 @@ frontend:
   enabled: true
   replicaCount: 2
   images:
-    repository: "repo"
-    tag: "v1"
+    repository: repo
+    tag: v1
     pullPolicy: IfNotPresent
 
   containerPort: 3000
@@ -27,8 +27,8 @@ backend:
   enabled: true
   replicaCount: 2
   images:
-    repository: "repo"
-    tag: "v1"
+    repository: repo
+    tag: v1
     pullPolicy: IfNotPresent
 
   containerPort: 8080
@@ -48,7 +48,7 @@ backend:
 
 externalSecret:
   enabled: true
-  name: "backend-secrets"
+  name: backend-secrets
 
 ingress:
   enabled: true
@@ -58,14 +58,12 @@ ingress:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
-    alb.ingress.kubernetes.io/success-codes: "200-399"
+    alb.ingress.kubernetes.io/success-codes: 200-399
 
   # host: ""
 
   frontendPath: /
   backendPath: /api
-
-
 
 externalSecrets:
   enabled: true
@@ -83,3 +81,21 @@ externalSecrets:
   portProperty: port
   dbnameProperty: db_name
   passwordProperty: password
+Transform: AWS::Serverless-2016-10-31
+Resources:
+  Api:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: !Sub
+        - ${ResourceName} From Stack ${AWS::StackName}
+        - ResourceName: Api
+      StageName: Prod
+      DefinitionBody:
+        openapi: '3.0'
+        info: {}
+        paths:
+          /:
+            get:
+              responses: {}
+      EndpointConfiguration: REGIONAL
+      TracingEnabled: true

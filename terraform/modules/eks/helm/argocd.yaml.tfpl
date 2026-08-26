@@ -11,14 +11,14 @@ spec:
       targetRevision: ${targetRevision}
       path: ${path}
       helm:
-        valueFiles: 
+        valueFiles:
          - "${valueFiles}"
-    
+
    destination:
       server: ${server}
       namespace: ${namespace}
    syncPolicy:
-      automated: 
+      automated:
          prune: true
          selfHeal: true
    syncOptions:

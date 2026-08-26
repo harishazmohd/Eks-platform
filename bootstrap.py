@@ -72,17 +72,17 @@ def run_terraform_init():
     if result.returncode != 0:
         print("Terraform init failed.")
         sys.exit(result.returncode)
-    
+
     apply = subprocess.run(
         ["terraform", "apply", "--auto-approve"],
         cwd=TERRAFORM_DIR,
         check=False
     )
-    
-    if result.returncode != 0:
+
+    if apply.returncode != 0:
         print("Terraform apply failed.")
         sys.exit(result.returncode)
-    
+
 
     print("Terraform init completed successfully.")
 
@@ -103,7 +103,6 @@ def bootstrap():
 def cleanup():
     print("\nRunning terraform destroy...")
 
-    s3.objects.all().delete()
     result = subprocess.run(
         [
             "terraform",
