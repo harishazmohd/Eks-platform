@@ -1,0 +1,75 @@
+{{- if .Values.backend.enabled }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "bankapp.fullname" . }}-backend
+  labels:
+    {{- include "bankapp.labels" . | nindent 4}}
+    app.kubernetes.io/component: backend
+spec:
+  replicas: {{ .Values.backend.replicaCount }}
+
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+
+  selector:
+    matchLabels:
+      {{- include "bankapp.selectorLabels" . | nindent 6}}
+      app.kubernetes.io/component: backend
+
+  template:
+    metadata:
+      labels:
+        {{- include "bankapp.labels" . | nindent 8}}
+        app.kubernetes.io/component: backend
+
+    spec:
+      terminationGracePeriodSeconds: 30
+
+      containers:
+        - name: backend
+          image: "{{ required "backend.images.repository is required" .Values.backend.images.repository }}:{{ required "backend.images.tag is required" .Values.backend.images.tag }}"
+          imagePullPolicy: {{ .Values.backend.images.pullPolicy }}
+
+          ports:
+            - name: http
+              containerPort: {{ .Values.backend.containerPort }}
+              protocol: TCP
+
+          resources:
+            {{- toYaml .Values.backend.resources | nindent 12}}
+
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+
+          envFrom:
+            - secretRef:
+                name: {{ .Values.externalSecret.name }}
+
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            timeoutSeconds: 1
+            successThreshold: 1
+            failureThreshold: 3
+
+{{- end }}
