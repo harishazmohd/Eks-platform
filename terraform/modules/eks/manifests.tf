@@ -11,7 +11,7 @@ resource "kubectl_manifest" "argocd" {
     argocdNamespace  = "argocd"
     repoURL         = "https://github.com/muhdhares/Eks-platform.git"
     targetRevision  = "main"
-    path            = "helm/argocd"
+    path            = "helm/bankapp"
     valueFiles      = "values.yaml"
     server          = "https://kubernetes.default.svc"
     namespace       = "bankapp"

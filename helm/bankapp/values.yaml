@@ -4,7 +4,7 @@ frontend:
   enabled: true
   replicaCount: 2
   images:
-    repository: repo
+    repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-frontend
     tag: v1
     pullPolicy: IfNotPresent
 
@@ -27,7 +27,7 @@ backend:
   enabled: true
   replicaCount: 2
   images:
-    repository: repo
+    repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-backend
     tag: v1
     pullPolicy: IfNotPresent
 
@@ -74,7 +74,7 @@ externalSecrets:
     kind: ClusterSecretStore
 
   databaseSecretKey: eks-platform-dev-database
-  rdsPasswordSecretKey: password
+  rdsPasswordSecretKey: rds!db-469e3309-f771-4e30-b987-947a89c58b8b
 
   hostProperty: host
   usernameProperty: username
