@@ -100,10 +100,23 @@ variable "db_instance_master_secret_arn" {
   type        = string
 }
 
-# variable "namespaces" {
-#   description = "Namespaces to be created in EKS cluster"
-#   type = map(string)
-# }
+variable "github_user" {
+  type    = string
+  default = "muhdhares"
+}
+
+variable "github_repo" {
+  type    = string
+  default = "Eks-platform"
+}
+
+variable "frontend_ecr_arn" {
+  type = string
+}
+
+variable "backend_ecr_arn" {
+  type = string
+}
 
 
 variable "common_tags" {
