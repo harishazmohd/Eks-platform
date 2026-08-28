@@ -38,13 +38,17 @@ jobs:
         working-directory: bank-app/backend
         run: npm ci
 
-      - name: Test frontend
+      - name: Lint frontend
         working-directory: bank-app/frontend
-        run: npm test
+        run: npm run lint
 
       - name: Build frontend
         working-directory: bank-app/frontend
         run: npm run build
+
+      - name: Lint backend
+        working-directory: bank-app/backend
+        run: npm run lint
 
       - name: Build backend
         working-directory: bank-app/backend
