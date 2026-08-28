@@ -1,0 +1,32 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+
+metadata:
+  name: ${name}
+  namespace: argocd
+
+spec:
+  description: EKS Platform Development
+  sourceRepos:
+    - ${source_repo}
+  destinations:
+    - namespace: ${namespace}
+      server: https://kubernetes.default.svc
+
+  namespaceResourceWhitelist:
+    - group: ""
+      kind: ConfigMap
+    - group: ""
+      kind: Secret
+    - group: ""
+      kind: Service
+    - group: apps
+      kind: Deployment
+    - group: networking.k8s.io
+      kind: Ingress
+    - group: external-secrets.io
+      kind: ExternalSecret
+
+  clusterResourceWhitelist:
+    - group: ""
+      kind: Namespace

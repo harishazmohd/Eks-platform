@@ -76,4 +76,6 @@ module "eks" {
   rds_kms_key_arn               = module.kms.kms["rds"].arn
   addons_config                 = local.addons_config
   alb_controller                = var.alb_controller
+  frontend_ecr_arn              = module.ecr.repositories["frontend"].arn
+  backend_ecr_arn               = module.ecr.repositories["backend"].arn
 }

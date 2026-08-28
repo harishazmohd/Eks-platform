@@ -36,6 +36,10 @@ data "tls_certificate" "eks_oidc" {
   url = aws_eks_cluster.this.identity[0].oidc[0].issuer
 }
 
+data "tls_certificate" "github_provider" {
+  url = "https://token.actions.githubusercontent.com"
+}
+
 data "aws_iam_policy_document" "irsa_trust" {
   statement {
     effect  = "Allow"
@@ -109,3 +113,15 @@ data "aws_iam_policy_document" "external_secrets_assume_role" {
     }
   }
 }
+
+
+# Assume role policy for the github actions role
+# data "aws_iam_policy_document" "github" {
+#   statement {
+#     effect = "Allow"
+#   }
+#   principal {
+#     type = "Federated"
+#     identifiers =
+#   }
+# }
