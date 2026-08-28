@@ -90,7 +90,7 @@ app.post('/api/auth/login', async (req: Request, res: Response): Promise<void> =
 
     const token = jwt.sign({ id: user.id, email: user.email }, JWT_SECRET, { expiresIn: '1h' });
     res.status(200).json({ token, user: { id: user.id, email: user.email, name: user.name } });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Login failed' });
   }
 });
@@ -104,7 +104,7 @@ app.get('/api/accounts', authenticateToken, async (req: AuthRequest, res: Respon
       where: { userId: req.user!.id }
     });
     res.status(200).json(accounts);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch accounts' });
   }
 });
@@ -207,7 +207,7 @@ app.get('/api/transactions/history', authenticateToken, async (req: AuthRequest,
     });
 
     res.status(200).json(transactions);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch history' });
   }
 });
@@ -219,7 +219,7 @@ app.get('/api/beneficiaries', authenticateToken, async (req: AuthRequest, res: R
       where: { userId: req.user!.id }
     });
     res.status(200).json(beneficiaries);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch beneficiaries' });
   }
 });
@@ -236,7 +236,7 @@ app.post('/api/beneficiaries', authenticateToken, async (req: AuthRequest, res: 
       data: { userId: req.user!.id, name, accountNumber }
     });
     res.status(201).json(beneficiary);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to add beneficiary' });
   }
 });
@@ -248,7 +248,7 @@ app.get('/api/loans', authenticateToken, async (req: AuthRequest, res: Response)
       where: { userId: req.user!.id }
     });
     res.status(200).json(loans);
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to fetch loans' });
   }
 });
@@ -266,7 +266,7 @@ app.post('/api/loans/apply', authenticateToken, async (req: AuthRequest, res: Re
       data: { userId: req.user!.id, amount: parsedAmount }
     });
     res.status(201).json({ message: 'Loan application submitted', loan });
-  } catch (error) {
+  } catch {
     res.status(500).json({ error: 'Failed to apply for loan' });
   }
 });
