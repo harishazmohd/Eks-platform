@@ -41,7 +41,7 @@ resource "helm_release" "external_secrets" {
 
   })]
 
-  depends_on = [aws_eks_cluster.this, aws_eks_node_group.this]
+  depends_on = [aws_eks_cluster.this, aws_eks_node_group.this, helm_release.aws_load_balancer_controller]
 }
 
 # ArgoCD
