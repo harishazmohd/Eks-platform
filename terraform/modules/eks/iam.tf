@@ -81,7 +81,7 @@ resource "aws_iam_role" "github_oidc_role" {
           StringEquals = {
             "token.actions.githubusercontent.com:aud" = "sts.amazonaws.com"
           }
-          StringLike = {
+         StringEquals = {
             "token.actions.githubusercontent.com:sub" = "repo:${var.github_user}@197080976/${var.github_repo}@1349937433:ref:refs/heads/main"
           }
         }

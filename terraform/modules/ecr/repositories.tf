@@ -1,6 +1,7 @@
 resource "aws_ecr_repository" "this" {
   for_each             = var.repositories
   name                 = "${local.name_prefix}-${each.key}"
+  force_delete         = true
   image_tag_mutability = each.value.image_tag_mutability
   encryption_configuration {
     encryption_type = var.encryption_configuration.encryption_type
