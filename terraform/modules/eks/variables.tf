@@ -102,7 +102,7 @@ variable "db_instance_master_secret_arn" {
 
 variable "github_user" {
   type    = string
-  default = "muhdhares"
+  default = "harishazmohd"
 }
 
 variable "github_repo" {

@@ -107,6 +107,7 @@ resource "aws_iam_policy" "github_actions_ecr" {
         Resource = "*"
       },
 
+
       {
         Effect = "Allow"
 
