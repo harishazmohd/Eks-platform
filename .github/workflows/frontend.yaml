@@ -117,10 +117,10 @@ jobs:
             $ECR_REGISTRY/eks-platform-dev-backend:$IMAGE_TAG
 
       - name: Update Docker image tag in k8s deployment
-        uses: mikefarah/yq@master
-        with:
-          run: |
-              yq -i '.backend.images.tag = strenv(IMAGE_TAG)' 'helm/bankapp/values.yaml'
+        env:
+          IMAGE_TAG: ${{ env.IMAGE_TAG }}
+        run: |
+          yq -i '.backend.images.tag = strenv(IMAGE_TAG)' 'helm/bankapp/values.yaml'
 
       - name: Commit updated values.yaml
         run: |
