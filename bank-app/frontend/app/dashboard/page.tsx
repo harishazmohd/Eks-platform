@@ -34,7 +34,7 @@ export default function Dashboard() {
       fetch('/api/accounts', { headers: { 'Authorization': `Bearer ${token}` } })
         .then(res => res.json())
         .then(data => setAccounts(data));
-        
+
       fetch('/api/transactions/history', { headers: { 'Authorization': `Bearer ${token}` } })
         .then(res => res.json())
         .then(data => setTransactions(data.slice(0, 5)));
@@ -56,7 +56,7 @@ export default function Dashboard() {
     <DashboardLayout>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Welcome back, {user?.name?.split(' ')[0]}</h1>
+          <h1 className={styles.title}>Welcome back, How are you{user?.name?.split(' ')[0]}</h1>
           <p className={styles.subtitle}>Here is your financial overview.</p>
         </div>
       </div>
