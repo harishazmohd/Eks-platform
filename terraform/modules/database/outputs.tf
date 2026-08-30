@@ -12,7 +12,6 @@ output "rds" {
       status               = aws_db_instance.this.status
       instance_class       = aws_db_instance.this.instance_class
       username             = aws_db_instance.this.username
-      db_master_secret_arn = aws_db_instance.this.master_user_secret[0].secret_arn
     }
     subnet_group = {
       id   = aws_db_subnet_group.this.id
