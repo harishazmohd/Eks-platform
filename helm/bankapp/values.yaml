@@ -7,14 +7,11 @@ frontend:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-frontend
     tag: v1
     pullPolicy: IfNotPresent
-
   containerPort: 3000
-
   service:
     type: ClusterIP
     port: 80
     targetPort: 3000
-
   resources:
     requests:
       cpu: 150m
@@ -22,22 +19,18 @@ frontend:
     limits:
       cpu: 300m
       memory: 300Mi
-
 backend:
   enabled: true
   replicaCount: 2
   images:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-backend
-    tag: v1
+    tag: 629ab7ccc760d6a854da34fe97b279aff17370c1
     pullPolicy: IfNotPresent
-
   containerPort: 8080
-
   service:
     type: ClusterIP
     port: 8080
     targetPort: 8080
-
   resources:
     requests:
       cpu: 100m
@@ -45,11 +38,9 @@ backend:
     limits:
       cpu: 300m
       memory: 256Mi
-
 externalSecret:
   enabled: true
   name: backend-secrets
-
 ingress:
   enabled: true
   className: alb
@@ -59,12 +50,9 @@ ingress:
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
     alb.ingress.kubernetes.io/success-codes: 200-399
-
   # host: ""
-
   frontendPath: /
   backendPath: /api
-
 externalSecrets:
   enabled: true
   name: backend-secrets
@@ -72,9 +60,7 @@ externalSecrets:
   secretStoreRef:
     name: aws-secrets
     kind: ClusterSecretStore
-
   databaseSecretKey: eks-platform-dev-database
-
   hostProperty: host
   usernameProperty: username
   portProperty: port
