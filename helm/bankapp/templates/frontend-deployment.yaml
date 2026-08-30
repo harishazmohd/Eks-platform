@@ -27,7 +27,12 @@ spec:
         app.kubernetes.io/component: frontend
 
     spec:
+      serviceAccountName: {{ include "bankapp.fullname" . }}-frontend
       terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
 
       containers:
         - name: frontend

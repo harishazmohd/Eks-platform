@@ -1,0 +1,217 @@
+{{- if .Values.networkPolicy.enabled }}
+
+# ---------------------------------------------------------
+# Default deny
+# ---------------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "bankapp.fullname" . }}-default-deny
+  labels:
+    {{- include "bankapp.labels" . | nindent 4 }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Ingress
+    - Egress
+
+---
+# ---------------------------------------------------------
+# Allow DNS
+# ---------------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "bankapp.fullname" . }}-allow-dns
+  labels:
+    {{- include "bankapp.labels" . | nindent 4 }}
+spec:
+  podSelector: {}
+  policyTypes:
+    - Egress
+
+  egress:
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+
+      ports:
+        - protocol: UDP
+          port: 53
+
+        - protocol: TCP
+          port: 53
+
+---
+# ---------------------------------------------------------
+# Frontend ingress
+#
+# Allows traffic to frontend Pods on port 3000.
+#
+# ALB -> Frontend is intentionally allowed here because
+# the AWS ALB is not a Kubernetes Pod and therefore cannot
+# be selected with podSelector.
+# ---------------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "bankapp.fullname" . }}-frontend
+  labels:
+    {{- include "bankapp.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bankapp.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: frontend
+
+  policyTypes:
+    - Ingress
+
+  ingress:
+    - ports:
+        - protocol: TCP
+          port: {{ .Values.frontend.containerPort }}
+
+---
+# ---------------------------------------------------------
+# Backend ingress
+#
+# Allows:
+#
+# 1. Frontend -> Backend
+# 2. ALB -> Backend
+#
+# The ALB requirement exists because /api is currently
+# exposed directly through the Ingress.
+# ---------------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "bankapp.fullname" . }}-backend
+  labels:
+    {{- include "bankapp.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bankapp.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: backend
+
+  policyTypes:
+    - Ingress
+
+  ingress:
+
+    # Frontend -> Backend
+    - from:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ include "bankapp.name" . }}
+              app.kubernetes.io/instance: {{ .Release.Name }}
+              app.kubernetes.io/component: frontend
+
+      ports:
+        - protocol: TCP
+          port: {{ .Values.backend.containerPort }}
+
+    # ALB -> Backend
+    #
+    # Source is intentionally unrestricted here because
+    # the ALB is an AWS resource rather than a Kubernetes Pod.
+    - ports:
+        - protocol: TCP
+          port: {{ .Values.backend.containerPort }}
+
+---
+# ---------------------------------------------------------
+# Backend egress
+#
+# Currently we only explicitly control backend egress for
+# DNS. RDS access remains controlled by the AWS RDS
+# Security Group.
+#
+# Additional external dependencies should be explicitly
+# added here if the application requires them.
+# ---------------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "bankapp.fullname" . }}-backend-egress
+  labels:
+    {{- include "bankapp.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bankapp.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: backend
+
+  policyTypes:
+    - Egress
+
+  egress:
+    # DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+
+      ports:
+        - protocol: UDP
+          port: 53
+
+        - protocol: TCP
+          port: 53
+
+---
+# ---------------------------------------------------------
+# Frontend egress
+#
+# DNS is allowed.
+#
+# If Next.js performs server-side calls to the backend,
+# add the backend Service/Pod traffic explicitly after
+# verifying that behavior.
+# ---------------------------------------------------------
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: {{ include "bankapp.fullname" . }}-frontend-egress
+  labels:
+    {{- include "bankapp.labels" . | nindent 4 }}
+spec:
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bankapp.name" . }}
+      app.kubernetes.io/instance: {{ .Release.Name }}
+      app.kubernetes.io/component: frontend
+
+  policyTypes:
+    - Egress
+
+  egress:
+    # DNS
+    - to:
+        - namespaceSelector:
+            matchLabels:
+              kubernetes.io/metadata.name: kube-system
+          podSelector:
+            matchLabels:
+              k8s-app: kube-dns
+
+      ports:
+        - protocol: UDP
+          port: 53
+
+        - protocol: TCP
+          port: 53
+
+{{- end }}
