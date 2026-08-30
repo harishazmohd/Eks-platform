@@ -21,10 +21,9 @@ resource "aws_db_instance" "this" {
   monitoring_role_arn                 = aws_iam_role.monitoring.arn
   iam_database_authentication_enabled = true
 
-  username                      = var.database_config.credentials_config.username
-  master_user_secret_kms_key_id = var.kms_key_id
-  manage_master_user_password   = true
-  kms_key_id                    = var.kms_key_id
+  username   = var.database_config.credentials_config.username
+  password   = random_password.rds_password.result
+  kms_key_id = var.kms_key_id
 
   multi_az = var.database_config.multi_az
 
