@@ -1,4 +1,4 @@
-name: Bankapp CI
+name: Bankapp frontend CI
 
 on:
   push:
