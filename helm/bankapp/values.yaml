@@ -5,7 +5,7 @@ frontend:
   replicaCount: 2
   images:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-frontend
-    tag: ac0d834b80b8d97fb534d7ace3262b1b5e573e4e
+    tag: 6f7c7b53acf433378c12ebafc5f193c676001821
     pullPolicy: IfNotPresent
   containerPort: 3000
   service:
@@ -24,7 +24,7 @@ backend:
   replicaCount: 2
   images:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-backend
-    tag: ac0d834b80b8d97fb534d7ace3262b1b5e573e4e
+    tag: 6f7c7b53acf433378c12ebafc5f193c676001821
     pullPolicy: IfNotPresent
   containerPort: 8080
   service:
