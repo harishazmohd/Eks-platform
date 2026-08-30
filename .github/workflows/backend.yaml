@@ -1,0 +1,102 @@
+name: Bankapp CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  id-token: write
+  contents: read
+
+
+env:
+  AWS_REGION: ap-south-1
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  test-and-build:
+    name: Test and Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install backend dependencies
+        working-directory: bank-app/backend
+        run: npm ci
+
+      - name: Lint backend
+        working-directory: bank-app/backend
+        run: npm run lint
+
+      - name: Build backend
+        working-directory: bank-app/backend
+        run: npm run build
+
+  publish:
+    name: Build and Push Images
+    needs: test-and-build
+
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ secrets.AWS_ECR_ROLE }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Verify AWS credentials
+        run: aws sts get-caller-identity
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set ECR Registry
+        run: echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> "$GITHUB_ENV"
+
+      - name: Build backend Docker image
+        working-directory: bank-app/backend
+        run: |
+          docker build \
+            -t $ECR_REGISTRY/eks-platform-dev-backend:$IMAGE_TAG \
+            .
+      - name: Push backend Docker image
+        run: |
+          docker push \
+            $ECR_REGISTRY/eks-platform-dev-backend:$IMAGE_TAG
+
+      - name: Update Docker image tag in k8s deployment
+        uses: mikefarah/yq@master
+        with:
+          run: |
+              yq -i '.backend.images.tag = strenv(IMAGE_TAG)' 'helm/bankapp/values.yaml'
+
+      - name: Commit updated values.yaml
+        run: |
+          git config --global user.name 'github-actions'
+          git config --global user.email 'github-actions@github.com'
+          git add helm/bankapp/values.yaml
+          git commit -m 'Update Docker image tag in k8s deployment'
+          git push origin ${{ github.ref }}
