@@ -1,10 +1,9 @@
-name: Bankapp backend CI
+name: Bankapp CI
 
 on:
   push:
     branches:
       - main
-
   pull_request:
     branches:
       - main
@@ -12,7 +11,6 @@ on:
 permissions:
   id-token: write
   contents: read
-
 
 env:
   AWS_REGION: ap-south-1
@@ -22,7 +20,10 @@ jobs:
   test-and-build:
     name: Test and Build
     runs-on: ubuntu-latest
-
+    strategy:
+      matrix:
+        component: [frontend, backend]
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,26 +33,23 @@ jobs:
         with:
           node-version: 22
 
-      - name: Install backend dependencies
-        working-directory: bank-app/backend
+      - name: Install dependencies
+        working-directory: bank-app/${{ matrix.component }}
         run: npm ci
 
-      - name: Lint backend
-        working-directory: bank-app/backend
+      - name: Lint
+        working-directory: bank-app/${{ matrix.component }}
         run: npm run lint
 
-      - name: Build backend
-        working-directory: bank-app/backend
+      - name: Build
+        working-directory: bank-app/${{ matrix.component }}
         run: npm run build
 
   publish:
     name: Build and Push Images
     needs: test-and-build
-
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-
     runs-on: ubuntu-latest
-
     permissions:
       contents: write
       id-token: write
@@ -76,29 +74,36 @@ jobs:
       - name: Set ECR Registry
         run: echo "ECR_REGISTRY=${{ steps.login-ecr.outputs.registry }}" >> "$GITHUB_ENV"
 
-      - name: Build backend Docker image
+      - name: Build and Push frontend Docker image
+        working-directory: bank-app/frontend
+        run: |
+          docker build \
+            -t $ECR_REGISTRY/eks-platform-dev-frontend:$IMAGE_TAG \
+            .
+          docker push \
+            $ECR_REGISTRY/eks-platform-dev-frontend:$IMAGE_TAG
+
+      - name: Build and Push backend Docker image
         working-directory: bank-app/backend
         run: |
           docker build \
             -t $ECR_REGISTRY/eks-platform-dev-backend:$IMAGE_TAG \
             .
-      - name: Push backend Docker image
-        run: |
           docker push \
             $ECR_REGISTRY/eks-platform-dev-backend:$IMAGE_TAG
 
-      - name: Update Docker image tag in k8s deployment
+      - name: Update Docker image tags in k8s deployment
         env:
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: |
-              yq -i '.backend.images.tag = strenv(IMAGE_TAG)' 'helm/bankapp/values.yaml'
+          yq -i '.frontend.images.tag = strenv(IMAGE_TAG)' 'helm/bankapp/values.yaml'
+          yq -i '.backend.images.tag = strenv(IMAGE_TAG)' 'helm/bankapp/values.yaml'
 
       - name: Commit updated values.yaml
         run: |
           git config --global user.name 'github-actions'
           git config --global user.email 'github-actions@github.com'
           git add helm/bankapp/values.yaml
-          git commit -m 'Update Docker image tag in k8s deployment'
-          git pull
+          git commit -m 'Update Docker image tags in k8s deployment'
+          git pull --rebase
           git push origin ${{ github.ref }}
-          echo ${{ github.ref }}
