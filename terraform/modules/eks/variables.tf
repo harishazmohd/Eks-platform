@@ -95,10 +95,6 @@ variable "secrets_manager_arn" {
   type        = string
 }
 
-variable "db_instance_master_secret_arn" {
-  description = "DB Instance Master Secret ARN"
-  type        = string
-}
 
 variable "github_user" {
   type    = string
