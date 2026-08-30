@@ -56,7 +56,7 @@ export default function Dashboard() {
     <DashboardLayout>
       <div className={styles.header}>
         <div>
-          <h1 className={styles.title}>Welcome back, How are you{user?.name?.split(' ')[0]}</h1>
+          <h1 className={styles.title}>Welcome back, How are you {user?.name?.split(' ')[0]}</h1>
           <p className={styles.subtitle}>Here is your financial overview.</p>
         </div>
       </div>

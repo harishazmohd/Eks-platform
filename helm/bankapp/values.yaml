@@ -66,6 +66,10 @@ externalSecrets:
   portProperty: port
   dbnameProperty: db_name
   passwordProperty: password
+
+networkPolicy:
+  enabled: true
+
 Transform: AWS::Serverless-2016-10-31
 Resources:
   Api:

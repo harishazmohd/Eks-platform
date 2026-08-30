@@ -8,7 +8,6 @@ metadata:
     app.kubernetes.io/component: backend
 spec:
   replicas: {{ .Values.backend.replicaCount }}
-
   strategy:
     type: RollingUpdate
     rollingUpdate:
@@ -27,7 +26,12 @@ spec:
         app.kubernetes.io/component: backend
 
     spec:
+      serviceAccountName: {{ include "bankapp.fullname" . }}-backend
       terminationGracePeriodSeconds: 30
+      securityContext:
+        runAsNonRoot: true
+        seccompProfile:
+          type: RuntimeDefault
 
       containers:
         - name: backend
