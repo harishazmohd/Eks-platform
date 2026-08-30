@@ -91,7 +91,7 @@ jobs:
         env:
           IMAGE_TAG: ${{ env.IMAGE_TAG }}
         run: |
-          yq -i '.backend.images.tag = strenv(IMAGE_TAG)' 'helm/bankapp/values.yaml'
+              yq -i '.backend.images.tag = strenv(IMAGE_TAG)' 'helm/bankapp/values.yaml'
 
       - name: Commit updated values.yaml
         run: |
