@@ -12,7 +12,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "bankapp.name" . }}
-      app.kubernetes.io/instance: {{ ".Release.Name" }}
+      app.kubernetes.io/instance: {{ include "bankapp.fullname" . }}
       app.kubernetes.io/component: backend
 
 {{- end }}
@@ -32,7 +32,7 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: {{ include "bankapp.name" . }}
-      app.kubernetes.io/instance: {{ ".Release.Name" }}
+      app.kubernetes.io/instance: {{ include "bankapp.fullname" . }}
       app.kubernetes.io/component: frontend
 
 {{- end }}
