@@ -2,7 +2,7 @@
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "bankapp.fullname" . }}-backend-pdb
+  name: {{ include "bankapp.fullname" . }}-backend
   labels:
     {{- include "bankapp.labels" . | nindent 4 }}
     app.kubernetes.io/component: backend
@@ -22,7 +22,7 @@ spec:
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: {{ include "bankapp.fullname" . }}-frontend-pdb
+  name: {{ include "bankapp.fullname" . }}-frontend
   labels:
     {{- include "bankapp.labels" . | nindent 4 }}
     app.kubernetes.io/component: frontend
