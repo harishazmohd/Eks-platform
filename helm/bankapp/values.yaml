@@ -19,6 +19,10 @@ frontend:
     limits:
       cpu: 300m
       memory: 300Mi
+
+  pdb:
+    enabled: true
+    minAvailable: 1
 backend:
   enabled: true
   replicaCount: 2
@@ -38,6 +42,9 @@ backend:
     limits:
       cpu: 300m
       memory: 256Mi
+  pdb:
+    enabled: true
+    minAvailable: 1
 externalSecret:
   enabled: true
   name: backend-secrets

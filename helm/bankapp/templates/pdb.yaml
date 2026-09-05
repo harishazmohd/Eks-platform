@@ -1,0 +1,38 @@
+{{- if .Values.backend.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "bankapp.fullname" . }}-backend-pdb
+  labels:
+    {{- include "bankapp.labels" . | nindent 4 }}
+    app.kubernetes.io/component: backend
+spec:
+  minAvailable: {{ .Values.backend.pdb.minAvailable }}
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bankapp.name" . }}
+      app.kubernetes.io/instance: {{ ".Release.Name" }}
+      app.kubernetes.io/component: backend
+
+{{- end }}
+
+---
+{{- if .Values.frontend.pdb.enabled }}
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata:
+  name: {{ include "bankapp.fullname" . }}-frontend-pdb
+  labels:
+    {{- include "bankapp.labels" . | nindent 4 }}
+    app.kubernetes.io/component: frontend
+spec:
+  minAvailable: {{ .Values.frontend.pdb.minAvailable }}
+
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: {{ include "bankapp.name" . }}
+      app.kubernetes.io/instance: {{ ".Release.Name" }}
+      app.kubernetes.io/component: frontend
+
+{{- end }}
