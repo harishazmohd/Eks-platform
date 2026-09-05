@@ -5,7 +5,7 @@ frontend:
   replicaCount: 2
   images:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-frontend
-    tag: 6c8914fc94ae13626d6cbd492d0d7ee0363399e1
+    tag: 9deb29aaf2ab2beb26151dae91adf5d62a48e3ac
     pullPolicy: IfNotPresent
   containerPort: 3000
   service:
@@ -19,7 +19,6 @@ frontend:
     limits:
       cpu: 300m
       memory: 300Mi
-
   pdb:
     enabled: true
     minAvailable: 1
@@ -28,7 +27,7 @@ backend:
   replicaCount: 2
   images:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-backend
-    tag: 6c8914fc94ae13626d6cbd492d0d7ee0363399e1
+    tag: 9deb29aaf2ab2beb26151dae91adf5d62a48e3ac
     pullPolicy: IfNotPresent
   containerPort: 8080
   service:
