@@ -1,0 +1,16 @@
+{{- if .Values.backend.enabled .Values.backend.autoScaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "bankapp.fullname" . }}-backend
+  labels:
+    {{- include "bankapp.labels" . | nindent 4}}
+    app.kubernets.io/component: backend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "bankapp.fullname" . }}-backend
+
+  minReplicas: {{ .Values.backend.autoScaling.minReplicas }}
+  maxReplicas: {{ .Values.backend.autoScaling.maxReplicas }}
