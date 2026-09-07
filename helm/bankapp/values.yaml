@@ -22,9 +22,12 @@ frontend:
   pdb:
     enabled: true
     minAvailable: 1
+
+
 backend:
   enabled: true
   replicaCount: 2
+
   images:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-backend
     tag: 38482a16c53d3ce103426c8923841dfa2a7c4149
@@ -34,6 +37,7 @@ backend:
     type: ClusterIP
     port: 8080
     targetPort: 8080
+
   resources:
     requests:
       cpu: 100m
@@ -41,9 +45,14 @@ backend:
     limits:
       cpu: 300m
       memory: 256Mi
+
   pdb:
     enabled: true
     minAvailable: 1
+
+  autoScaling:
+    enabled: true
+
 externalSecret:
   enabled: true
   name: backend-secrets
