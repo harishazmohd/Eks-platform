@@ -5,7 +5,7 @@ frontend:
   replicaCount: 2
   images:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-frontend
-    tag: 38482a16c53d3ce103426c8923841dfa2a7c4149
+    tag: fb074a00886ed082e9fa916429e121a8427011bd
     pullPolicy: IfNotPresent
   containerPort: 3000
   service:
@@ -37,17 +37,15 @@ frontend:
 backend:
   enabled: true
   replicaCount: 2
-
   images:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-backend
-    tag: 38482a16c53d3ce103426c8923841dfa2a7c4149
+    tag: fb074a00886ed082e9fa916429e121a8427011bd
     pullPolicy: IfNotPresent
   containerPort: 8080
   service:
     type: ClusterIP
     port: 8080
     targetPort: 8080
-
   resources:
     requests:
       cpu: 100m
@@ -55,11 +53,9 @@ backend:
     limits:
       cpu: 300m
       memory: 256Mi
-
   pdb:
     enabled: true
     minAvailable: 1
-
   autoScaling:
     enabled: true
     minReplicas: 2
