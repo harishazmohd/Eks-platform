@@ -1,3 +1,4 @@
+// NACLs are stateless, so return traffic and ephemeral ports are explicit.
 resource "aws_network_acl_rule" "http" {
   network_acl_id = aws_network_acl.public.id
   egress         = false

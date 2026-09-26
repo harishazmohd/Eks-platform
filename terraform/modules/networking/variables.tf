@@ -1,3 +1,4 @@
+// The environment supplies CIDRs, AZs, and subnet layout for reuse.
 variable "project_name" {
   description = "Name of the project goes here"
   type        = string

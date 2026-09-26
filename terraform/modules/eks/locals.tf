@@ -1,9 +1,13 @@
+// Centralize names, role definitions, OIDC subjects, and common tags.
 locals {
   name_prefix = "${var.project_name}-${var.environment}"
   names = {
     eks_cluster_role = "${local.name_prefix}-eks-cluster-role"
     eks_cluster_name = var.cluster_config.cluster_name
     node_group_name  = "${local.name_prefix}-node-group"
+    karpenter_controller = "${local.name_prefix}-karpenter-controller"
+    karpenter_node_role = "${local.name_prefix}-karpenter-node-role"
+    karpenter_node_profile = "${local.name_prefix}-karpenter-node"
   }
 
   role_config = {

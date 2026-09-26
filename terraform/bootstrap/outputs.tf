@@ -1,3 +1,4 @@
+// These values are used when configuring an environment's S3 backend.
 output "bucket_name" {
   value = aws_s3_bucket.backend_bucket.bucket
 }

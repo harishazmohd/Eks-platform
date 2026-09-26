@@ -1,3 +1,4 @@
+# Controllers are installed after initial worker capacity exists.
 # ALB Controller
 resource "helm_release" "aws_load_balancer_controller" {
   name       = local.name_prefix
@@ -16,7 +17,7 @@ resource "helm_release" "aws_load_balancer_controller" {
   depends_on = [aws_eks_cluster.this, aws_eks_node_group.this]
 }
 
-# External Secrets
+# Synchronize AWS Secrets Manager values into Kubernetes Secrets.
 resource "helm_release" "external_secrets" {
   name             = "external-secrets"
   namespace        = "external-secrets"
@@ -44,7 +45,7 @@ resource "helm_release" "external_secrets" {
   depends_on = [aws_eks_cluster.this, aws_eks_node_group.this, helm_release.aws_load_balancer_controller]
 }
 
-# ArgoCD
+# Reconcile the application manifests stored in Git.
 resource "helm_release" "argocd" {
   name             = "argocd"
   namespace        = "argocd"
@@ -57,4 +58,51 @@ resource "helm_release" "argocd" {
 
 
   depends_on = [aws_eks_cluster.this, aws_eks_node_group.this, helm_release.external_secrets]
+}
+
+# Karpenter CRDs must be installed before the Karpenter controller.
+resource "helm_release" "karpenter_crd" {
+  name             = "karpenter-crd"
+  namespace        = "karpenter"
+  create_namespace = true
+
+  repository = "oci://public.ecr.aws/karpenter"
+  chart      = "karpenter-crd"
+  version    = var.karpenter_version
+
+  wait    = true
+  timeout = 600
+
+  depends_on = [
+    aws_eks_cluster.this,
+    aws_eks_node_group.this,
+  ]
+}
+
+# Karpenter adds node capacity for workloads that cannot fit on managed nodes.
+resource "helm_release" "karpenter" {
+  name      = "karpenter"
+  namespace = "karpenter"
+
+  repository = "oci://public.ecr.aws/karpenter"
+  chart      = "karpenter"
+  version    = var.karpenter_version
+
+  wait    = true
+  timeout = 600
+
+  values = [templatefile("${path.module}/helm/karpenter.yaml.tfpl", {
+    serviceAccountName = "karpenter"
+    roleArn            = aws_iam_role.karpenter.arn
+    clusterName        = aws_eks_cluster.this.name
+    clusterEndpoint    = aws_eks_cluster.this.endpoint
+    workload           = "general"
+  })]
+  depends_on = [
+    aws_eks_cluster.this,
+    aws_eks_node_group.this,
+    helm_release.argocd,
+    aws_iam_role.karpenter,
+    helm_release.karpenter_crd,
+  ]
 }

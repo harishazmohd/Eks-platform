@@ -1,3 +1,4 @@
+# ArgoCD project boundaries restrict the repository and namespace this app may use.
 apiVersion: argoproj.io/v1alpha1
 kind: AppProject
 
@@ -20,13 +21,27 @@ spec:
       kind: Secret
     - group: ""
       kind: Service
+    - group: ""
+      kind: ServiceAccount
     - group: apps
       kind: Deployment
     - group: networking.k8s.io
       kind: Ingress
+    - group: networking.k8s.io
+      kind: NetworkPolicy
+    - group: autoscaling
+      kind: HorizontalPodAutoscaler
+    - group: policy
+      kind: PodDisruptionBudget
     - group: external-secrets.io
       kind: ExternalSecret
 
   clusterResourceWhitelist:
     - group: ""
       kind: Namespace
+    - group: karpenter.sh
+      kind: NodePool
+    - group: karpenter.k8s.aws
+      kind: EC2NodeClass
+    - group: external-secrets.io
+      kind: ClusterSecretStore

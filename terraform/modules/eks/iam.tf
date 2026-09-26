@@ -1,3 +1,4 @@
+// Generate cluster and managed-node roles from one local configuration map.
 resource "aws_iam_role" "this" {
   for_each           = local.role_config
   name               = each.value.name
@@ -7,6 +8,7 @@ resource "aws_iam_role" "this" {
   })
 }
 
+
 resource "aws_iam_role_policy_attachment" "eks_cluster" {
   for_each   = local.iam_role_attachment
   role       = aws_iam_role.this[each.value.role_key].name
@@ -14,6 +16,7 @@ resource "aws_iam_role_policy_attachment" "eks_cluster" {
 }
 
 
+// Dedicated IRSA role for the AWS Load Balancer Controller.
 resource "aws_iam_role" "alb_role" {
   count              = var.alb_controller.enabled ? 1 : 0
   name               = "${local.name_prefix}-alb-controller"
@@ -33,7 +36,7 @@ resource "aws_iam_role_policy" "alb_controller" {
 }
 
 
-# IAM role for External Secrets
+# External Secrets reads the RDS secret and decrypts it with the RDS key.
 resource "aws_iam_role" "external_secrets" {
   name               = "${local.name_prefix}-external-secrets"
   assume_role_policy = data.aws_iam_policy_document.external_secrets_assume_role.json
@@ -65,6 +68,7 @@ resource "aws_iam_role_policy" "external_secrets" {
 }
 
 
+// GitHub Actions publishes images through short-lived OIDC credentials.
 resource "aws_iam_role" "github_oidc_role" {
   name = "${local.name_prefix}-oidc-github"
   assume_role_policy = jsonencode({
@@ -131,4 +135,54 @@ resource "aws_iam_policy" "github_actions_ecr" {
 resource "aws_iam_role_policy_attachment" "github_policy_attachment" {
   role       = aws_iam_role.github_oidc_role.name
   policy_arn = aws_iam_policy.github_actions_ecr.arn
+}
+
+
+
+# Karpenter controller permissions are separate from the EC2 node role.
+resource "aws_iam_role" "karpenter" {
+  name               = local.names.karpenter_controller
+  assume_role_policy = data.aws_iam_policy_document.karpenter_policy_document.json
+  tags = merge(local.common_tags, {
+    Name = local.names.karpenter_controller
+  })
+}
+
+# Karpenter IAM policy
+resource "aws_iam_role_policy" "karpenter_policy" {
+  name = "${local.names.karpenter_controller}-policy"
+  role = aws_iam_role.karpenter.id
+  policy = templatefile("${path.module}/policy/karpenter.json", {
+    partition               = data.aws_partition.current.partition
+    region                  = var.aws_region
+    cluster_name            = var.cluster_config.cluster_name
+    cluster_arn             = aws_eks_cluster.this.arn
+    karpenter_node_role_arn = aws_iam_role.karpenter_node.arn
+  })
+}
+
+
+# Karpenter-launched nodes receive baseline EKS and SSM permissions.
+resource "aws_iam_role" "karpenter_node" {
+  name               = local.names.karpenter_node_role
+  assume_role_policy = data.aws_iam_policy_document.karpenter_node_role.json
+
+  tags = merge(
+    local.common_tags,
+    {
+      Name = local.names.karpenter_node_role
+    }
+  )
+}
+
+resource "aws_iam_role_policy_attachment" "karpenter_node" {
+  for_each = toset([
+    "AmazonEKSWorkerNodePolicy",
+    "AmazonEC2ContainerRegistryPullOnly",
+    "AmazonEKS_CNI_Policy",
+    "AmazonSSMManagedInstanceCore"
+  ])
+
+  role       = aws_iam_role.karpenter_node.name
+  policy_arn = "arn:${data.aws_partition.current.partition}:iam::aws:policy/${each.value}"
 }

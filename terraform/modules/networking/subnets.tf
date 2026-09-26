@@ -1,3 +1,4 @@
+// Subnet discovery tags are consumed by the ALB controller and Karpenter.
 resource "aws_subnet" "this" {
   for_each                = var.subnets
   vpc_id                  = aws_vpc.this.id
@@ -17,6 +18,7 @@ resource "aws_subnet" "this" {
     each.value.type == "app" ? {
       "kubernetes.io/role/internal-elb"                    = "1"
       "kubernetes.io/cluster/${local.name_prefix}-cluster" = "shared"
+      "karpenter.sh/discovery"                             = "${local.name_prefix}-cluster"
     } : {}
   )
 }

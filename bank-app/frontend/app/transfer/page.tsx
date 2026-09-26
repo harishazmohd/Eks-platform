@@ -38,15 +38,25 @@ export default function Transfer() {
   useEffect(() => {
     if (token) {
       fetch('/api/accounts', { headers: { 'Authorization': `Bearer ${token}` } })
-        .then(res => res.json())
-        .then(data => {
-          setAccounts(data);
-          if (data.length > 0) setFromAccountId(data[0].id);
-        });
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) {
+              setAccounts(data);
+              if (data.length > 0) setFromAccountId(data[0].id);
+            }
+          }
+        })
+        .catch(console.error);
 
       fetch('/api/beneficiaries', { headers: { 'Authorization': `Bearer ${token}` } })
-        .then(res => res.json())
-        .then(data => setBeneficiaries(data));
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) setBeneficiaries(data);
+          }
+        })
+        .catch(console.error);
     }
   }, [token]);
 
@@ -92,7 +102,7 @@ export default function Transfer() {
       });
       if (res.ok) {
         const ben = await res.json();
-        setBeneficiaries([...beneficiaries, ben]);
+        setBeneficiaries(prev => Array.isArray(prev) ? [...prev, ben] : [ben]);
         setNewBenName('');
         setNewBenAcc('');
         setShowNewBen(false);

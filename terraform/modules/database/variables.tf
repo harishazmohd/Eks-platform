@@ -1,3 +1,5 @@
+// Structured inputs keep sizing and availability decisions in the environment
+// while this module owns only database resources.
 variable "project_name" {
   description = "Name of the project goes here"
   type        = string

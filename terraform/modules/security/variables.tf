@@ -1,3 +1,4 @@
+// Security-group IDs are passed in from their owning modules to avoid cycles.
 variable "project_name" {
   description = "Name of the project goes here"
   type        = string

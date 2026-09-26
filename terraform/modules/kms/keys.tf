@@ -1,3 +1,4 @@
+// Create separate customer-managed keys for the services listed in var.keys.
 resource "aws_kms_key" "this" {
   for_each                 = var.keys
   description              = each.value.description

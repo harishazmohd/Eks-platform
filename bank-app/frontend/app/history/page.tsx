@@ -30,8 +30,13 @@ export default function History() {
   useEffect(() => {
     if (token) {
       fetch('/api/transactions/history', { headers: { 'Authorization': `Bearer ${token}` } })
-        .then(res => res.json())
-        .then(data => setTransactions(data));
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) setTransactions(data);
+          }
+        })
+        .catch(console.error);
     }
   }, [token]);
 

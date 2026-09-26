@@ -1,3 +1,4 @@
+// Apply separate subnet boundaries to public, application, and database tiers.
 resource "aws_network_acl" "public" {
   vpc_id = aws_vpc.this.id
   subnet_ids = [

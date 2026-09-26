@@ -1,3 +1,4 @@
+// Normalize key names and common tags for aliases, keys, and outputs.
 locals {
   name_prefix = "${var.project_name}-${var.environment}"
 

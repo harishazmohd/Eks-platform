@@ -1,3 +1,4 @@
+// Stable aliases make each purpose-specific key easy to find operationally.
 resource "aws_kms_alias" "this" {
   for_each      = var.keys
   name          = local.names.alias_names[each.key]

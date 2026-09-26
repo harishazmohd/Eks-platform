@@ -1,3 +1,5 @@
+// RDS owns durable application data. Network placement, encryption, and
+// access rules are supplied by shared platform modules.
 resource "aws_db_instance" "this" {
   db_name        = var.database_config.instance_config.db_name
   identifier     = var.database_config.instance_config.identifier

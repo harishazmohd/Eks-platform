@@ -1,3 +1,4 @@
+// Version-controlled parameters prevent accidental changes to AWS defaults.
 resource "aws_db_parameter_group" "this" {
   name        = local.names.parameter_group
   family      = var.parameter_group_config.family

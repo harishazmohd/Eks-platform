@@ -1,3 +1,5 @@
+// AWS manages the control plane; this resource configures its network,
+// encryption, logging, and IAM integration.
 resource "aws_eks_cluster" "this" {
   name     = local.names.eks_cluster_name
   role_arn = aws_iam_role.this["cluster_role"].arn

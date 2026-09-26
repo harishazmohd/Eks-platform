@@ -1,3 +1,4 @@
+// Provider compatibility for EKS, Helm, Kubernetes, and kubectl resources.
 terraform {
   required_providers {
     aws = {

@@ -1,3 +1,5 @@
+// Bootstrap inputs are limited to naming and regional settings because this
+// stack owns only remote state storage.
 variable "project_name" {
   description = "Name of the project goes here"
   type        = string

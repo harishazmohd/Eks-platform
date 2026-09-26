@@ -1,3 +1,5 @@
+// Managed add-ons provide cluster networking, DNS, and kube-proxy before
+// application controllers and workloads are installed.
 resource "aws_eks_addon" "this" {
   for_each                    = var.addons_config
   cluster_name                = aws_eks_cluster.this.name

@@ -1,3 +1,5 @@
+# Public resources use the internet gateway; private application resources use
+# NAT; the database route table intentionally has no default internet route.
 # Public Route tables
 
 resource "aws_route_table" "public" {
@@ -27,7 +29,7 @@ resource "aws_route_table" "application" {
 resource "aws_route" "private_route_app" {
   route_table_id         = aws_route_table.application.id
   destination_cidr_block = "0.0.0.0/0"
-  gateway_id             = aws_nat_gateway.this.id
+  nat_gateway_id         = aws_nat_gateway.this.id
 }
 
 # Database Route table

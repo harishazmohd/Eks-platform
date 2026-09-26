@@ -1,3 +1,4 @@
+// The environment supplies cluster, node, network, and controller settings.
 variable "project_name" {
   description = "Name of the project goes here"
   type        = string
@@ -114,6 +115,11 @@ variable "backend_ecr_arn" {
   type = string
 }
 
+variable "karpenter_version" {
+  description = "Pinned Karpenter Helm chart version."
+  type        = string
+  default     = "1.14.1"
+}
 
 variable "common_tags" {
   description = "Additional tags applied to all resources."

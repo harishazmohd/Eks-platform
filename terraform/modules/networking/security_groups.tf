@@ -1,5 +1,4 @@
 # Foundational Security Groups
-
 resource "aws_security_group" "alb" {
   name        = local.names.alb
   description = "Security group for ALB"
@@ -68,4 +67,12 @@ resource "aws_vpc_security_group_ingress_rule" "alb_https" {
   to_port   = 443
 
   description = "Allows HTTPS traffic from Internet"
+}
+
+# ALB Foundational Egress Rules
+
+resource "aws_vpc_security_group_egress_rule" "alb_egress" {
+  security_group_id = aws_security_group.alb.id
+  ip_protocol       = "-1"
+  cidr_ipv4         = var.vpc_cidr
 }
