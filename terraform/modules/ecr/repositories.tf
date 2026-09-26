@@ -1,3 +1,4 @@
+// Create one encrypted, policy-controlled repository per application image.
 resource "aws_ecr_repository" "this" {
   for_each             = var.repositories
   name                 = "${local.name_prefix}-${each.key}"

@@ -170,7 +170,10 @@ spec:
 
         - protocol: TCP
           port: 53
-
+        
+    - ports:
+      - protocol: TCP
+        port: 5432
 ---
 # ---------------------------------------------------------
 # Frontend egress
@@ -213,5 +216,8 @@ spec:
 
         - protocol: TCP
           port: 53
+    - ports:
+      - protocol: TCP
+        port: 8080
 
 {{- end }}

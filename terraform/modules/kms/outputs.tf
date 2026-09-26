@@ -1,3 +1,4 @@
+// Return key IDs, ARNs, and aliases so consuming modules avoid resource lookup.
 output "kms" {
   description = "AWS KMS resources"
   value = {

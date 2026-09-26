@@ -1,3 +1,4 @@
+# This Application points ArgoCD at the version-controlled BankApp Helm chart.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 
@@ -6,7 +7,7 @@ metadata:
    namespace: ${argocdNamespace}
 
 spec:
-   project: default
+   project: ${projectName}
    source:
       repoURL: ${repoURL}
       targetRevision: ${targetRevision}
@@ -22,5 +23,5 @@ spec:
       automated:
          prune: true
          selfHeal: true
-   syncOptions:
-      - CreateNamespace=true
+      syncOptions:
+         - CreateNamespace=true

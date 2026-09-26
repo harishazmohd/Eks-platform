@@ -1,3 +1,4 @@
+// Place RDS only in dedicated private database subnets.
 resource "aws_db_subnet_group" "this" {
   name        = local.names.subnet
   description = "Subnet group for ${local.name_prefix} database"

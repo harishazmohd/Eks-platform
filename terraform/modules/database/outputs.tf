@@ -1,3 +1,4 @@
+// One grouped output gives consumers connection metadata and the secret ARN.
 output "rds" {
   description = "Amazon RDS resources"
   value = {

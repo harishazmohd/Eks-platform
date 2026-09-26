@@ -1,3 +1,4 @@
+// Consumers need repository URLs for image publishing and ARNs for IAM.
 output "repositories" {
   description = "Repositories configuration"
   value = {

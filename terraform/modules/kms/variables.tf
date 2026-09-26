@@ -1,3 +1,5 @@
+// Key specifications are data-driven so environments can choose rotation and
+// deletion behavior without changing the module implementation.
 variable "project_name" {
   description = "Name of the project goes here"
   type        = string

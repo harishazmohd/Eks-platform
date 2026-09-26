@@ -1,3 +1,4 @@
+// Retain the configured release history while removing stale untagged images.
 resource "aws_ecr_lifecycle_policy" "this" {
   for_each   = var.repositories
   repository = aws_ecr_repository.this[each.key].name

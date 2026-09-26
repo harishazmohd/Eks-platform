@@ -1,3 +1,4 @@
+// Account and partition data are used to build portable key-policy principals.
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 

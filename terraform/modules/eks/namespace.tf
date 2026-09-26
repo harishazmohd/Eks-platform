@@ -1,3 +1,4 @@
+// Create the application namespace before ArgoCD or Helm deploys workloads.
 resource "kubernetes_namespace_v1" "bankapp" {
   metadata {
     name = "bankapp"

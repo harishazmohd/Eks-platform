@@ -1,3 +1,4 @@
+// Shared network boundary for the ALB, EKS workers, endpoints, and RDS tiers.
 resource "aws_vpc" "this" {
   cidr_block           = var.vpc_cidr
   instance_tenancy     = var.instance_tenancy

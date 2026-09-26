@@ -26,8 +26,13 @@ export default function Loans() {
   useEffect(() => {
     if (token) {
       fetch('/api/loans', { headers: { 'Authorization': `Bearer ${token}` } })
-        .then(res => res.json())
-        .then(data => setLoans(data));
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) setLoans(data);
+          }
+        })
+        .catch(console.error);
     }
   }, [token]);
 
@@ -48,7 +53,9 @@ export default function Loans() {
       const data = await res.json();
       if (res.ok) {
         setMessage('Loan application submitted!');
-        setLoans([...loans, data.loan]);
+        if (data.loan) {
+          setLoans(prev => Array.isArray(prev) ? [...prev, data.loan] : [data.loan]);
+        }
         setAmount('');
       } else {
         setError(data.error || 'Application failed');

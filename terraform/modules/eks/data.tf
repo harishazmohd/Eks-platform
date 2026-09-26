@@ -1,3 +1,4 @@
+// Shared identity and trust-policy data used by EKS and its controllers.
 data "aws_availability_zones" "current" {
   state = "available"
 }
@@ -30,7 +31,7 @@ data "aws_iam_policy_document" "node_group_assume_role" {
   }
 }
 
-# OIDC
+# OIDC enables short-lived credentials for workloads and GitHub Actions.
 
 data "tls_certificate" "eks_oidc" {
   url = aws_eks_cluster.this.identity[0].oidc[0].issuer
@@ -61,7 +62,7 @@ data "aws_iam_policy_document" "irsa_trust" {
   }
 }
 
-# ALB Controller assume role
+# The ALB controller may assume its role only from its service account.
 data "aws_iam_policy_document" "alb_assume_role" {
   count = var.alb_controller.enabled ? 1 : 0
   statement {
@@ -92,7 +93,7 @@ data "aws_iam_policy_document" "alb_controller_permissions" {
   source_policy_documents = [file("${path.module}/policy/alb_policy.json")]
 }
 
-# External Secrets assume role
+# External Secrets receives only the secret and KMS access it needs.
 data "aws_iam_policy_document" "external_secrets_assume_role" {
   statement {
     effect = "Allow"
@@ -115,13 +116,43 @@ data "aws_iam_policy_document" "external_secrets_assume_role" {
 }
 
 
-# Assume role policy for the github actions role
-# data "aws_iam_policy_document" "github" {
-#   statement {
-#     effect = "Allow"
-#   }
-#   principal {
-#     type = "Federated"
-#     identifiers =
-#   }
-# }
+# Karpenter uses a separate service-account trust policy for node provisioning.
+data "aws_iam_policy_document" "karpenter_policy_document" {
+    statement {
+      sid = "KarpenterControllerAssumeRole"
+      effect = "Allow"
+      actions = ["sts:AssumeRoleWithWebIdentity"]
+      principals {
+        type = "Federated"
+        identifiers = [aws_iam_openid_connect_provider.this.arn]
+      }
+
+      condition {
+        test = "StringEquals"
+        variable = "${local.oidc_host}:aud"
+        values = ["sts.amazonaws.com"]
+      }
+      condition {
+        test = "StringEquals"
+        variable = "${local.oidc_host}:sub"
+        values = ["system:serviceaccount:karpenter:karpenter"]
+      }
+    }
+}
+
+# Karpenter Node role policy allows Karpenter to provision EC2 nodes in the cluster.
+data "aws_iam_policy_document" "karpenter_node_role" {
+  statement {
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole"
+    ]
+    principals {
+      type = "Service"
+
+      identifiers = [
+        "ec2.amazonaws.com"
+      ]
+    }
+  }
+}

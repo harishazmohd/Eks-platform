@@ -1,3 +1,4 @@
+# Configure the controller to reconcile this cluster through its IRSA role.
 clusterName: "${cluster_name}"
 region: "${region}"
 vpcId: "${vpc_id}"

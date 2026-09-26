@@ -1,3 +1,4 @@
+// RDS assumes this role to publish operating-system metrics to CloudWatch.
 resource "aws_iam_role" "monitoring" {
   name               = local.names.monitoring
   assume_role_policy = data.aws_iam_policy_document.rds_monitoring_assume_role.json

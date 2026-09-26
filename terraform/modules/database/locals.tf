@@ -1,3 +1,4 @@
+// Keep database names and common tags consistent with the parent environment.
 locals {
   name_prefix = "${var.project_name}-${var.environment}"
 

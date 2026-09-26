@@ -1,3 +1,4 @@
+// Keep public, application, and database subnets on their intended routes.
 resource "aws_route_table_association" "public" {
   for_each       = local.public_subnets
   subnet_id      = aws_subnet.this[each.key].id

@@ -1,3 +1,4 @@
+// Build portable ARNs and the trust policy needed by RDS Enhanced Monitoring.
 data "aws_caller_identity" "current" {}
 data "aws_partition" "current" {}
 

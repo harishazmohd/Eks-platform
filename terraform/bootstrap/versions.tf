@@ -1,3 +1,4 @@
+// Provider compatibility for the bootstrap layer.
 terraform {
   required_version = "~> 1.16.0"
   required_providers {

@@ -1,3 +1,4 @@
+// Repository names and tags are derived once and reused by every ECR resource.
 locals {
   name_prefix = "${var.project_name}-${var.environment}"
 

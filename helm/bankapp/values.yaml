@@ -22,6 +22,18 @@ frontend:
   pdb:
     enabled: true
     minAvailable: 1
+  autoScaling:
+    enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilization: 70
+    behavior:
+      scaleUp:
+        stabilizationWindowSeconds: 0
+      scaleDown:
+        stabilizationWindowSeconds: 300
+
+
 backend:
   enabled: true
   replicaCount: 2
@@ -46,6 +58,15 @@ backend:
     minAvailable: 1
   autoScaling:
     enabled: true
+    minReplicas: 2
+    maxReplicas: 5
+    targetCPUUtilization: 70
+    behavior:
+      scaleUp:
+        stabilizationWindowSeconds: 0
+      scaleDown:
+        stabilizationWindowSeconds: 300
+
 externalSecret:
   enabled: true
   name: backend-secrets
@@ -74,23 +95,65 @@ externalSecrets:
   portProperty: port
   dbnameProperty: db_name
   passwordProperty: password
+
+karpenter:
+  enabled: true
+  nodeclass:
+    name: bankapp
+    amiFamily: AL2023
+    instanceProfile: eks-platform-dev-karpenter-node
+    subnetSelectorTerms:
+      - tags:
+          karpenter.sh/discovery: eks-platform-dev-cluster
+    securityGroupSelectorTerms:
+      - tags:
+          karpenter.sh/discovery: eks-platform-dev-cluster
+    blockDeviceMappings:
+      - deviceName: /dev/xvda
+        ebs:
+          volumeSize: 50Gi
+          volumeType: gp3
+          encrypted: true
+          deleteOnTermination: true
+
+  nodepool:
+    name: bankapp
+    workload: application
+    nodeClassRef:
+      group: karpenter.k8s.aws
+      kind: EC2NodeClass
+      name: bankapp
+    requirements:
+        - key: kubernetes.io/arch
+          operator: In
+          values:
+            - amd64
+        - key: kubernetes.io/os
+          operator: In
+          values:
+            - linux
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values:
+            - on-demand
+        - key: karpenter.k8s.aws/instance-type
+          operator: In
+          values:
+            - c7i-flex.large
+        - key: topology.kubernetes.io/zone
+          operator: In
+          values:
+            - ap-south-1a
+            - ap-south-1b
+    expireAfter: 30m
+    disruption:
+      consolidationPolicy: WhenEmpty
+      consolidateAfter: 10m
+    limits:
+      cpu: "8"
+    weight: 10
+
+
+
 networkPolicy:
   enabled: true
-Transform: AWS::Serverless-2016-10-31
-Resources:
-  Api:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: !Sub
-        - ${ResourceName} From Stack ${AWS::StackName}
-        - ResourceName: Api
-      StageName: Prod
-      DefinitionBody:
-        openapi: '3.0'
-        info: {}
-        paths:
-          /:
-            get:
-              responses: {}
-      EndpointConfiguration: REGIONAL
-      TracingEnabled: true

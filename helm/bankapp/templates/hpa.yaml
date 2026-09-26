@@ -1,11 +1,11 @@
-{{- if .Values.backend.enabled .Values.backend.autoScaling.enabled }}
+{{- if and .Values.backend.enabled .Values.backend.autoScaling.enabled }}
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ include "bankapp.fullname" . }}-backend
   labels:
     {{- include "bankapp.labels" . | nindent 4}}
-    app.kubernets.io/component: backend
+    app.kubernetes.io/component: backend
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
@@ -14,3 +14,52 @@ spec:
 
   minReplicas: {{ .Values.backend.autoScaling.minReplicas }}
   maxReplicas: {{ .Values.backend.autoScaling.maxReplicas }}
+
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: {{ .Values.backend.autoScaling.behavior.scaleUp.stabilizationWindowSeconds }}
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.backend.autoScaling.behavior.scaleDown.stabilizationWindowSeconds }}
+
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.backend.autoScaling.targetCPUUtilization }}
+{{- end }}
+
+---
+
+{{- if and .Values.frontend.enabled .Values.frontend.autoScaling.enabled }}
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: {{ include "bankapp.fullname" . }}-frontend
+  labels:
+    {{- include "bankapp.labels" . | nindent 4}}
+    app.kubernetes.io/component: frontend
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "bankapp.fullname" . }}-frontend
+
+  minReplicas: {{ .Values.frontend.autoScaling.minReplicas }}
+  maxReplicas: {{ .Values.frontend.autoScaling.maxReplicas }}
+
+  behavior:
+    scaleUp:
+      stabilizationWindowSeconds: {{ .Values.frontend.autoScaling.behavior.scaleUp.stabilizationWindowSeconds }}
+    scaleDown:
+      stabilizationWindowSeconds: {{ .Values.frontend.autoScaling.behavior.scaleDown.stabilizationWindowSeconds }}
+
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target:
+          type: Utilization
+          averageUtilization: {{ .Values.frontend.autoScaling.targetCPUUtilization }}
+{{- end }}

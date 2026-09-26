@@ -1,3 +1,4 @@
+// Scan pushed images so vulnerable artifacts are detected at the registry.
 resource "aws_ecr_registry_scanning_configuration" "this" {
   scan_type = var.registry_config.scan_type
   dynamic "rule" {

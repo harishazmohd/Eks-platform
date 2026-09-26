@@ -34,7 +34,7 @@ spec:
                 topologyKey: topology.kubernetes.io/hostname
                 labelSelector:
                   matchLabels:
-                    app.kubernetes.io/name: {{ include "bankapp.fullname" . }}
+                    app.kubernetes.io/name: {{ include "bankapp.name" . }}
                     app.kubernetes.io/instance: {{ .Release.Name }}
                     app.kubernetes.io/component: backend
       topologySpreadConstraints:
@@ -43,7 +43,7 @@ spec:
           whenUnsatisfiable: ScheduleAnyway
           labelSelector:
             matchLabels:
-              app.kubernetes.io/name: {{ include "bankapp.fullname" . }}
+              app.kubernetes.io/name: {{ include "bankapp.name" . }}
               app.kubernetes.io/instance: {{ .Release.Name }}
               app.kubernetes.io/component: backend
       serviceAccountName: {{ include "bankapp.fullname" . }}-backend

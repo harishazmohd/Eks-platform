@@ -1,3 +1,5 @@
+// Repository behavior is supplied as a map so frontend and backend can share
+// one module without duplicating resource definitions.
 variable "project_name" {
   description = "Name of the project goes here"
   type        = string

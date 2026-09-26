@@ -1,3 +1,4 @@
+// Return the connection details operators need to configure kubectl.
 output "cluster" {
   description = "Cluster outputs"
   value = {

@@ -1,3 +1,5 @@
+// Remote Terraform state is versioned, private, and encrypted with the
+// dedicated bootstrap KMS key.
 resource "aws_s3_bucket" "backend_bucket" {
   bucket        = "${local.name_prefix}-${data.aws_caller_identity.account_info.account_id}-${var.aws_region}"
   force_destroy = true

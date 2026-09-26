@@ -1,3 +1,4 @@
+// Private application subnets use NAT for outbound access without public IPs.
 resource "aws_nat_gateway" "this" {
 
   allocation_id = aws_eip.nat.id

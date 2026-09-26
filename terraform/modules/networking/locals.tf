@@ -1,3 +1,4 @@
+// Centralize names, subnet groupings, endpoint services, and common tags.
 locals {
   name_prefix = "${var.project_name}-${var.environment}"
 

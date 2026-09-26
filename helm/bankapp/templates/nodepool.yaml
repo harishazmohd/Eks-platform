@@ -1,0 +1,35 @@
+{{- if .Values.karpenter.enabled }}
+
+apiVersion: karpenter.sh/v1
+kind: NodePool
+
+metadata:
+  name: {{ .Values.karpenter.nodepool.name }}
+  labels:
+    {{- include "bankapp.labels" . | nindent 4 }}
+
+spec:
+  template:
+    metadata:
+      labels:
+        workload: {{ .Values.karpenter.nodepool.workload }}
+
+    spec:
+      nodeClassRef:
+        {{- toYaml .Values.karpenter.nodepool.nodeClassRef | nindent 8 }}
+
+      requirements:
+        {{- toYaml .Values.karpenter.nodepool.requirements | nindent 8 }}
+
+      expireAfter: {{ .Values.karpenter.nodepool.expireAfter }}
+
+  disruption:
+    consolidationPolicy: {{ .Values.karpenter.nodepool.disruption.consolidationPolicy }}
+    consolidateAfter: {{ .Values.karpenter.nodepool.disruption.consolidateAfter }}
+
+  limits:
+    cpu: {{ .Values.karpenter.nodepool.limits.cpu }}
+
+  weight: {{ .Values.karpenter.nodepool.weight }}
+
+{{- end }}

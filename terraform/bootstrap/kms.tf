@@ -1,3 +1,5 @@
+// Keep state encryption on a dedicated key so state access can be governed
+// independently from workload encryption keys.
 resource "aws_kms_key" "backend_encryption_key" {
   description             = "KMS key for s3 backend-bucket for this project"
   deletion_window_in_days = 30

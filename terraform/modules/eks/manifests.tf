@@ -1,3 +1,4 @@
+// Restrict ArgoCD's repository and destination before creating the application.
 resource "kubectl_manifest" "appproject" {
   yaml_body = templatefile("${path.module}/helm/appproject.yaml.tfpl", {
     name        = "eks-platform-dev"
@@ -6,6 +7,7 @@ resource "kubectl_manifest" "appproject" {
   })
   depends_on = [helm_release.argocd]
 }
+// ArgoCD watches the declared Git revision and reconciles the Helm chart.
 resource "kubectl_manifest" "argocd" {
   yaml_body = templatefile("${path.module}/helm/argocd.yaml.tfpl", {
     name            = "argo-cd"
@@ -16,6 +18,7 @@ resource "kubectl_manifest" "argocd" {
     valueFiles      = "values.yaml"
     server          = "https://kubernetes.default.svc"
     namespace       = "bankapp"
+    projectName     = "eks-platform-dev"
   })
   depends_on = [
     helm_release.argocd,
@@ -27,7 +30,8 @@ resource "kubectl_manifest" "argocd" {
 resource "time_sleep" "wait_for_argocd_cleanup" {
   depends_on = [
     helm_release.aws_load_balancer_controller,
-    helm_release.external_secrets
+    helm_release.external_secrets,
+    helm_release.karpenter,
   ]
   destroy_duration = "90s"
 }

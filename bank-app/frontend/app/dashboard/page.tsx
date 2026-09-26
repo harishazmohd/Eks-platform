@@ -32,12 +32,22 @@ export default function Dashboard() {
   useEffect(() => {
     if (token) {
       fetch('/api/accounts', { headers: { 'Authorization': `Bearer ${token}` } })
-        .then(res => res.json())
-        .then(data => setAccounts(data));
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) setAccounts(data);
+          }
+        })
+        .catch(console.error);
 
       fetch('/api/transactions/history', { headers: { 'Authorization': `Bearer ${token}` } })
-        .then(res => res.json())
-        .then(data => setTransactions(data.slice(0, 5)));
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) setTransactions(data.slice(0, 5));
+          }
+        })
+        .catch(console.error);
     }
   }, [token]);
 

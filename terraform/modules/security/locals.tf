@@ -1,3 +1,4 @@
+// This module owns relationship rules, not the foundational security groups.
 locals {
   name_prefix     = "${var.project_name}-${var.environment}"
   db_port         = var.db_port
