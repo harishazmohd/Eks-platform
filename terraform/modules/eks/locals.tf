@@ -2,11 +2,11 @@
 locals {
   name_prefix = "${var.project_name}-${var.environment}"
   names = {
-    eks_cluster_role       = "${local.name_prefix}-eks-cluster-role"
-    eks_cluster_name       = var.cluster_config.cluster_name
-    node_group_name        = "${local.name_prefix}-node-group"
-    karpenter_controller   = "${local.name_prefix}-karpenter-controller"
-    karpenter_node_role    = "${local.name_prefix}-karpenter-node-role"
+    eks_cluster_role = "${local.name_prefix}-eks-cluster-role"
+    eks_cluster_name = var.cluster_config.cluster_name
+    node_group_name  = "${local.name_prefix}-node-group"
+    karpenter_controller = "${local.name_prefix}-karpenter-controller"
+    karpenter_node_role = "${local.name_prefix}-karpenter-node-role"
     karpenter_node_profile = "${local.name_prefix}-karpenter-node"
   }
 
@@ -14,10 +14,7 @@ locals {
     cluster_role = {
       name        = "${local.name_prefix}-eks-cluster-role"
       role_policy = data.aws_iam_policy_document.eks_cluster_assume_role.json
-      policy_arns = [
-        "AmazonEKSClusterPolicy",
-        "AmazonEKSVPCResourceController",
-      ]
+      policy_arns = ["AmazonEKSClusterPolicy"]
     }
     node_group_role = {
       name        = "${local.name_prefix}-eks-node-group-role"

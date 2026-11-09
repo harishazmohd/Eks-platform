@@ -43,7 +43,7 @@ locals {
       storage_encrypted     = true
     }
 
-    multi_az                     = false
+    multi_az                     = true
     backup_retention_period      = 1
     deletion_protection          = false
     maintenance_window           = "Sun:04:30-Sun:05:30"

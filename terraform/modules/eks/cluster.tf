@@ -4,12 +4,6 @@ resource "aws_eks_cluster" "this" {
   name     = local.names.eks_cluster_name
   role_arn = aws_iam_role.this["cluster_role"].arn
   version  = var.cluster_config.cluster_version
-
-  access_config {
-    authentication_mode                         = "API_AND_CONFIG_MAP"
-    bootstrap_cluster_creator_admin_permissions = true
-  }
-
   encryption_config {
     provider {
       key_arn = var.kms_key_arn

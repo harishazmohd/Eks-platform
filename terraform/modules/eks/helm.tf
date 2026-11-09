@@ -106,36 +106,3 @@ resource "helm_release" "karpenter" {
     helm_release.karpenter_crd,
   ]
 }
-
-// Metrics server is required for the Horizontal Pod Autoscaler to function.
-
-resource "helm_release" "metrics_server" {
-  name = "metrics-server"
-  namespace = "kube-system"
-  repository = "https://kubernetes-sigs.github.io/metrics-server/"
-  chart = "metrics-server"
-  version = "3.13.0"
-  wait    = true
-  timeout = 600
-  values = [
-      yamlencode(({
-             replicas = 2
-
-      resources = {
-        requests = {
-          cpu    = "100m"
-          memory = "200Mi"
-        }
-        limits = {
-          cpu    = "500m"
-          memory = "500Mi"
-        }
-      }
-      }))
-    ]
-    depends_on = [
-      aws_eks_cluster.this,
-      aws_eks_node_group.this,
-      helm_release.karpenter,
-    ]
-}

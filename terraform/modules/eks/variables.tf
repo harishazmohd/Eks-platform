@@ -14,21 +14,6 @@ variable "vpc_id" {
   type        = string
 }
 
-variable "vpc_cidr" {
-  description = "VPC CIDR used for pod DNS egress"
-  type        = string
-}
-
-variable "database_subnet_cidrs" {
-  description = "Database subnet CIDRs reachable by backend pods"
-  type        = list(string)
-}
-
-variable "application_namespace" {
-  description = "Namespace containing the backend workload"
-  type        = string
-}
-
 
 variable "environment" {
   description = "Environment of the project"
