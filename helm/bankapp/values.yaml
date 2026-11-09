@@ -5,7 +5,7 @@ frontend:
   replicaCount: 2
   images:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-frontend
-    tag: fb074a00886ed082e9fa916429e121a8427011bd
+    tag: 345514e48ac201513dd3d6265bd9195d196b4b9f
     pullPolicy: IfNotPresent
   containerPort: 3000
   service:
@@ -32,14 +32,12 @@ frontend:
         stabilizationWindowSeconds: 0
       scaleDown:
         stabilizationWindowSeconds: 300
-
-
 backend:
   enabled: true
   replicaCount: 2
   images:
     repository: 020139096715.dkr.ecr.ap-south-1.amazonaws.com/eks-platform-dev-backend
-    tag: fb074a00886ed082e9fa916429e121a8427011bd
+    tag: 345514e48ac201513dd3d6265bd9195d196b4b9f
     pullPolicy: IfNotPresent
   containerPort: 8080
   service:
@@ -66,7 +64,6 @@ backend:
         stabilizationWindowSeconds: 0
       scaleDown:
         stabilizationWindowSeconds: 300
-
 externalSecret:
   enabled: true
   name: backend-secrets
@@ -95,7 +92,6 @@ externalSecrets:
   portProperty: port
   dbnameProperty: db_name
   passwordProperty: password
-
 karpenter:
   enabled: true
   nodeclass:
@@ -115,7 +111,6 @@ karpenter:
           volumeType: gp3
           encrypted: true
           deleteOnTermination: true
-
   nodepool:
     name: bankapp
     workload: application
@@ -124,27 +119,27 @@ karpenter:
       kind: EC2NodeClass
       name: bankapp
     requirements:
-        - key: kubernetes.io/arch
-          operator: In
-          values:
-            - amd64
-        - key: kubernetes.io/os
-          operator: In
-          values:
-            - linux
-        - key: karpenter.sh/capacity-type
-          operator: In
-          values:
-            - on-demand
-        - key: karpenter.k8s.aws/instance-type
-          operator: In
-          values:
-            - c7i-flex.large
-        - key: topology.kubernetes.io/zone
-          operator: In
-          values:
-            - ap-south-1a
-            - ap-south-1b
+      - key: kubernetes.io/arch
+        operator: In
+        values:
+          - amd64
+      - key: kubernetes.io/os
+        operator: In
+        values:
+          - linux
+      - key: karpenter.sh/capacity-type
+        operator: In
+        values:
+          - on-demand
+      - key: karpenter.k8s.aws/instance-type
+        operator: In
+        values:
+          - c7i-flex.large
+      - key: topology.kubernetes.io/zone
+        operator: In
+        values:
+          - ap-south-1a
+          - ap-south-1b
     expireAfter: 30m
     disruption:
       consolidationPolicy: WhenEmpty
@@ -152,8 +147,5 @@ karpenter:
     limits:
       cpu: "8"
     weight: 10
-
-
-
 networkPolicy:
   enabled: true
