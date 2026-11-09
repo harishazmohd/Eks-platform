@@ -28,6 +28,11 @@ output "cluster_security_group_id" {
   value       = aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
 }
 
+output "backend_pod_security_group_id" {
+  description = "Security group assigned to backend pods"
+  value       = aws_security_group.backend_pods.id
+}
+
 output "oidc" {
   description = "OIDC provider"
   value = {

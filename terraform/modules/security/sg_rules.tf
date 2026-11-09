@@ -3,7 +3,7 @@
 # EKS Workloads -> Database PostgreSQL
 resource "aws_vpc_security_group_ingress_rule" "database_postgres_from_eks" {
   security_group_id            = var.database_sg_id
-  referenced_security_group_id = var.eks_cluster_sg_id
+  referenced_security_group_id = var.backend_pod_sg_id
   ip_protocol                  = "tcp"
 
   from_port = var.db_port

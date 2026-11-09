@@ -1,3 +1,30 @@
+resource "kubectl_manifest" "backend_security_group_policy" {
+  yaml_body = yamlencode({
+    apiVersion = "vpcresources.k8s.aws/v1beta1"
+    kind       = "SecurityGroupPolicy"
+    metadata = {
+      name      = "backend-pods"
+      namespace = var.application_namespace
+    }
+    spec = {
+      podSelector = {
+        matchLabels = {
+          "app.kubernetes.io/component" = "backend"
+        }
+      }
+      securityGroups = {
+        groupIds = [aws_security_group.backend_pods.id]
+      }
+    }
+  })
+
+  depends_on = [
+    aws_eks_addon.this["vpc_cni"],
+    aws_eks_node_group.this,
+    kubernetes_namespace_v1.bankapp,
+  ]
+}
+
 // Restrict ArgoCD's repository and destination before creating the application.
 resource "kubectl_manifest" "appproject" {
   yaml_body = templatefile("${path.module}/helm/appproject.yaml.tfpl", {
@@ -23,6 +50,7 @@ resource "kubectl_manifest" "argocd" {
   depends_on = [
     helm_release.argocd,
     kubectl_manifest.appproject,
+    kubectl_manifest.backend_security_group_policy,
     time_sleep.wait_for_argocd_cleanup
   ]
 }

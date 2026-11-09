@@ -73,21 +73,21 @@ spec:
     - Ingress
 
   ingress:
-    - ports:
+    {{- range .Values.networkPolicy.ingressCidrs }}
+    - from:
+        - ipBlock:
+            cidr: {{ . | quote }}
+      ports:
         - protocol: TCP
-          port: {{ .Values.frontend.containerPort }}
+          port: {{ $.Values.frontend.containerPort }}
+    {{- end }}
 
 ---
 # ---------------------------------------------------------
 # Backend ingress
 #
-# Allows:
-#
-# 1. Frontend -> Backend
-# 2. ALB -> Backend
-#
-# The ALB requirement exists because /api is currently
-# exposed directly through the Ingress.
+# Allows frontend pods to reach backend pods. Browser API
+# requests are proxied through the frontend service.
 # ---------------------------------------------------------
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -119,24 +119,11 @@ spec:
         - protocol: TCP
           port: {{ .Values.backend.containerPort }}
 
-    # ALB -> Backend
-    #
-    # Source is intentionally unrestricted here because
-    # the ALB is an AWS resource rather than a Kubernetes Pod.
-    - ports:
-        - protocol: TCP
-          port: {{ .Values.backend.containerPort }}
-
 ---
 # ---------------------------------------------------------
 # Backend egress
 #
-# Currently we only explicitly control backend egress for
-# DNS. RDS access remains controlled by the AWS RDS
-# Security Group.
-#
-# Additional external dependencies should be explicitly
-# added here if the application requires them.
+# Backend egress is limited to DNS and the configured RDS subnets.
 # ---------------------------------------------------------
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -171,18 +158,19 @@ spec:
         - protocol: TCP
           port: 53
         
-    - ports:
-      - protocol: TCP
-        port: 5432
+    {{- range .Values.networkPolicy.databaseCidrs }}
+    - to:
+        - ipBlock:
+            cidr: {{ . | quote }}
+      ports:
+        - protocol: TCP
+          port: 5432
+    {{- end }}
 ---
 # ---------------------------------------------------------
 # Frontend egress
 #
-# DNS is allowed.
-#
-# If Next.js performs server-side calls to the backend,
-# add the backend Service/Pod traffic explicitly after
-# verifying that behavior.
+# Frontend egress is limited to DNS and backend pods.
 # ---------------------------------------------------------
 apiVersion: networking.k8s.io/v1
 kind: NetworkPolicy
@@ -216,8 +204,14 @@ spec:
 
         - protocol: TCP
           port: 53
-    - ports:
-      - protocol: TCP
-        port: 8080
+    - to:
+        - podSelector:
+            matchLabels:
+              app.kubernetes.io/name: {{ include "bankapp.name" . }}
+              app.kubernetes.io/instance: {{ .Release.Name }}
+              app.kubernetes.io/component: backend
+      ports:
+        - protocol: TCP
+          port: {{ .Values.backend.containerPort }}
 
 {{- end }}

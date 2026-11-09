@@ -33,6 +33,11 @@ variable "eks_cluster_sg_id" {
   type        = string
 }
 
+variable "backend_pod_sg_id" {
+  description = "Security group assigned to backend pods"
+  type        = string
+}
+
 variable "db_port" {
   description = "Database port"
   type        = number

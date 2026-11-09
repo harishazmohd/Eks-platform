@@ -1,0 +1,3907 @@
+
+Terraform used the selected providers to generate the following execution
+plan. Resource actions are indicated with the following symbols:
+  + create
+ <= read (data resources)
+
+Terraform will perform the following actions:
+
+  # module.ecr.aws_ecr_lifecycle_policy.this["backend"] will be created
+  + resource "aws_ecr_lifecycle_policy" "this" {
+      + id          = (known after apply)
+      + policy      = jsonencode(
+            {
+              + rules = [
+                  + {
+                      + action       = {
+                          + type = "expire"
+                        }
+                      + description  = "Retain the newest images in each repository so deployments can roll back without keeping an unbounded history."
+                      + rulePriority = 1
+                      + selection    = {
+                          + countNumber = 20
+                          + countType   = "imageCountMoreThan"
+                          + tagStatus   = "any"
+                        }
+                    },
+                ]
+            }
+        )
+      + region      = "ap-south-1"
+      + registry_id = (known after apply)
+      + repository  = "eks-platform-dev-backend"
+    }
+
+  # module.ecr.aws_ecr_lifecycle_policy.this["frontend"] will be created
+  + resource "aws_ecr_lifecycle_policy" "this" {
+      + id          = (known after apply)
+      + policy      = jsonencode(
+            {
+              + rules = [
+                  + {
+                      + action       = {
+                          + type = "expire"
+                        }
+                      + description  = "Retain the newest images in each repository so deployments can roll back without keeping an unbounded history."
+                      + rulePriority = 1
+                      + selection    = {
+                          + countNumber = 20
+                          + countType   = "imageCountMoreThan"
+                          + tagStatus   = "any"
+                        }
+                    },
+                ]
+            }
+        )
+      + region      = "ap-south-1"
+      + registry_id = (known after apply)
+      + repository  = "eks-platform-dev-frontend"
+    }
+
+  # module.ecr.aws_ecr_registry_scanning_configuration.this will be created
+  + resource "aws_ecr_registry_scanning_configuration" "this" {
+      + id          = (known after apply)
+      + region      = "ap-south-1"
+      + registry_id = (known after apply)
+      + scan_type   = "BASIC"
+    }
+
+  # module.ecr.aws_ecr_repository.this["backend"] will be created
+  + resource "aws_ecr_repository" "this" {
+      + arn                  = (known after apply)
+      + force_delete         = true
+      + id                   = (known after apply)
+      + image_tag_mutability = "IMMUTABLE"
+      + name                 = "eks-platform-dev-backend"
+      + region               = "ap-south-1"
+      + registry_id          = (known after apply)
+      + repository_url       = (known after apply)
+      + tags                 = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-backend"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+          + "Service"     = "backend"
+        }
+      + tags_all             = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-backend"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+          + "Service"     = "backend"
+        }
+
+      + encryption_configuration {
+          + encryption_type = "KMS"
+          + kms_key         = (known after apply)
+        }
+    }
+
+  # module.ecr.aws_ecr_repository.this["frontend"] will be created
+  + resource "aws_ecr_repository" "this" {
+      + arn                  = (known after apply)
+      + force_delete         = true
+      + id                   = (known after apply)
+      + image_tag_mutability = "IMMUTABLE"
+      + name                 = "eks-platform-dev-frontend"
+      + region               = "ap-south-1"
+      + registry_id          = (known after apply)
+      + repository_url       = (known after apply)
+      + tags                 = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-frontend"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+          + "Service"     = "frontend"
+        }
+      + tags_all             = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-frontend"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+          + "Service"     = "frontend"
+        }
+
+      + encryption_configuration {
+          + encryption_type = "KMS"
+          + kms_key         = (known after apply)
+        }
+    }
+
+  # module.eks.data.aws_iam_policy_document.alb_assume_role[0] will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "alb_assume_role" {
+      + id            = (known after apply)
+      + json          = (known after apply)
+      + minified_json = (known after apply)
+
+      + statement {
+          + actions = [
+              + "sts:AssumeRoleWithWebIdentity",
+            ]
+          + effect  = "Allow"
+          + sid     = "AllowServiceAccountAssumeRole"
+
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "sts.amazonaws.com",
+                ]
+              + variable = (known after apply)
+            }
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "system:serviceaccount:kube-system:aws-load-balancer-controller",
+                ]
+              + variable = (known after apply)
+            }
+
+          + principals {
+              + identifiers = [
+                  + (known after apply),
+                ]
+              + type        = "Federated"
+            }
+        }
+    }
+
+  # module.eks.data.aws_iam_policy_document.external_secrets_assume_role will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "external_secrets_assume_role" {
+      + id            = (known after apply)
+      + json          = (known after apply)
+      + minified_json = (known after apply)
+
+      + statement {
+          + actions = [
+              + "sts:AssumeRoleWithWebIdentity",
+            ]
+          + effect  = "Allow"
+
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "sts.amazonaws.com",
+                ]
+              + variable = (known after apply)
+            }
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "system:serviceaccount:external-secrets:external-secrets",
+                ]
+              + variable = (known after apply)
+            }
+
+          + principals {
+              + identifiers = [
+                  + (known after apply),
+                ]
+              + type        = "Federated"
+            }
+        }
+    }
+
+  # module.eks.data.aws_iam_policy_document.irsa_trust will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "irsa_trust" {
+      + id            = (known after apply)
+      + json          = (known after apply)
+      + minified_json = (known after apply)
+
+      + statement {
+          + actions = [
+              + "sts:AssumeRoleWithWebIdentity",
+            ]
+          + effect  = "Allow"
+
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "sts:amazonaws.com",
+                ]
+              + variable = (known after apply)
+            }
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "system:serviceaccount:application:backend",
+                ]
+              + variable = (known after apply)
+            }
+
+          + principals {
+              + identifiers = [
+                  + (known after apply),
+                ]
+              + type        = "Federated"
+            }
+        }
+    }
+
+  # module.eks.data.aws_iam_policy_document.karpenter_policy_document will be read during apply
+  # (config refers to values not yet known)
+ <= data "aws_iam_policy_document" "karpenter_policy_document" {
+      + id            = (known after apply)
+      + json          = (known after apply)
+      + minified_json = (known after apply)
+
+      + statement {
+          + actions = [
+              + "sts:AssumeRoleWithWebIdentity",
+            ]
+          + effect  = "Allow"
+          + sid     = "KarpenterControllerAssumeRole"
+
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "sts.amazonaws.com",
+                ]
+              + variable = (known after apply)
+            }
+          + condition {
+              + test     = "StringEquals"
+              + values   = [
+                  + "system:serviceaccount:karpenter:karpenter",
+                ]
+              + variable = (known after apply)
+            }
+
+          + principals {
+              + identifiers = [
+                  + (known after apply),
+                ]
+              + type        = "Federated"
+            }
+        }
+    }
+
+  # module.eks.data.tls_certificate.eks_oidc will be read during apply
+  # (config refers to values not yet known)
+ <= data "tls_certificate" "eks_oidc" {
+      + certificates = (known after apply)
+      + id           = (known after apply)
+      + url          = (known after apply)
+    }
+
+  # module.eks.aws_ec2_tag.karpenter_node will be created
+  + resource "aws_ec2_tag" "karpenter_node" {
+      + id          = (known after apply)
+      + key         = "karpenter.sh/discovery"
+      + region      = "ap-south-1"
+      + resource_id = (known after apply)
+      + value       = "eks-platform-dev-cluster"
+    }
+
+  # module.eks.aws_eks_access_entry.karpenter_node will be created
+  + resource "aws_eks_access_entry" "karpenter_node" {
+      + access_entry_arn  = (known after apply)
+      + cluster_name      = "eks-platform-dev-cluster"
+      + created_at        = (known after apply)
+      + id                = (known after apply)
+      + kubernetes_groups = (known after apply)
+      + modified_at       = (known after apply)
+      + principal_arn     = (known after apply)
+      + region            = "ap-south-1"
+      + tags_all          = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + type              = "EC2_LINUX"
+      + user_name         = (known after apply)
+    }
+
+  # module.eks.aws_eks_addon.this["coredns"] will be created
+  + resource "aws_eks_addon" "this" {
+      + addon_name                  = "coredns"
+      + addon_version               = "v1.14.3-eksbuild.3"
+      + arn                         = (known after apply)
+      + cluster_name                = "eks-platform-dev-cluster"
+      + configuration_values        = (known after apply)
+      + created_at                  = (known after apply)
+      + id                          = (known after apply)
+      + modified_at                 = (known after apply)
+      + region                      = "ap-south-1"
+      + resolve_conflicts_on_create = "OVERWRITE"
+      + resolve_conflicts_on_update = "OVERWRITE"
+      + tags                        = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-coredns"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                    = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-coredns"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+
+      + namespace_config (known after apply)
+    }
+
+  # module.eks.aws_eks_addon.this["kube_proxy"] will be created
+  + resource "aws_eks_addon" "this" {
+      + addon_name                  = "kube-proxy"
+      + addon_version               = "v1.35.3-eksbuild.13"
+      + arn                         = (known after apply)
+      + cluster_name                = "eks-platform-dev-cluster"
+      + configuration_values        = (known after apply)
+      + created_at                  = (known after apply)
+      + id                          = (known after apply)
+      + modified_at                 = (known after apply)
+      + region                      = "ap-south-1"
+      + resolve_conflicts_on_create = "OVERWRITE"
+      + resolve_conflicts_on_update = "OVERWRITE"
+      + tags                        = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-kube-proxy"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                    = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-kube-proxy"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+
+      + namespace_config (known after apply)
+    }
+
+  # module.eks.aws_eks_addon.this["vpc_cni"] will be created
+  + resource "aws_eks_addon" "this" {
+      + addon_name                  = "vpc-cni"
+      + addon_version               = "v1.22.4-eksbuild.3"
+      + arn                         = (known after apply)
+      + cluster_name                = "eks-platform-dev-cluster"
+      + configuration_values        = jsonencode(
+            {
+              + enableNetworkPolicy = "true"
+              + env                 = {
+                  + ENABLE_POD_ENI                    = "true"
+                  + POD_SECURITY_GROUP_ENFORCING_MODE = "standard"
+                }
+            }
+        )
+      + created_at                  = (known after apply)
+      + id                          = (known after apply)
+      + modified_at                 = (known after apply)
+      + region                      = "ap-south-1"
+      + resolve_conflicts_on_create = "OVERWRITE"
+      + resolve_conflicts_on_update = "OVERWRITE"
+      + tags                        = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-vpc-cni"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                    = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-vpc-cni"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+
+      + namespace_config (known after apply)
+    }
+
+  # module.eks.aws_eks_cluster.this will be created
+  + resource "aws_eks_cluster" "this" {
+      + arn                           = (known after apply)
+      + bootstrap_self_managed_addons = true
+      + certificate_authority         = (known after apply)
+      + cluster_id                    = (known after apply)
+      + created_at                    = (known after apply)
+      + deletion_protection           = (known after apply)
+      + enabled_cluster_log_types     = [
+          + "api",
+          + "audit",
+          + "authenticator",
+          + "controllerManager",
+          + "scheduler",
+        ]
+      + endpoint                      = (known after apply)
+      + id                            = (known after apply)
+      + identity                      = (known after apply)
+      + name                          = "eks-platform-dev-cluster"
+      + platform_version              = (known after apply)
+      + region                        = "ap-south-1"
+      + role_arn                      = (known after apply)
+      + status                        = (known after apply)
+      + tags                          = {
+          + "CostCenter"         = "Engineering"
+          + "Environment"        = "dev"
+          + "ManagedBy"          = "Terraform"
+          + "Name"               = "eks-platform-dev-cluster"
+          + "Owner"              = "Haris"
+          + "Project"            = "eks-platform"
+          + "Repository"         = "https://github.com/muhdhares/eks-platform"
+          + "kubernetes_version" = "1.35"
+        }
+      + tags_all                      = {
+          + "CostCenter"         = "Engineering"
+          + "Environment"        = "dev"
+          + "ManagedBy"          = "Terraform"
+          + "Name"               = "eks-platform-dev-cluster"
+          + "Owner"              = "Haris"
+          + "Project"            = "eks-platform"
+          + "Repository"         = "https://github.com/muhdhares/eks-platform"
+          + "kubernetes_version" = "1.35"
+        }
+      + version                       = "1.35"
+
+      + access_config {
+          + authentication_mode                         = "API_AND_CONFIG_MAP"
+          + bootstrap_cluster_creator_admin_permissions = true
+        }
+
+      + compute_config (known after apply)
+
+      + control_plane_scaling_config (known after apply)
+
+      + encryption_config {
+          + resources = [
+              + "secrets",
+            ]
+
+          + provider {
+              + key_arn = (known after apply)
+            }
+        }
+
+      + kubernetes_network_config (known after apply)
+
+      + storage_config (known after apply)
+
+      + upgrade_policy (known after apply)
+
+      + vpc_config {
+          + cluster_security_group_id = (known after apply)
+          + control_plane_egress_mode = (known after apply)
+          + endpoint_private_access   = true
+          + endpoint_public_access    = true
+          + public_access_cidrs       = (known after apply)
+          + subnet_ids                = (known after apply)
+          + vpc_id                    = (known after apply)
+        }
+    }
+
+  # module.eks.aws_eks_node_group.this will be created
+  + resource "aws_eks_node_group" "this" {
+      + ami_type               = (known after apply)
+      + arn                    = (known after apply)
+      + capacity_type          = "ON_DEMAND"
+      + cluster_name           = "eks-platform-dev-cluster"
+      + disk_size              = 50
+      + id                     = (known after apply)
+      + instance_types         = [
+          + "c7i-flex.large",
+        ]
+      + labels                 = {
+          + "workload" = "general"
+        }
+      + node_group_name        = "eks-platform-dev-node-group"
+      + node_group_name_prefix = (known after apply)
+      + node_role_arn          = (known after apply)
+      + region                 = "ap-south-1"
+      + release_version        = (known after apply)
+      + resources              = (known after apply)
+      + status                 = (known after apply)
+      + subnet_ids             = (known after apply)
+      + tags                   = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-node-group"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-node-group"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + version                = (known after apply)
+
+      + node_repair_config (known after apply)
+
+      + scaling_config {
+          + desired_size = 2
+          + max_size     = 4
+          + min_size     = 2
+        }
+
+      + update_config (known after apply)
+    }
+
+  # module.eks.aws_iam_instance_profile.karpenter_node will be created
+  + resource "aws_iam_instance_profile" "karpenter_node" {
+      + arn         = (known after apply)
+      + create_date = (known after apply)
+      + id          = (known after apply)
+      + name        = "eks-platform-dev-karpenter-node"
+      + name_prefix = (known after apply)
+      + path        = "/"
+      + role        = "eks-platform-dev-karpenter-node-role"
+      + tags        = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-karpenter-node"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all    = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-karpenter-node"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + unique_id   = (known after apply)
+    }
+
+  # module.eks.aws_iam_openid_connect_provider.github will be created
+  + resource "aws_iam_openid_connect_provider" "github" {
+      + arn             = (known after apply)
+      + client_id_list  = [
+          + "sts.amazonaws.com",
+        ]
+      + id              = (known after apply)
+      + tags            = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all        = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + thumbprint_list = [
+          + "ab9d0263244dd0326eb67015705a667e79cfe998",
+        ]
+      + url             = "https://token.actions.githubusercontent.com"
+    }
+
+  # module.eks.aws_iam_openid_connect_provider.this will be created
+  + resource "aws_iam_openid_connect_provider" "this" {
+      + arn             = (known after apply)
+      + client_id_list  = [
+          + "sts.amazonaws.com",
+        ]
+      + id              = (known after apply)
+      + tags            = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all        = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + thumbprint_list = (known after apply)
+      + url             = (known after apply)
+    }
+
+  # module.eks.aws_iam_policy.github_actions_ecr will be created
+  + resource "aws_iam_policy" "github_actions_ecr" {
+      + arn              = (known after apply)
+      + attachment_count = (known after apply)
+      + id               = (known after apply)
+      + name             = "eks-platform-dev-github-actions-ecr"
+      + name_prefix      = (known after apply)
+      + path             = "/"
+      + policy           = (known after apply)
+      + policy_id        = (known after apply)
+      + tags_all         = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+    }
+
+  # module.eks.aws_iam_role.alb_role[0] will be created
+  + resource "aws_iam_role" "alb_role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = (known after apply)
+      + create_date           = (known after apply)
+      + description           = "IAM role for the ALB controller"
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "eks-platform-dev-alb-controller"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-alb-controller"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-alb-controller"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.external_secrets will be created
+  + resource "aws_iam_role" "external_secrets" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = (known after apply)
+      + create_date           = (known after apply)
+      + description           = "IAM role for External Secrets"
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "eks-platform-dev-external-secrets"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-external-secrets"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-external-secrets"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.github_oidc_role will be created
+  + resource "aws_iam_role" "github_oidc_role" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = (known after apply)
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "eks-platform-dev-oidc-github"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.karpenter will be created
+  + resource "aws_iam_role" "karpenter" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = (known after apply)
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "eks-platform-dev-karpenter-controller"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-karpenter-controller"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-karpenter-controller"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.karpenter_node will be created
+  + resource "aws_iam_role" "karpenter_node" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "ec2.amazonaws.com"
+                        }
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "eks-platform-dev-karpenter-node-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-karpenter-node-role"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-karpenter-node-role"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.this["cluster_role"] will be created
+  + resource "aws_iam_role" "this" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "eks.amazonaws.com"
+                        }
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "eks-platform-dev-eks-cluster-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-eks-cluster-role"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-eks-cluster-role"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role.this["node_group_role"] will be created
+  + resource "aws_iam_role" "this" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "ec2.amazonaws.com"
+                        }
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "eks-platform-dev-eks-node-group-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-eks-node-group-role"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-eks-node-group-role"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.eks.aws_iam_role_policy.alb_controller[0] will be created
+  + resource "aws_iam_role_policy" "alb_controller" {
+      + id          = (known after apply)
+      + name        = "aws-load-balancer-controller-policy"
+      + name_prefix = (known after apply)
+      + policy      = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = [
+                          + "iam:CreateServiceLinkedRole",
+                        ]
+                      + Condition = {
+                          + StringEquals = {
+                              + "iam:AWSServiceName" = "elasticloadbalancing.amazonaws.com"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "*"
+                    },
+                  + {
+                      + Action   = [
+                          + "ec2:DescribeAccountAttributes",
+                          + "ec2:DescribeAddresses",
+                          + "ec2:DescribeAvailabilityZones",
+                          + "ec2:DescribeInternetGateways",
+                          + "ec2:DescribeVpcs",
+                          + "ec2:DescribeVpcPeeringConnections",
+                          + "ec2:DescribeSubnets",
+                          + "ec2:DescribeSecurityGroups",
+                          + "ec2:DescribeInstances",
+                          + "ec2:DescribeNetworkInterfaces",
+                          + "ec2:DescribeTags",
+                          + "ec2:GetCoipPoolUsage",
+                          + "ec2:DescribeCoipPools",
+                          + "ec2:GetSecurityGroupsForVpc",
+                          + "ec2:DescribeIpamPools",
+                          + "ec2:DescribeRouteTables",
+                          + "elasticloadbalancing:DescribeLoadBalancers",
+                          + "elasticloadbalancing:DescribeLoadBalancerAttributes",
+                          + "elasticloadbalancing:DescribeListeners",
+                          + "elasticloadbalancing:DescribeListenerCertificates",
+                          + "elasticloadbalancing:DescribeSSLPolicies",
+                          + "elasticloadbalancing:DescribeRules",
+                          + "elasticloadbalancing:DescribeTargetGroups",
+                          + "elasticloadbalancing:DescribeTargetGroupAttributes",
+                          + "elasticloadbalancing:DescribeTargetHealth",
+                          + "elasticloadbalancing:DescribeTags",
+                          + "elasticloadbalancing:DescribeTrustStores",
+                          + "elasticloadbalancing:DescribeListenerAttributes",
+                          + "elasticloadbalancing:DescribeCapacityReservation",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                  + {
+                      + Action   = [
+                          + "cognito-idp:DescribeUserPoolClient",
+                          + "acm:ListCertificates",
+                          + "acm:DescribeCertificate",
+                          + "iam:ListServerCertificates",
+                          + "iam:GetServerCertificate",
+                          + "waf-regional:GetWebACL",
+                          + "waf-regional:GetWebACLForResource",
+                          + "waf-regional:AssociateWebACL",
+                          + "waf-regional:DisassociateWebACL",
+                          + "wafv2:GetWebACL",
+                          + "wafv2:GetWebACLForResource",
+                          + "wafv2:AssociateWebACL",
+                          + "wafv2:DisassociateWebACL",
+                          + "shield:GetSubscriptionState",
+                          + "shield:DescribeProtection",
+                          + "shield:CreateProtection",
+                          + "shield:DeleteProtection",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                  + {
+                      + Action   = [
+                          + "ec2:AuthorizeSecurityGroupIngress",
+                          + "ec2:RevokeSecurityGroupIngress",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                  + {
+                      + Action   = [
+                          + "ec2:CreateSecurityGroup",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                  + {
+                      + Action    = [
+                          + "ec2:CreateTags",
+                        ]
+                      + Condition = {
+                          + Null         = {
+                              + "aws:RequestTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                          + StringEquals = {
+                              + "ec2:CreateAction" = "CreateSecurityGroup"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "arn:aws:ec2:*:*:security-group/*"
+                    },
+                  + {
+                      + Action    = [
+                          + "ec2:CreateTags",
+                          + "ec2:DeleteTags",
+                        ]
+                      + Condition = {
+                          + Null = {
+                              + "aws:RequestTag/elbv2.k8s.aws/cluster"  = "true"
+                              + "aws:ResourceTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "arn:aws:ec2:*:*:security-group/*"
+                    },
+                  + {
+                      + Action    = [
+                          + "ec2:AuthorizeSecurityGroupIngress",
+                          + "ec2:RevokeSecurityGroupIngress",
+                          + "ec2:DeleteSecurityGroup",
+                        ]
+                      + Condition = {
+                          + Null = {
+                              + "aws:ResourceTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "*"
+                    },
+                  + {
+                      + Action    = [
+                          + "elasticloadbalancing:CreateLoadBalancer",
+                          + "elasticloadbalancing:CreateTargetGroup",
+                        ]
+                      + Condition = {
+                          + Null = {
+                              + "aws:RequestTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "*"
+                    },
+                  + {
+                      + Action   = [
+                          + "elasticloadbalancing:CreateListener",
+                          + "elasticloadbalancing:DeleteListener",
+                          + "elasticloadbalancing:CreateRule",
+                          + "elasticloadbalancing:DeleteRule",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                  + {
+                      + Action    = [
+                          + "elasticloadbalancing:AddTags",
+                          + "elasticloadbalancing:RemoveTags",
+                        ]
+                      + Condition = {
+                          + Null = {
+                              + "aws:RequestTag/elbv2.k8s.aws/cluster"  = "true"
+                              + "aws:ResourceTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = [
+                          + "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*",
+                        ]
+                    },
+                  + {
+                      + Action   = [
+                          + "elasticloadbalancing:AddTags",
+                          + "elasticloadbalancing:RemoveTags",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = [
+                          + "arn:aws:elasticloadbalancing:*:*:listener/net/*/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:listener/app/*/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:listener-rule/net/*/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:listener-rule/app/*/*/*",
+                        ]
+                    },
+                  + {
+                      + Action    = [
+                          + "elasticloadbalancing:ModifyLoadBalancerAttributes",
+                          + "elasticloadbalancing:SetIpAddressType",
+                          + "elasticloadbalancing:SetSecurityGroups",
+                          + "elasticloadbalancing:SetSubnets",
+                          + "elasticloadbalancing:DeleteLoadBalancer",
+                          + "elasticloadbalancing:ModifyTargetGroup",
+                          + "elasticloadbalancing:ModifyTargetGroupAttributes",
+                          + "elasticloadbalancing:DeleteTargetGroup",
+                          + "elasticloadbalancing:ModifyListenerAttributes",
+                          + "elasticloadbalancing:ModifyCapacityReservation",
+                          + "elasticloadbalancing:ModifyIpPools",
+                        ]
+                      + Condition = {
+                          + Null = {
+                              + "aws:ResourceTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = "*"
+                    },
+                  + {
+                      + Action    = [
+                          + "elasticloadbalancing:AddTags",
+                        ]
+                      + Condition = {
+                          + Null         = {
+                              + "aws:RequestTag/elbv2.k8s.aws/cluster" = "false"
+                            }
+                          + StringEquals = {
+                              + "elasticloadbalancing:CreateAction" = [
+                                  + "CreateTargetGroup",
+                                  + "CreateLoadBalancer",
+                                ]
+                            }
+                        }
+                      + Effect    = "Allow"
+                      + Resource  = [
+                          + "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:loadbalancer/net/*/*",
+                          + "arn:aws:elasticloadbalancing:*:*:loadbalancer/app/*/*",
+                        ]
+                    },
+                  + {
+                      + Action   = [
+                          + "elasticloadbalancing:RegisterTargets",
+                          + "elasticloadbalancing:DeregisterTargets",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "arn:aws:elasticloadbalancing:*:*:targetgroup/*/*"
+                    },
+                  + {
+                      + Action   = [
+                          + "elasticloadbalancing:SetWebAcl",
+                          + "elasticloadbalancing:ModifyListener",
+                          + "elasticloadbalancing:AddListenerCertificates",
+                          + "elasticloadbalancing:RemoveListenerCertificates",
+                          + "elasticloadbalancing:ModifyRule",
+                          + "elasticloadbalancing:SetRulePriorities",
+                        ]
+                      + Effect   = "Allow"
+                      + Resource = "*"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + role        = "eks-platform-dev-alb-controller"
+    }
+
+  # module.eks.aws_iam_role_policy.external_secrets will be created
+  + resource "aws_iam_role_policy" "external_secrets" {
+      + id          = (known after apply)
+      + name        = (known after apply)
+      + name_prefix = (known after apply)
+      + policy      = (known after apply)
+      + role        = "eks-platform-dev-external-secrets"
+    }
+
+  # module.eks.aws_iam_role_policy.karpenter_policy will be created
+  + resource "aws_iam_role_policy" "karpenter_policy" {
+      + id          = (known after apply)
+      + name        = "eks-platform-dev-karpenter-controller-policy"
+      + name_prefix = (known after apply)
+      + policy      = (known after apply)
+      + role        = (known after apply)
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_cluster["cluster_role-AmazonEKSClusterPolicy"] will be created
+  + resource "aws_iam_role_policy_attachment" "eks_cluster" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
+      + role       = "eks-platform-dev-eks-cluster-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_cluster["cluster_role-AmazonEKSVPCResourceController"] will be created
+  + resource "aws_iam_role_policy_attachment" "eks_cluster" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSVPCResourceController"
+      + role       = "eks-platform-dev-eks-cluster-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_cluster["node_group_role-AmazonEC2ContainerRegistryReadOnly"] will be created
+  + resource "aws_iam_role_policy_attachment" "eks_cluster" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
+      + role       = "eks-platform-dev-eks-node-group-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_cluster["node_group_role-AmazonEKSWorkerNodePolicy"] will be created
+  + resource "aws_iam_role_policy_attachment" "eks_cluster" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+      + role       = "eks-platform-dev-eks-node-group-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.eks_cluster["node_group_role-AmazonEKS_CNI_Policy"] will be created
+  + resource "aws_iam_role_policy_attachment" "eks_cluster" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      + role       = "eks-platform-dev-eks-node-group-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.github_policy_attachment will be created
+  + resource "aws_iam_role_policy_attachment" "github_policy_attachment" {
+      + id         = (known after apply)
+      + policy_arn = (known after apply)
+      + role       = "eks-platform-dev-oidc-github"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.karpenter_node["AmazonEC2ContainerRegistryPullOnly"] will be created
+  + resource "aws_iam_role_policy_attachment" "karpenter_node" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryPullOnly"
+      + role       = "eks-platform-dev-karpenter-node-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.karpenter_node["AmazonEKSWorkerNodePolicy"] will be created
+  + resource "aws_iam_role_policy_attachment" "karpenter_node" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
+      + role       = "eks-platform-dev-karpenter-node-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.karpenter_node["AmazonEKS_CNI_Policy"] will be created
+  + resource "aws_iam_role_policy_attachment" "karpenter_node" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
+      + role       = "eks-platform-dev-karpenter-node-role"
+    }
+
+  # module.eks.aws_iam_role_policy_attachment.karpenter_node["AmazonSSMManagedInstanceCore"] will be created
+  + resource "aws_iam_role_policy_attachment" "karpenter_node" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+      + role       = "eks-platform-dev-karpenter-node-role"
+    }
+
+  # module.eks.aws_security_group.backend_pods will be created
+  + resource "aws_security_group" "backend_pods" {
+      + arn                    = (known after apply)
+      + description            = "Network access for BankApp backend pods"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = "eks-platform-dev-backend-pods"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + region                 = "ap-south-1"
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-backend-pods"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-backend-pods"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.eks.aws_vpc_security_group_egress_rule.backend_pods_to_database["10.0.21.0/24"] will be created
+  + resource "aws_vpc_security_group_egress_rule" "backend_pods_to_database" {
+      + arn                    = (known after apply)
+      + cidr_ipv4              = "10.0.21.0/24"
+      + description            = "Allow backend pods to reach PostgreSQL in database subnets"
+      + from_port              = 5432
+      + id                     = (known after apply)
+      + ip_protocol            = "tcp"
+      + region                 = "ap-south-1"
+      + security_group_id      = (known after apply)
+      + security_group_rule_id = (known after apply)
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + to_port                = 5432
+    }
+
+  # module.eks.aws_vpc_security_group_egress_rule.backend_pods_to_database["10.0.22.0/24"] will be created
+  + resource "aws_vpc_security_group_egress_rule" "backend_pods_to_database" {
+      + arn                    = (known after apply)
+      + cidr_ipv4              = "10.0.22.0/24"
+      + description            = "Allow backend pods to reach PostgreSQL in database subnets"
+      + from_port              = 5432
+      + id                     = (known after apply)
+      + ip_protocol            = "tcp"
+      + region                 = "ap-south-1"
+      + security_group_id      = (known after apply)
+      + security_group_rule_id = (known after apply)
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + to_port                = 5432
+    }
+
+  # module.eks.aws_vpc_security_group_egress_rule.backend_pods_to_dns["tcp"] will be created
+  + resource "aws_vpc_security_group_egress_rule" "backend_pods_to_dns" {
+      + arn                    = (known after apply)
+      + cidr_ipv4              = "10.0.0.0/16"
+      + description            = "Allow backend pod DNS resolution"
+      + from_port              = 53
+      + id                     = (known after apply)
+      + ip_protocol            = "tcp"
+      + region                 = "ap-south-1"
+      + security_group_id      = (known after apply)
+      + security_group_rule_id = (known after apply)
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + to_port                = 53
+    }
+
+  # module.eks.aws_vpc_security_group_egress_rule.backend_pods_to_dns["udp"] will be created
+  + resource "aws_vpc_security_group_egress_rule" "backend_pods_to_dns" {
+      + arn                    = (known after apply)
+      + cidr_ipv4              = "10.0.0.0/16"
+      + description            = "Allow backend pod DNS resolution"
+      + from_port              = 53
+      + id                     = (known after apply)
+      + ip_protocol            = "udp"
+      + region                 = "ap-south-1"
+      + security_group_id      = (known after apply)
+      + security_group_rule_id = (known after apply)
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + to_port                = 53
+    }
+
+  # module.eks.aws_vpc_security_group_ingress_rule.backend_pods_from_nodes will be created
+  + resource "aws_vpc_security_group_ingress_rule" "backend_pods_from_nodes" {
+      + arn                          = (known after apply)
+      + description                  = "Allow cluster workloads to reach backend pods"
+      + from_port                    = 8080
+      + id                           = (known after apply)
+      + ip_protocol                  = "tcp"
+      + referenced_security_group_id = (known after apply)
+      + region                       = "ap-south-1"
+      + security_group_id            = (known after apply)
+      + security_group_rule_id       = (known after apply)
+      + tags_all                     = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + to_port                      = 8080
+    }
+
+  # module.eks.helm_release.argocd will be created
+  + resource "helm_release" "argocd" {
+      + atomic                     = false
+      + chart                      = "argo-cd"
+      + cleanup_on_fail            = false
+      + create_namespace           = true
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "argocd"
+      + namespace                  = "argocd"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "https://argoproj.github.io/argo-helm"
+      + reset_values               = false
+      + reuse_values               = false
+      + set_wo                     = (write-only attribute)
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + take_ownership             = false
+      + timeout                    = 600
+      + upgrade_install            = false
+      + verify                     = false
+      + version                    = "10.10.5"
+      + wait                       = true
+      + wait_for_jobs              = false
+    }
+
+  # module.eks.helm_release.aws_load_balancer_controller will be created
+  + resource "helm_release" "aws_load_balancer_controller" {
+      + atomic                     = false
+      + chart                      = "aws-load-balancer-controller"
+      + cleanup_on_fail            = false
+      + create_namespace           = false
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "eks-platform-dev"
+      + namespace                  = "kube-system"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "https://aws.github.io/eks-charts"
+      + reset_values               = false
+      + reuse_values               = false
+      + set_wo                     = (write-only attribute)
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + take_ownership             = false
+      + timeout                    = 300
+      + upgrade_install            = false
+      + values                     = [
+          + (known after apply),
+        ]
+      + verify                     = false
+      + version                    = "3.5.0"
+      + wait                       = true
+      + wait_for_jobs              = false
+    }
+
+  # module.eks.helm_release.external_secrets will be created
+  + resource "helm_release" "external_secrets" {
+      + atomic                     = false
+      + chart                      = "external-secrets"
+      + cleanup_on_fail            = false
+      + create_namespace           = true
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "external-secrets"
+      + namespace                  = "external-secrets"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "https://charts.external-secrets.io"
+      + reset_values               = false
+      + reuse_values               = false
+      + set_wo                     = (write-only attribute)
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + take_ownership             = false
+      + timeout                    = 600
+      + upgrade_install            = false
+      + values                     = [
+          + (known after apply),
+        ]
+      + verify                     = false
+      + version                    = "2.9.0"
+      + wait                       = true
+      + wait_for_jobs              = false
+    }
+
+  # module.eks.helm_release.karpenter will be created
+  + resource "helm_release" "karpenter" {
+      + atomic                     = false
+      + chart                      = "karpenter"
+      + cleanup_on_fail            = false
+      + create_namespace           = false
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "karpenter"
+      + namespace                  = "karpenter"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "oci://public.ecr.aws/karpenter"
+      + reset_values               = false
+      + reuse_values               = false
+      + set_wo                     = (write-only attribute)
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + take_ownership             = false
+      + timeout                    = 600
+      + upgrade_install            = false
+      + values                     = [
+          + (known after apply),
+        ]
+      + verify                     = false
+      + version                    = "1.14.1"
+      + wait                       = true
+      + wait_for_jobs              = false
+    }
+
+  # module.eks.helm_release.karpenter_crd will be created
+  + resource "helm_release" "karpenter_crd" {
+      + atomic                     = false
+      + chart                      = "karpenter-crd"
+      + cleanup_on_fail            = false
+      + create_namespace           = true
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "karpenter-crd"
+      + namespace                  = "karpenter"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "oci://public.ecr.aws/karpenter"
+      + reset_values               = false
+      + reuse_values               = false
+      + set_wo                     = (write-only attribute)
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + take_ownership             = false
+      + timeout                    = 600
+      + upgrade_install            = false
+      + verify                     = false
+      + version                    = "1.14.1"
+      + wait                       = true
+      + wait_for_jobs              = false
+    }
+
+  # module.eks.helm_release.metrics_server will be created
+  + resource "helm_release" "metrics_server" {
+      + atomic                     = false
+      + chart                      = "metrics-server"
+      + cleanup_on_fail            = false
+      + create_namespace           = false
+      + dependency_update          = false
+      + disable_crd_hooks          = false
+      + disable_openapi_validation = false
+      + disable_webhooks           = false
+      + force_update               = false
+      + id                         = (known after apply)
+      + lint                       = false
+      + max_history                = 0
+      + metadata                   = (known after apply)
+      + name                       = "metrics-server"
+      + namespace                  = "kube-system"
+      + pass_credentials           = false
+      + recreate_pods              = false
+      + render_subchart_notes      = true
+      + replace                    = false
+      + repository                 = "https://kubernetes-sigs.github.io/metrics-server/"
+      + reset_values               = false
+      + reuse_values               = false
+      + set_wo                     = (write-only attribute)
+      + skip_crds                  = false
+      + status                     = "deployed"
+      + take_ownership             = false
+      + timeout                    = 600
+      + upgrade_install            = false
+      + values                     = [
+          + <<-EOT
+                "replicas": 2
+                "resources":
+                  "limits":
+                    "cpu": "500m"
+                    "memory": "500Mi"
+                  "requests":
+                    "cpu": "100m"
+                    "memory": "200Mi"
+            EOT,
+        ]
+      + verify                     = false
+      + version                    = "3.13.0"
+      + wait                       = true
+      + wait_for_jobs              = false
+    }
+
+  # module.eks.kubectl_manifest.appproject will be created
+  + resource "kubectl_manifest" "appproject" {
+      + api_version             = "argoproj.io/v1alpha1"
+      + apply_only              = false
+      + force_conflicts         = false
+      + force_new               = false
+      + id                      = (known after apply)
+      + kind                    = "AppProject"
+      + live_manifest_incluster = (sensitive value)
+      + live_uid                = (known after apply)
+      + name                    = "eks-platform-dev"
+      + namespace               = "argocd"
+      + server_side_apply       = false
+      + uid                     = (known after apply)
+      + validate_schema         = true
+      + wait_for_rollout        = true
+      + yaml_body               = (sensitive value)
+      + yaml_body_parsed        = <<-EOT
+            apiVersion: argoproj.io/v1alpha1
+            kind: AppProject
+            metadata:
+              name: eks-platform-dev
+              namespace: argocd
+            spec:
+              clusterResourceWhitelist:
+              - group: ""
+                kind: Namespace
+              - group: karpenter.sh
+                kind: NodePool
+              - group: karpenter.k8s.aws
+                kind: EC2NodeClass
+              - group: external-secrets.io
+                kind: ClusterSecretStore
+              description: EKS Platform Development
+              destinations:
+              - namespace: bankapp
+                server: https://kubernetes.default.svc
+              namespaceResourceWhitelist:
+              - group: ""
+                kind: ConfigMap
+              - group: ""
+                kind: Secret
+              - group: ""
+                kind: Service
+              - group: ""
+                kind: ServiceAccount
+              - group: apps
+                kind: Deployment
+              - group: networking.k8s.io
+                kind: Ingress
+              - group: networking.k8s.io
+                kind: NetworkPolicy
+              - group: autoscaling
+                kind: HorizontalPodAutoscaler
+              - group: policy
+                kind: PodDisruptionBudget
+              - group: external-secrets.io
+                kind: ExternalSecret
+              sourceRepos:
+              - https://github.com/harishazmohd/Eks-platform.git
+        EOT
+      + yaml_incluster          = (sensitive value)
+    }
+
+  # module.eks.kubectl_manifest.argocd will be created
+  + resource "kubectl_manifest" "argocd" {
+      + api_version             = "argoproj.io/v1alpha1"
+      + apply_only              = false
+      + force_conflicts         = false
+      + force_new               = false
+      + id                      = (known after apply)
+      + kind                    = "Application"
+      + live_manifest_incluster = (sensitive value)
+      + live_uid                = (known after apply)
+      + name                    = "argo-cd"
+      + namespace               = "argocd"
+      + server_side_apply       = false
+      + uid                     = (known after apply)
+      + validate_schema         = true
+      + wait_for_rollout        = true
+      + yaml_body               = (sensitive value)
+      + yaml_body_parsed        = <<-EOT
+            apiVersion: argoproj.io/v1alpha1
+            kind: Application
+            metadata:
+              name: argo-cd
+              namespace: argocd
+            spec:
+              destination:
+                namespace: bankapp
+                server: https://kubernetes.default.svc
+              project: eks-platform-dev
+              source:
+                helm:
+                  valueFiles:
+                  - values.yaml
+                path: helm/bankapp
+                repoURL: https://github.com/harishazmohd/Eks-platform.git
+                targetRevision: main
+              syncPolicy:
+                automated:
+                  prune: true
+                  selfHeal: true
+                syncOptions:
+                - CreateNamespace=true
+        EOT
+      + yaml_incluster          = (sensitive value)
+    }
+
+  # module.eks.kubectl_manifest.backend_security_group_policy will be created
+  + resource "kubectl_manifest" "backend_security_group_policy" {
+      + api_version             = (known after apply)
+      + apply_only              = false
+      + force_conflicts         = false
+      + force_new               = false
+      + id                      = (known after apply)
+      + kind                    = (known after apply)
+      + live_manifest_incluster = (sensitive value)
+      + live_uid                = (known after apply)
+      + name                    = (known after apply)
+      + namespace               = (known after apply)
+      + server_side_apply       = false
+      + uid                     = (known after apply)
+      + validate_schema         = true
+      + wait_for_rollout        = true
+      + yaml_body               = (sensitive value)
+      + yaml_body_parsed        = (known after apply)
+      + yaml_incluster          = (sensitive value)
+    }
+
+  # module.eks.kubernetes_namespace_v1.bankapp will be created
+  + resource "kubernetes_namespace_v1" "bankapp" {
+      + id                               = (known after apply)
+      + wait_for_default_service_account = false
+
+      + metadata {
+          + generation       = (known after apply)
+          + name             = "bankapp"
+          + resource_version = (known after apply)
+          + uid              = (known after apply)
+        }
+    }
+
+  # module.eks.time_sleep.wait_for_argocd_cleanup will be created
+  + resource "time_sleep" "wait_for_argocd_cleanup" {
+      + destroy_duration = "90s"
+      + id               = (known after apply)
+    }
+
+  # module.kms.aws_kms_alias.this["ecr"] will be created
+  + resource "aws_kms_alias" "this" {
+      + arn            = (known after apply)
+      + id             = (known after apply)
+      + name           = "alias/eks-platform-dev-ecr"
+      + name_prefix    = (known after apply)
+      + region         = "ap-south-1"
+      + target_key_arn = (known after apply)
+      + target_key_id  = (known after apply)
+    }
+
+  # module.kms.aws_kms_alias.this["eks"] will be created
+  + resource "aws_kms_alias" "this" {
+      + arn            = (known after apply)
+      + id             = (known after apply)
+      + name           = "alias/eks-platform-dev-eks"
+      + name_prefix    = (known after apply)
+      + region         = "ap-south-1"
+      + target_key_arn = (known after apply)
+      + target_key_id  = (known after apply)
+    }
+
+  # module.kms.aws_kms_alias.this["rds"] will be created
+  + resource "aws_kms_alias" "this" {
+      + arn            = (known after apply)
+      + id             = (known after apply)
+      + name           = "alias/eks-platform-dev-rds"
+      + name_prefix    = (known after apply)
+      + region         = "ap-south-1"
+      + target_key_arn = (known after apply)
+      + target_key_id  = (known after apply)
+    }
+
+  # module.kms.aws_kms_key.this["ecr"] will be created
+  + resource "aws_kms_key" "this" {
+      + arn                                = (known after apply)
+      + bypass_policy_lockout_safety_check = false
+      + customer_master_key_spec           = "SYMMETRIC_DEFAULT"
+      + deletion_window_in_days            = 30
+      + description                        = "KMS key for ECR"
+      + enable_key_rotation                = true
+      + id                                 = (known after apply)
+      + is_enabled                         = true
+      + key_id                             = (known after apply)
+      + key_usage                          = "ENCRYPT_DECRYPT"
+      + multi_region                       = false
+      + policy                             = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "kms:*"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + AWS = "arn:aws:iam::020139096715:root"
+                        }
+                      + Resource  = "*"
+                      + Sid       = "EnableRootPermissions"
+                    },
+                  + {
+                      + Action    = [
+                          + "kms:Update*",
+                          + "kms:UntagResource",
+                          + "kms:TagResource",
+                          + "kms:ScheduleKeyDeletion",
+                          + "kms:Revoke*",
+                          + "kms:Put*",
+                          + "kms:List*",
+                          + "kms:Get*",
+                          + "kms:Enable*",
+                          + "kms:Disable*",
+                          + "kms:Describe*",
+                          + "kms:Delete*",
+                          + "kms:Create*",
+                          + "kms:CancelKeyDeletion",
+                        ]
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + AWS = "arn:aws:iam::020139096715:root"
+                        }
+                      + Resource  = "*"
+                      + Sid       = "AllowIAMPermissions"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + region                             = "ap-south-1"
+      + rotation_period_in_days            = (known after apply)
+      + tags                               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "Key"         = "ecr"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "alias/eks-platform-dev-ecr"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                           = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "Key"         = "ecr"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "alias/eks-platform-dev-ecr"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+    }
+
+  # module.kms.aws_kms_key.this["eks"] will be created
+  + resource "aws_kms_key" "this" {
+      + arn                                = (known after apply)
+      + bypass_policy_lockout_safety_check = false
+      + customer_master_key_spec           = "SYMMETRIC_DEFAULT"
+      + deletion_window_in_days            = 30
+      + description                        = "EKS key for RDS"
+      + enable_key_rotation                = true
+      + id                                 = (known after apply)
+      + is_enabled                         = true
+      + key_id                             = (known after apply)
+      + key_usage                          = "ENCRYPT_DECRYPT"
+      + multi_region                       = false
+      + policy                             = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "kms:*"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + AWS = "arn:aws:iam::020139096715:root"
+                        }
+                      + Resource  = "*"
+                      + Sid       = "EnableRootPermissions"
+                    },
+                  + {
+                      + Action    = [
+                          + "kms:Update*",
+                          + "kms:UntagResource",
+                          + "kms:TagResource",
+                          + "kms:ScheduleKeyDeletion",
+                          + "kms:Revoke*",
+                          + "kms:Put*",
+                          + "kms:List*",
+                          + "kms:Get*",
+                          + "kms:Enable*",
+                          + "kms:Disable*",
+                          + "kms:Describe*",
+                          + "kms:Delete*",
+                          + "kms:Create*",
+                          + "kms:CancelKeyDeletion",
+                        ]
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + AWS = "arn:aws:iam::020139096715:root"
+                        }
+                      + Resource  = "*"
+                      + Sid       = "AllowIAMPermissions"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + region                             = "ap-south-1"
+      + rotation_period_in_days            = (known after apply)
+      + tags                               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "Key"         = "eks"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "alias/eks-platform-dev-eks"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                           = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "Key"         = "eks"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "alias/eks-platform-dev-eks"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+    }
+
+  # module.kms.aws_kms_key.this["rds"] will be created
+  + resource "aws_kms_key" "this" {
+      + arn                                = (known after apply)
+      + bypass_policy_lockout_safety_check = false
+      + customer_master_key_spec           = "SYMMETRIC_DEFAULT"
+      + deletion_window_in_days            = 30
+      + description                        = "KMS key for RDS"
+      + enable_key_rotation                = true
+      + id                                 = (known after apply)
+      + is_enabled                         = true
+      + key_id                             = (known after apply)
+      + key_usage                          = "ENCRYPT_DECRYPT"
+      + multi_region                       = false
+      + policy                             = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "kms:*"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + AWS = "arn:aws:iam::020139096715:root"
+                        }
+                      + Resource  = "*"
+                      + Sid       = "EnableRootPermissions"
+                    },
+                  + {
+                      + Action    = [
+                          + "kms:Update*",
+                          + "kms:UntagResource",
+                          + "kms:TagResource",
+                          + "kms:ScheduleKeyDeletion",
+                          + "kms:Revoke*",
+                          + "kms:Put*",
+                          + "kms:List*",
+                          + "kms:Get*",
+                          + "kms:Enable*",
+                          + "kms:Disable*",
+                          + "kms:Describe*",
+                          + "kms:Delete*",
+                          + "kms:Create*",
+                          + "kms:CancelKeyDeletion",
+                        ]
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + AWS = "arn:aws:iam::020139096715:root"
+                        }
+                      + Resource  = "*"
+                      + Sid       = "AllowIAMPermissions"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + region                             = "ap-south-1"
+      + rotation_period_in_days            = (known after apply)
+      + tags                               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "Key"         = "rds"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "alias/eks-platform-dev-rds"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                           = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "Key"         = "rds"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "alias/eks-platform-dev-rds"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+    }
+
+  # module.rds.aws_db_instance.this will be created
+  + resource "aws_db_instance" "this" {
+      + address                               = (known after apply)
+      + allocated_storage                     = 20
+      + apply_immediately                     = false
+      + arn                                   = (known after apply)
+      + auto_minor_version_upgrade            = true
+      + availability_zone                     = (known after apply)
+      + backup_retention_period               = 1
+      + backup_target                         = (known after apply)
+      + backup_window                         = (known after apply)
+      + ca_cert_identifier                    = (known after apply)
+      + character_set_name                    = (known after apply)
+      + copy_tags_to_snapshot                 = true
+      + database_insights_mode                = (known after apply)
+      + db_name                               = "bankdb"
+      + db_subnet_group_name                  = "eks-platform-dev-subnet-group"
+      + dedicated_log_volume                  = false
+      + delete_automated_backups              = true
+      + deletion_protection                   = false
+      + domain_fqdn                           = (known after apply)
+      + enabled_cloudwatch_logs_exports       = [
+          + "postgresql",
+          + "upgrade",
+        ]
+      + endpoint                              = (known after apply)
+      + engine                                = "postgres"
+      + engine_lifecycle_support              = (known after apply)
+      + engine_version                        = "18.3"
+      + engine_version_actual                 = (known after apply)
+      + final_snapshot_identifier             = "eks-platform-dev-postgres-final-snapshot"
+      + hosted_zone_id                        = (known after apply)
+      + iam_database_authentication_enabled   = true
+      + id                                    = (known after apply)
+      + identifier                            = "eks-platform-dev-postgres"
+      + identifier_prefix                     = (known after apply)
+      + instance_class                        = "db.t4g.micro"
+      + iops                                  = (known after apply)
+      + kms_key_id                            = (known after apply)
+      + latest_restorable_time                = (known after apply)
+      + license_model                         = (known after apply)
+      + listener_endpoint                     = (known after apply)
+      + maintenance_window                    = "sun:04:30-sun:05:30"
+      + master_user_secret                    = (known after apply)
+      + master_user_secret_kms_key_id         = (known after apply)
+      + max_allocated_storage                 = 100
+      + monitoring_interval                   = 60
+      + monitoring_role_arn                   = (known after apply)
+      + multi_az                              = false
+      + nchar_character_set_name              = (known after apply)
+      + network_type                          = (known after apply)
+      + option_group_name                     = (known after apply)
+      + parameter_group_name                  = "eks-platform-dev-parameter-group"
+      + password                              = (sensitive value)
+      + password_wo                           = (write-only attribute)
+      + performance_insights_enabled          = true
+      + performance_insights_kms_key_id       = (known after apply)
+      + performance_insights_retention_period = (known after apply)
+      + port                                  = 5432
+      + publicly_accessible                   = false
+      + region                                = "ap-south-1"
+      + replica_mode                          = (known after apply)
+      + replicas                              = (known after apply)
+      + resource_id                           = (known after apply)
+      + skip_final_snapshot                   = true
+      + snapshot_identifier                   = (known after apply)
+      + status                                = (known after apply)
+      + storage_encrypted                     = true
+      + storage_throughput                    = (known after apply)
+      + storage_type                          = "gp3"
+      + tags                                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-postgres"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-postgres"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + timezone                              = (known after apply)
+      + upgrade_rollout_order                 = (known after apply)
+      + username                              = "bankdbadmin"
+      + vpc_security_group_ids                = (known after apply)
+    }
+
+  # module.rds.aws_db_parameter_group.this will be created
+  + resource "aws_db_parameter_group" "this" {
+      + arn          = (known after apply)
+      + description  = "Parameter group for eks-platform-dev"
+      + family       = "postgres18"
+      + id           = (known after apply)
+      + name         = "eks-platform-dev-parameter-group"
+      + name_prefix  = (known after apply)
+      + region       = "ap-south-1"
+      + skip_destroy = false
+      + tags         = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-parameter-group"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all     = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-parameter-group"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+
+      + parameter {
+          + apply_method = "immediate"
+          + name         = "idle_in_transaction_session_timeout"
+          + value        = "300000"
+        }
+      + parameter {
+          + apply_method = "immediate"
+          + name         = "log_connections"
+          + value        = "all"
+        }
+      + parameter {
+          + apply_method = "immediate"
+          + name         = "log_disconnections"
+          + value        = "on"
+        }
+      + parameter {
+          + apply_method = "immediate"
+          + name         = "log_lock_waits"
+          + value        = "on"
+        }
+      + parameter {
+          + apply_method = "immediate"
+          + name         = "log_min_duration_statement"
+          + value        = "1000"
+        }
+      + parameter {
+          + apply_method = "immediate"
+          + name         = "log_statement"
+          + value        = "ddl"
+        }
+      + parameter {
+          + apply_method = "immediate"
+          + name         = "statement_timeout"
+          + value        = "60000"
+        }
+    }
+
+  # module.rds.aws_db_subnet_group.this will be created
+  + resource "aws_db_subnet_group" "this" {
+      + arn                     = (known after apply)
+      + description             = "Subnet group for eks-platform-dev database"
+      + id                      = (known after apply)
+      + name                    = "eks-platform-dev-subnet-group"
+      + name_prefix             = (known after apply)
+      + region                  = "ap-south-1"
+      + subnet_ids              = (known after apply)
+      + supported_network_types = (known after apply)
+      + tags                    = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-subnet-group"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-subnet-group"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id                  = (known after apply)
+    }
+
+  # module.rds.aws_iam_role.monitoring will be created
+  + resource "aws_iam_role" "monitoring" {
+      + arn                   = (known after apply)
+      + assume_role_policy    = jsonencode(
+            {
+              + Statement = [
+                  + {
+                      + Action    = "sts:AssumeRole"
+                      + Effect    = "Allow"
+                      + Principal = {
+                          + Service = "monitoring.rds.amazonaws.com"
+                        }
+                      + Sid       = "AllowRDSMonitoring"
+                    },
+                ]
+              + Version   = "2012-10-17"
+            }
+        )
+      + create_date           = (known after apply)
+      + force_detach_policies = false
+      + id                    = (known after apply)
+      + managed_policy_arns   = (known after apply)
+      + max_session_duration  = 3600
+      + name                  = "eks-platform-dev-rds-monitoring-role"
+      + name_prefix           = (known after apply)
+      + path                  = "/"
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-rds-monitoring-role"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-rds-monitoring-role"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + unique_id             = (known after apply)
+
+      + inline_policy (known after apply)
+    }
+
+  # module.rds.aws_iam_role_policy_attachment.monitoring will be created
+  + resource "aws_iam_role_policy_attachment" "monitoring" {
+      + id         = (known after apply)
+      + policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonRDSEnhancedMonitoringRole"
+      + role       = "eks-platform-dev-rds-monitoring-role"
+    }
+
+  # module.rds.aws_secretsmanager_secret.database will be created
+  + resource "aws_secretsmanager_secret" "database" {
+      + arn                            = (known after apply)
+      + force_overwrite_replica_secret = true
+      + id                             = (known after apply)
+      + kms_key_id                     = (known after apply)
+      + name                           = "eks-platform-dev-database"
+      + name_prefix                    = (known after apply)
+      + policy                         = (known after apply)
+      + recovery_window_in_days        = 30
+      + region                         = "ap-south-1"
+      + tags                           = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-database"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                       = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-database"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+
+      + replica (known after apply)
+    }
+
+  # module.rds.aws_secretsmanager_secret_version.database will be created
+  + resource "aws_secretsmanager_secret_version" "database" {
+      + arn                  = (known after apply)
+      + has_secret_string_wo = (known after apply)
+      + id                   = (known after apply)
+      + region               = "ap-south-1"
+      + secret_arn           = (known after apply)
+      + secret_id            = (known after apply)
+      + secret_string        = (sensitive value)
+      + secret_string_wo     = (write-only attribute)
+      + version_id           = (known after apply)
+      + version_stages       = (known after apply)
+    }
+
+  # module.rds.random_password.rds_password will be created
+  + resource "random_password" "rds_password" {
+      + bcrypt_hash      = (sensitive value)
+      + id               = (known after apply)
+      + length           = 24
+      + lower            = true
+      + min_lower        = 0
+      + min_numeric      = 0
+      + min_special      = 0
+      + min_upper        = 0
+      + number           = true
+      + numeric          = true
+      + override_special = "#$%^&*()_+"
+      + result           = (sensitive value)
+      + special          = true
+      + upper            = true
+    }
+
+  # module.security.aws_vpc_security_group_ingress_rule.database_postgres_from_eks will be created
+  + resource "aws_vpc_security_group_ingress_rule" "database_postgres_from_eks" {
+      + arn                          = (known after apply)
+      + description                  = "Allow PostgreSQL traffic from EKS workload"
+      + from_port                    = 5432
+      + id                           = (known after apply)
+      + ip_protocol                  = "tcp"
+      + referenced_security_group_id = (known after apply)
+      + region                       = "ap-south-1"
+      + security_group_id            = (known after apply)
+      + security_group_rule_id       = (known after apply)
+      + tags_all                     = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + to_port                      = 5432
+    }
+
+  # module.security.aws_vpc_security_group_ingress_rule.vpc_endpoint_https_from_eks will be created
+  + resource "aws_vpc_security_group_ingress_rule" "vpc_endpoint_https_from_eks" {
+      + arn                          = (known after apply)
+      + description                  = "Allow HTTPS traffic from EKS workload to VPC endpoints"
+      + from_port                    = 443
+      + id                           = (known after apply)
+      + ip_protocol                  = "tcp"
+      + referenced_security_group_id = (known after apply)
+      + region                       = "ap-south-1"
+      + security_group_id            = (known after apply)
+      + security_group_rule_id       = (known after apply)
+      + tags_all                     = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + to_port                      = 443
+    }
+
+  # module.vpc.aws_eip.nat will be created
+  + resource "aws_eip" "nat" {
+      + allocation_id        = (known after apply)
+      + arn                  = (known after apply)
+      + association_id       = (known after apply)
+      + carrier_ip           = (known after apply)
+      + customer_owned_ip    = (known after apply)
+      + domain               = "vpc"
+      + id                   = (known after apply)
+      + instance             = (known after apply)
+      + ipam_pool_id         = (known after apply)
+      + network_border_group = (known after apply)
+      + network_interface    = (known after apply)
+      + private_dns          = (known after apply)
+      + private_ip           = (known after apply)
+      + ptr_record           = (known after apply)
+      + public_dns           = (known after apply)
+      + public_ip            = (known after apply)
+      + public_ipv4_pool     = (known after apply)
+      + region               = "ap-south-1"
+      + tags                 = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-nat-eip"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all             = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-nat-eip"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+    }
+
+  # module.vpc.aws_internet_gateway.this will be created
+  + resource "aws_internet_gateway" "this" {
+      + arn      = (known after apply)
+      + id       = (known after apply)
+      + owner_id = (known after apply)
+      + region   = "ap-south-1"
+      + tags     = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-igw"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-igw"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id   = (known after apply)
+    }
+
+  # module.vpc.aws_nat_gateway.this will be created
+  + resource "aws_nat_gateway" "this" {
+      + allocation_id                      = (known after apply)
+      + association_id                     = (known after apply)
+      + auto_provision_zones               = (known after apply)
+      + auto_scaling_ips                   = (known after apply)
+      + availability_mode                  = (known after apply)
+      + connectivity_type                  = "public"
+      + id                                 = (known after apply)
+      + network_interface_id               = (known after apply)
+      + private_ip                         = (known after apply)
+      + public_ip                          = (known after apply)
+      + region                             = "ap-south-1"
+      + regional_nat_gateway_address       = (known after apply)
+      + regional_nat_gateway_auto_mode     = (known after apply)
+      + route_table_id                     = (known after apply)
+      + secondary_allocation_ids           = (known after apply)
+      + secondary_private_ip_address_count = (known after apply)
+      + secondary_private_ip_addresses     = (known after apply)
+      + subnet_id                          = (known after apply)
+      + tags                               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-nat"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                           = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-nat"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id                             = (known after apply)
+    }
+
+  # module.vpc.aws_network_acl.application will be created
+  + resource "aws_network_acl" "application" {
+      + arn        = (known after apply)
+      + egress     = (known after apply)
+      + id         = (known after apply)
+      + ingress    = (known after apply)
+      + owner_id   = (known after apply)
+      + region     = "ap-south-1"
+      + subnet_ids = (known after apply)
+      + tags       = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-app-nacl"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all   = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-app-nacl"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id     = (known after apply)
+    }
+
+  # module.vpc.aws_network_acl.database will be created
+  + resource "aws_network_acl" "database" {
+      + arn        = (known after apply)
+      + egress     = (known after apply)
+      + id         = (known after apply)
+      + ingress    = (known after apply)
+      + owner_id   = (known after apply)
+      + region     = "ap-south-1"
+      + subnet_ids = (known after apply)
+      + tags       = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-database-nacl"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all   = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-database-nacl"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id     = (known after apply)
+    }
+
+  # module.vpc.aws_network_acl.public will be created
+  + resource "aws_network_acl" "public" {
+      + arn        = (known after apply)
+      + egress     = (known after apply)
+      + id         = (known after apply)
+      + ingress    = (known after apply)
+      + owner_id   = (known after apply)
+      + region     = "ap-south-1"
+      + subnet_ids = (known after apply)
+      + tags       = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-public-nacl"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all   = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-public-nacl"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id     = (known after apply)
+    }
+
+  # module.vpc.aws_network_acl_rule.app_egress_vpc will be created
+  + resource "aws_network_acl_rule" "app_egress_vpc" {
+      + cidr_block     = "0.0.0.0/0"
+      + egress         = true
+      + from_port      = 0
+      + id             = (known after apply)
+      + network_acl_id = (known after apply)
+      + protocol       = "-1"
+      + region         = "ap-south-1"
+      + rule_action    = "allow"
+      + rule_number    = 100
+      + to_port        = 0
+    }
+
+  # module.vpc.aws_network_acl_rule.app_ingress_ephemeral will be created
+  + resource "aws_network_acl_rule" "app_ingress_ephemeral" {
+      + cidr_block     = "0.0.0.0/0"
+      + egress         = false
+      + from_port      = 1024
+      + id             = (known after apply)
+      + network_acl_id = (known after apply)
+      + protocol       = "tcp"
+      + region         = "ap-south-1"
+      + rule_action    = "allow"
+      + rule_number    = 110
+      + to_port        = 65535
+    }
+
+  # module.vpc.aws_network_acl_rule.app_ingress_vpc will be created
+  + resource "aws_network_acl_rule" "app_ingress_vpc" {
+      + cidr_block     = "10.0.0.0/16"
+      + egress         = false
+      + from_port      = 0
+      + id             = (known after apply)
+      + network_acl_id = (known after apply)
+      + protocol       = "-1"
+      + region         = "ap-south-1"
+      + rule_action    = "allow"
+      + rule_number    = 100
+      + to_port        = 0
+    }
+
+  # module.vpc.aws_network_acl_rule.database_egress_vpc will be created
+  + resource "aws_network_acl_rule" "database_egress_vpc" {
+      + cidr_block     = "10.0.0.0/16"
+      + egress         = true
+      + from_port      = 0
+      + id             = (known after apply)
+      + network_acl_id = (known after apply)
+      + protocol       = "-1"
+      + region         = "ap-south-1"
+      + rule_action    = "allow"
+      + rule_number    = 100
+      + to_port        = 0
+    }
+
+  # module.vpc.aws_network_acl_rule.database_ingress_vpc will be created
+  + resource "aws_network_acl_rule" "database_ingress_vpc" {
+      + cidr_block     = "10.0.0.0/16"
+      + egress         = false
+      + from_port      = 0
+      + id             = (known after apply)
+      + network_acl_id = (known after apply)
+      + protocol       = "-1"
+      + region         = "ap-south-1"
+      + rule_action    = "allow"
+      + rule_number    = 100
+      + to_port        = 0
+    }
+
+  # module.vpc.aws_network_acl_rule.http will be created
+  + resource "aws_network_acl_rule" "http" {
+      + cidr_block     = "0.0.0.0/0"
+      + egress         = false
+      + from_port      = 80
+      + id             = (known after apply)
+      + network_acl_id = (known after apply)
+      + protocol       = "tcp"
+      + region         = "ap-south-1"
+      + rule_action    = "allow"
+      + rule_number    = 100
+      + to_port        = 80
+    }
+
+  # module.vpc.aws_network_acl_rule.https will be created
+  + resource "aws_network_acl_rule" "https" {
+      + cidr_block     = "0.0.0.0/0"
+      + egress         = false
+      + from_port      = 443
+      + id             = (known after apply)
+      + network_acl_id = (known after apply)
+      + protocol       = "tcp"
+      + region         = "ap-south-1"
+      + rule_action    = "allow"
+      + rule_number    = 110
+      + to_port        = 443
+    }
+
+  # module.vpc.aws_network_acl_rule.public_egress_all will be created
+  + resource "aws_network_acl_rule" "public_egress_all" {
+      + cidr_block     = "0.0.0.0/0"
+      + egress         = true
+      + from_port      = 0
+      + id             = (known after apply)
+      + network_acl_id = (known after apply)
+      + protocol       = "-1"
+      + region         = "ap-south-1"
+      + rule_action    = "allow"
+      + rule_number    = 100
+      + to_port        = 0
+    }
+
+  # module.vpc.aws_network_acl_rule.public_ingress_ephemeral will be created
+  + resource "aws_network_acl_rule" "public_ingress_ephemeral" {
+      + cidr_block     = "0.0.0.0/0"
+      + egress         = false
+      + from_port      = 1024
+      + id             = (known after apply)
+      + network_acl_id = (known after apply)
+      + protocol       = "tcp"
+      + region         = "ap-south-1"
+      + rule_action    = "allow"
+      + rule_number    = 120
+      + to_port        = 65535
+    }
+
+  # module.vpc.aws_route.private_route_app will be created
+  + resource "aws_route" "private_route_app" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + nat_gateway_id         = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + region                 = "ap-south-1"
+      + route_table_id         = (known after apply)
+      + state                  = (known after apply)
+    }
+
+  # module.vpc.aws_route.public_route will be created
+  + resource "aws_route" "public_route" {
+      + destination_cidr_block = "0.0.0.0/0"
+      + gateway_id             = (known after apply)
+      + id                     = (known after apply)
+      + instance_id            = (known after apply)
+      + instance_owner_id      = (known after apply)
+      + network_interface_id   = (known after apply)
+      + origin                 = (known after apply)
+      + region                 = "ap-south-1"
+      + route_table_id         = (known after apply)
+      + state                  = (known after apply)
+    }
+
+  # module.vpc.aws_route_table.application will be created
+  + resource "aws_route_table" "application" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + region           = "ap-south-1"
+      + route            = (known after apply)
+      + tags             = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-private-app-rt"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all         = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-private-app-rt"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.vpc.aws_route_table.private_route_database will be created
+  + resource "aws_route_table" "private_route_database" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + region           = "ap-south-1"
+      + route            = (known after apply)
+      + tags             = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-db-rt"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all         = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-db-rt"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.vpc.aws_route_table.public will be created
+  + resource "aws_route_table" "public" {
+      + arn              = (known after apply)
+      + id               = (known after apply)
+      + owner_id         = (known after apply)
+      + propagating_vgws = (known after apply)
+      + region           = "ap-south-1"
+      + route            = (known after apply)
+      + tags             = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-public-rt"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all         = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-public-rt"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id           = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.application["app_a"] will be created
+  + resource "aws_route_table_association" "application" {
+      + id             = (known after apply)
+      + region         = "ap-south-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.application["app_b"] will be created
+  + resource "aws_route_table_association" "application" {
+      + id             = (known after apply)
+      + region         = "ap-south-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.database["database_a"] will be created
+  + resource "aws_route_table_association" "database" {
+      + id             = (known after apply)
+      + region         = "ap-south-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.database["database_b"] will be created
+  + resource "aws_route_table_association" "database" {
+      + id             = (known after apply)
+      + region         = "ap-south-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.public["public_a"] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + region         = "ap-south-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_route_table_association.public["public_b"] will be created
+  + resource "aws_route_table_association" "public" {
+      + id             = (known after apply)
+      + region         = "ap-south-1"
+      + route_table_id = (known after apply)
+      + subnet_id      = (known after apply)
+    }
+
+  # module.vpc.aws_security_group.alb will be created
+  + resource "aws_security_group" "alb" {
+      + arn                    = (known after apply)
+      + description            = "Security group for ALB"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = "eks-platform-dev-alb-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + region                 = "ap-south-1"
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-alb-sg"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-alb-sg"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.vpc.aws_security_group.bastion will be created
+  + resource "aws_security_group" "bastion" {
+      + arn                    = (known after apply)
+      + description            = "Security Group for bastion hosts"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = "eks-platform-dev-bastion-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + region                 = "ap-south-1"
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-bastion-sg"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-bastion-sg"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.vpc.aws_security_group.database will be created
+  + resource "aws_security_group" "database" {
+      + arn                    = (known after apply)
+      + description            = "Security group for Database"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = "eks-platform-dev-db-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + region                 = "ap-south-1"
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-db-sg"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-db-sg"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.vpc.aws_security_group.vpc_endpoint will be created
+  + resource "aws_security_group" "vpc_endpoint" {
+      + arn                    = (known after apply)
+      + description            = "Security Group for Interface VPC Endpoints"
+      + egress                 = (known after apply)
+      + id                     = (known after apply)
+      + ingress                = (known after apply)
+      + name                   = "eks-platform-dev-vpce-sg"
+      + name_prefix            = (known after apply)
+      + owner_id               = (known after apply)
+      + region                 = "ap-south-1"
+      + revoke_rules_on_delete = false
+      + tags                   = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-vpce-sg"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-vpce-sg"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_id                 = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.this["app_a"] will be created
+  + resource "aws_subnet" "this" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ap-south-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.11.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ap-south-1"
+      + tags                                           = {
+          + "CostCenter"                                     = "Engineering"
+          + "Environment"                                    = "dev"
+          + "ManagedBy"                                      = "Terraform"
+          + "Name"                                           = "eks-platform-dev-app_a"
+          + "Owner"                                          = "Haris"
+          + "Project"                                        = "eks-platform"
+          + "Repository"                                     = "https://github.com/muhdhares/eks-platform"
+          + "Type"                                           = "app"
+          + "karpenter.sh/discovery"                         = "eks-platform-dev-cluster"
+          + "kubernetes.io/cluster/eks-platform-dev-cluster" = "shared"
+          + "kubernetes.io/role/internal-elb"                = "1"
+        }
+      + tags_all                                       = {
+          + "CostCenter"                                     = "Engineering"
+          + "Environment"                                    = "dev"
+          + "ManagedBy"                                      = "Terraform"
+          + "Name"                                           = "eks-platform-dev-app_a"
+          + "Owner"                                          = "Haris"
+          + "Project"                                        = "eks-platform"
+          + "Repository"                                     = "https://github.com/muhdhares/eks-platform"
+          + "Type"                                           = "app"
+          + "karpenter.sh/discovery"                         = "eks-platform-dev-cluster"
+          + "kubernetes.io/cluster/eks-platform-dev-cluster" = "shared"
+          + "kubernetes.io/role/internal-elb"                = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.this["app_b"] will be created
+  + resource "aws_subnet" "this" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ap-south-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.12.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ap-south-1"
+      + tags                                           = {
+          + "CostCenter"                                     = "Engineering"
+          + "Environment"                                    = "dev"
+          + "ManagedBy"                                      = "Terraform"
+          + "Name"                                           = "eks-platform-dev-app_b"
+          + "Owner"                                          = "Haris"
+          + "Project"                                        = "eks-platform"
+          + "Repository"                                     = "https://github.com/muhdhares/eks-platform"
+          + "Type"                                           = "app"
+          + "karpenter.sh/discovery"                         = "eks-platform-dev-cluster"
+          + "kubernetes.io/cluster/eks-platform-dev-cluster" = "shared"
+          + "kubernetes.io/role/internal-elb"                = "1"
+        }
+      + tags_all                                       = {
+          + "CostCenter"                                     = "Engineering"
+          + "Environment"                                    = "dev"
+          + "ManagedBy"                                      = "Terraform"
+          + "Name"                                           = "eks-platform-dev-app_b"
+          + "Owner"                                          = "Haris"
+          + "Project"                                        = "eks-platform"
+          + "Repository"                                     = "https://github.com/muhdhares/eks-platform"
+          + "Type"                                           = "app"
+          + "karpenter.sh/discovery"                         = "eks-platform-dev-cluster"
+          + "kubernetes.io/cluster/eks-platform-dev-cluster" = "shared"
+          + "kubernetes.io/role/internal-elb"                = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.this["database_a"] will be created
+  + resource "aws_subnet" "this" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ap-south-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.21.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ap-south-1"
+      + tags                                           = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-database_a"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+          + "Type"        = "database"
+        }
+      + tags_all                                       = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-database_a"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+          + "Type"        = "database"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.this["database_b"] will be created
+  + resource "aws_subnet" "this" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ap-south-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.22.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = false
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ap-south-1"
+      + tags                                           = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-database_b"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+          + "Type"        = "database"
+        }
+      + tags_all                                       = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-database_b"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+          + "Type"        = "database"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.this["public_a"] will be created
+  + resource "aws_subnet" "this" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ap-south-1a"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.1.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = true
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ap-south-1"
+      + tags                                           = {
+          + "CostCenter"                                     = "Engineering"
+          + "Environment"                                    = "dev"
+          + "ManagedBy"                                      = "Terraform"
+          + "Name"                                           = "eks-platform-dev-public_a"
+          + "Owner"                                          = "Haris"
+          + "Project"                                        = "eks-platform"
+          + "Repository"                                     = "https://github.com/muhdhares/eks-platform"
+          + "Type"                                           = "public"
+          + "kubernetes.io/cluster/eks-platform-dev-cluster" = "shared"
+          + "kubernetes.io/role/elb"                         = "1"
+        }
+      + tags_all                                       = {
+          + "CostCenter"                                     = "Engineering"
+          + "Environment"                                    = "dev"
+          + "ManagedBy"                                      = "Terraform"
+          + "Name"                                           = "eks-platform-dev-public_a"
+          + "Owner"                                          = "Haris"
+          + "Project"                                        = "eks-platform"
+          + "Repository"                                     = "https://github.com/muhdhares/eks-platform"
+          + "Type"                                           = "public"
+          + "kubernetes.io/cluster/eks-platform-dev-cluster" = "shared"
+          + "kubernetes.io/role/elb"                         = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_subnet.this["public_b"] will be created
+  + resource "aws_subnet" "this" {
+      + arn                                            = (known after apply)
+      + assign_ipv6_address_on_creation                = false
+      + availability_zone                              = "ap-south-1b"
+      + availability_zone_id                           = (known after apply)
+      + cidr_block                                     = "10.0.2.0/24"
+      + enable_dns64                                   = false
+      + enable_resource_name_dns_a_record_on_launch    = false
+      + enable_resource_name_dns_aaaa_record_on_launch = false
+      + id                                             = (known after apply)
+      + ipv6_cidr_block                                = (known after apply)
+      + ipv6_cidr_block_association_id                 = (known after apply)
+      + ipv6_native                                    = false
+      + map_public_ip_on_launch                        = true
+      + owner_id                                       = (known after apply)
+      + private_dns_hostname_type_on_launch            = (known after apply)
+      + region                                         = "ap-south-1"
+      + tags                                           = {
+          + "CostCenter"                                     = "Engineering"
+          + "Environment"                                    = "dev"
+          + "ManagedBy"                                      = "Terraform"
+          + "Name"                                           = "eks-platform-dev-public_b"
+          + "Owner"                                          = "Haris"
+          + "Project"                                        = "eks-platform"
+          + "Repository"                                     = "https://github.com/muhdhares/eks-platform"
+          + "Type"                                           = "public"
+          + "kubernetes.io/cluster/eks-platform-dev-cluster" = "shared"
+          + "kubernetes.io/role/elb"                         = "1"
+        }
+      + tags_all                                       = {
+          + "CostCenter"                                     = "Engineering"
+          + "Environment"                                    = "dev"
+          + "ManagedBy"                                      = "Terraform"
+          + "Name"                                           = "eks-platform-dev-public_b"
+          + "Owner"                                          = "Haris"
+          + "Project"                                        = "eks-platform"
+          + "Repository"                                     = "https://github.com/muhdhares/eks-platform"
+          + "Type"                                           = "public"
+          + "kubernetes.io/cluster/eks-platform-dev-cluster" = "shared"
+          + "kubernetes.io/role/elb"                         = "1"
+        }
+      + vpc_id                                         = (known after apply)
+    }
+
+  # module.vpc.aws_vpc.this will be created
+  + resource "aws_vpc" "this" {
+      + arn                                  = (known after apply)
+      + assign_generated_ipv6_cidr_block     = false
+      + cidr_block                           = "10.0.0.0/16"
+      + default_network_acl_id               = (known after apply)
+      + default_route_table_id               = (known after apply)
+      + default_security_group_id            = (known after apply)
+      + dhcp_options_id                      = (known after apply)
+      + enable_dns_hostnames                 = true
+      + enable_dns_support                   = true
+      + enable_network_address_usage_metrics = (known after apply)
+      + id                                   = (known after apply)
+      + instance_tenancy                     = "default"
+      + ipv6_association_id                  = (known after apply)
+      + ipv6_cidr_block                      = (known after apply)
+      + ipv6_cidr_block_network_border_group = (known after apply)
+      + main_route_table_id                  = (known after apply)
+      + owner_id                             = (known after apply)
+      + region                               = "ap-south-1"
+      + tags                                 = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Names"       = "eks-platform-dev-vpc"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all                             = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Names"       = "eks-platform-dev-vpc"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+    }
+
+  # module.vpc.aws_vpc_endpoint.interface["ec2messages"] will be created
+  + resource "aws_vpc_endpoint" "interface" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + ip_address_type       = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + region                = "ap-south-1"
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-south-1.ec2messages"
+      + service_region        = (known after apply)
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-ec2messages-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-ec2messages-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+
+      + dns_options (known after apply)
+
+      + subnet_configuration (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.interface["ecr.api"] will be created
+  + resource "aws_vpc_endpoint" "interface" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + ip_address_type       = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + region                = "ap-south-1"
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-south-1.ecr.api"
+      + service_region        = (known after apply)
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-ecr-api-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-ecr-api-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+
+      + dns_options (known after apply)
+
+      + subnet_configuration (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.interface["ecr.dkr"] will be created
+  + resource "aws_vpc_endpoint" "interface" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + ip_address_type       = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + region                = "ap-south-1"
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-south-1.ecr.dkr"
+      + service_region        = (known after apply)
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-ecr-dkr-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-ecr-dkr-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+
+      + dns_options (known after apply)
+
+      + subnet_configuration (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.interface["kms"] will be created
+  + resource "aws_vpc_endpoint" "interface" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + ip_address_type       = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + region                = "ap-south-1"
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-south-1.kms"
+      + service_region        = (known after apply)
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-kms-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-kms-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+
+      + dns_options (known after apply)
+
+      + subnet_configuration (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.interface["logs"] will be created
+  + resource "aws_vpc_endpoint" "interface" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + ip_address_type       = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + region                = "ap-south-1"
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-south-1.logs"
+      + service_region        = (known after apply)
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-logs-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-logs-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+
+      + dns_options (known after apply)
+
+      + subnet_configuration (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.interface["secretsmanager"] will be created
+  + resource "aws_vpc_endpoint" "interface" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + ip_address_type       = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + region                = "ap-south-1"
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-south-1.secretsmanager"
+      + service_region        = (known after apply)
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-secretsmanager-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-secretsmanager-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+
+      + dns_options (known after apply)
+
+      + subnet_configuration (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.interface["ssm"] will be created
+  + resource "aws_vpc_endpoint" "interface" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + ip_address_type       = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + region                = "ap-south-1"
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-south-1.ssm"
+      + service_region        = (known after apply)
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-ssm-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-ssm-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+
+      + dns_options (known after apply)
+
+      + subnet_configuration (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.interface["ssmmessages"] will be created
+  + resource "aws_vpc_endpoint" "interface" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + ip_address_type       = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + region                = "ap-south-1"
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-south-1.ssmmessages"
+      + service_region        = (known after apply)
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-ssmmessages-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-ssmmessages-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+
+      + dns_options (known after apply)
+
+      + subnet_configuration (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.interface["sts"] will be created
+  + resource "aws_vpc_endpoint" "interface" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + ip_address_type       = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = true
+      + region                = "ap-south-1"
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-south-1.sts"
+      + service_region        = (known after apply)
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-sts-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-sts-vpce"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_endpoint_type     = "Interface"
+      + vpc_id                = (known after apply)
+
+      + dns_options (known after apply)
+
+      + subnet_configuration (known after apply)
+    }
+
+  # module.vpc.aws_vpc_endpoint.s3 will be created
+  + resource "aws_vpc_endpoint" "s3" {
+      + arn                   = (known after apply)
+      + cidr_blocks           = (known after apply)
+      + dns_entry             = (known after apply)
+      + id                    = (known after apply)
+      + ip_address_type       = (known after apply)
+      + network_interface_ids = (known after apply)
+      + owner_id              = (known after apply)
+      + policy                = (known after apply)
+      + prefix_list_id        = (known after apply)
+      + private_dns_enabled   = (known after apply)
+      + region                = "ap-south-1"
+      + requester_managed     = (known after apply)
+      + route_table_ids       = (known after apply)
+      + security_group_ids    = (known after apply)
+      + service_name          = "com.amazonaws.ap-south-1.s3"
+      + service_region        = (known after apply)
+      + state                 = (known after apply)
+      + subnet_ids            = (known after apply)
+      + tags                  = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-s3-endpoint"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + tags_all              = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Name"        = "eks-platform-dev-s3-endpoint"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + vpc_endpoint_type     = "Gateway"
+      + vpc_id                = (known after apply)
+
+      + dns_options (known after apply)
+
+      + subnet_configuration (known after apply)
+    }
+
+  # module.vpc.aws_vpc_security_group_egress_rule.alb_egress will be created
+  + resource "aws_vpc_security_group_egress_rule" "alb_egress" {
+      + arn                    = (known after apply)
+      + cidr_ipv4              = "10.0.0.0/16"
+      + id                     = (known after apply)
+      + ip_protocol            = "-1"
+      + region                 = "ap-south-1"
+      + security_group_id      = (known after apply)
+      + security_group_rule_id = (known after apply)
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+    }
+
+  # module.vpc.aws_vpc_security_group_ingress_rule.alb_http will be created
+  + resource "aws_vpc_security_group_ingress_rule" "alb_http" {
+      + arn                    = (known after apply)
+      + cidr_ipv4              = "0.0.0.0/0"
+      + description            = "Allows HTTP traffic from Internet"
+      + from_port              = 80
+      + id                     = (known after apply)
+      + ip_protocol            = "tcp"
+      + region                 = "ap-south-1"
+      + security_group_id      = (known after apply)
+      + security_group_rule_id = (known after apply)
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + to_port                = 80
+    }
+
+  # module.vpc.aws_vpc_security_group_ingress_rule.alb_https will be created
+  + resource "aws_vpc_security_group_ingress_rule" "alb_https" {
+      + arn                    = (known after apply)
+      + cidr_ipv4              = "0.0.0.0/0"
+      + description            = "Allows HTTPS traffic from Internet"
+      + from_port              = 443
+      + id                     = (known after apply)
+      + ip_protocol            = "tcp"
+      + region                 = "ap-south-1"
+      + security_group_id      = (known after apply)
+      + security_group_rule_id = (known after apply)
+      + tags_all               = {
+          + "CostCenter"  = "Engineering"
+          + "Environment" = "dev"
+          + "ManagedBy"   = "Terraform"
+          + "Owner"       = "Haris"
+          + "Project"     = "eks-platform"
+          + "Repository"  = "https://github.com/muhdhares/eks-platform"
+        }
+      + to_port                = 443
+    }
+
+Plan: 119 to add, 0 to change, 0 to destroy.

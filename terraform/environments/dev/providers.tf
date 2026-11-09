@@ -24,7 +24,9 @@ provider "kubernetes" {
       "--cluster-name",
       module.eks.cluster.cluster_name,
       "--region",
-      var.aws_region
+      var.aws_region,
+      "--output",
+      "json"
     ]
   }
 }
@@ -36,7 +38,7 @@ provider "helm" {
     exec = {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
-      args        = ["eks", "get-token", "--cluster-name", module.eks.cluster.cluster_name, "--region", var.aws_region]
+      args        = ["eks", "get-token", "--cluster-name", module.eks.cluster.cluster_name, "--region", var.aws_region, "--output", "json"]
     }
   }
 }
@@ -51,6 +53,6 @@ provider "kubectl" {
   exec {
     api_version = "client.authentication.k8s.io/v1beta1"
     command     = "aws"
-    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster.cluster_name, "--region", var.aws_region]
+    args        = ["eks", "get-token", "--cluster-name", module.eks.cluster.cluster_name, "--region", var.aws_region, "--output", "json"]
   }
 }

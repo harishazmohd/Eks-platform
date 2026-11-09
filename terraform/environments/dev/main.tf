@@ -20,6 +20,7 @@ module "security" {
   database_sg_id     = module.vpc.security_groups_id.database
   vpc_endpoint_sg_id = module.vpc.security_groups_id.vpc_endpoint
   eks_cluster_sg_id  = module.eks.cluster_security_group_id
+  backend_pod_sg_id  = module.eks.backend_pod_security_group_id
   db_port            = var.db_port
   metadata           = var.metadata
   common_tags        = local.common_tags
@@ -63,20 +64,26 @@ module "rds" {
 }
 
 module "eks" {
-  source              = "../../modules/eks"
-  project_name        = var.project_name
-  environment         = var.environment
-  vpc_id              = module.vpc.vpc_id
-  aws_region          = var.aws_region
-  metadata            = var.metadata
-  common_tags         = var.common_tags
-  secrets_manager_arn = module.rds.rds.secrets_manager_arn
-  cluster_config      = local.eks_cluster_config
-  node_config         = local.node_group_config
-  kms_key_arn         = local.kms_keys.eks
-  rds_kms_key_arn     = module.kms.kms["rds"].arn
-  addons_config       = local.addons_config
-  alb_controller      = var.alb_controller
-  frontend_ecr_arn    = module.ecr.repositories["frontend"].arn
-  backend_ecr_arn     = module.ecr.repositories["backend"].arn
+  source       = "../../modules/eks"
+  project_name = var.project_name
+  environment  = var.environment
+  vpc_id       = module.vpc.vpc_id
+  vpc_cidr     = var.vpc_cidr_blocks
+  database_subnet_cidrs = [
+    for subnet in values(var.subnets) : subnet.cidr_block
+    if subnet.type == "database"
+  ]
+  application_namespace = "bankapp"
+  aws_region            = var.aws_region
+  metadata              = var.metadata
+  common_tags           = var.common_tags
+  secrets_manager_arn   = module.rds.rds.secrets_manager_arn
+  cluster_config        = local.eks_cluster_config
+  node_config           = local.node_group_config
+  kms_key_arn           = local.kms_keys.eks
+  rds_kms_key_arn       = module.kms.kms["rds"].arn
+  addons_config         = local.addons_config
+  alb_controller        = var.alb_controller
+  frontend_ecr_arn      = module.ecr.repositories["frontend"].arn
+  backend_ecr_arn       = module.ecr.repositories["backend"].arn
 }
