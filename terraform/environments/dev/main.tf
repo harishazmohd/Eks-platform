@@ -22,6 +22,7 @@ module "security" {
   eks_cluster_sg_id  = module.eks.cluster_security_group_id
   db_port            = var.db_port
   metadata           = var.metadata
+  alb_sg_id          = module.vpc.security_groups_id.alb
   common_tags        = local.common_tags
 }
 
@@ -69,7 +70,7 @@ module "eks" {
   vpc_id              = module.vpc.vpc_id
   aws_region          = var.aws_region
   metadata            = var.metadata
-  common_tags         = var.common_tags
+  common_tags         = local.common_tags
   secrets_manager_arn = module.rds.rds.secrets_manager_arn
   cluster_config      = local.eks_cluster_config
   node_config         = local.node_group_config

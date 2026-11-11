@@ -110,7 +110,7 @@ locals {
     }
   }
 
-  namespcaces = {
+  namespaces = {
     bankapp = "bankapp"
   }
 
