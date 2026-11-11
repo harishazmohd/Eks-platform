@@ -9,7 +9,8 @@ metadata:
     {{- include "bankapp.labels" . | nindent 4 }}
 
 spec:
-  amiFamily: {{ .Values.karpenter.nodeclass.amiFamily }}
+  amiSelectorTerms:
+    - alias: {{ .Values.karpenter.nodeclass.amialias }}
   instanceProfile: {{ .Values.karpenter.nodeclass.instanceProfile }}
 
   subnetSelectorTerms:

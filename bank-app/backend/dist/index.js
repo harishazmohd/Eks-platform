@@ -26,6 +26,10 @@ const PORT = process.env.PORT || 8080;
 const JWT_SECRET = process.env.JWT_SECRET || 'supersecret_bank_key';
 app.use((0, cors_1.default)());
 app.use(express_1.default.json());
+// Root health check for ALB
+app.get('/', (req, res) => {
+    res.status(200).json({ status: 'ok', service: 'bankapp-backend' });
+});
 // Health check
 app.get('/health', async (req, res) => {
     try {

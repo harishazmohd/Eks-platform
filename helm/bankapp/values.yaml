@@ -75,6 +75,7 @@ ingress:
     alb.ingress.kubernetes.io/target-type: ip
     alb.ingress.kubernetes.io/healthcheck-protocol: HTTP
     alb.ingress.kubernetes.io/listen-ports: '[{"HTTP":80}]'
+    alb.ingress.kubernetes.io/healthcheck-path: /
     alb.ingress.kubernetes.io/success-codes: 200-399
   # host: ""
   frontendPath: /
@@ -96,7 +97,7 @@ karpenter:
   enabled: true
   nodeclass:
     name: bankapp
-    amiFamily: AL2023
+    amialias: al2023@latest
     instanceProfile: eks-platform-dev-karpenter-node
     subnetSelectorTerms:
       - tags:
@@ -131,7 +132,7 @@ karpenter:
         operator: In
         values:
           - on-demand
-      - key: karpenter.k8s.aws/instance-type
+      - key: node.kubernetes.io/instance-type
         operator: In
         values:
           - c7i-flex.large

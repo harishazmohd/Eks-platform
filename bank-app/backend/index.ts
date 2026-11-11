@@ -26,6 +26,11 @@ const JWT_SECRET = process.env.JWT_SECRET || 'supersecret_bank_key';
 app.use(cors());
 app.use(express.json());
 
+// Root health check for ALB
+app.get('/', (req: Request, res: Response) => {
+  res.status(200).json({ status: 'ok', service: 'bankapp-backend' });
+});
+
 // Health check
 app.get('/health', async (req: Request, res: Response) => {
   try {

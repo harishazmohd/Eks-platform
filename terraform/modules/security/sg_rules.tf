@@ -23,3 +23,24 @@ resource "aws_vpc_security_group_ingress_rule" "vpc_endpoint_https_from_eks" {
 
   description = "Allow HTTPS traffic from EKS workload to VPC endpoints"
 }
+
+# ALB SG -> EKS Workload
+
+resource "aws_vpc_security_group_ingress_rule" "eks_from_alb_frontend" {
+  security_group_id = var.eks_cluster_sg_id
+  referenced_security_group_id = var.alb_sg_id
+  ip_protocol = "tcp"
+  from_port = 3000
+  to_port = 3000
+
+  description = "Allow HTTP traffic from ALB to frontend pods"
+}
+
+resource "aws_vpc_security_group_ingress_rule" "eks_from_alb_backend" {
+  security_group_id            = var.eks_cluster_sg_id
+  referenced_security_group_id = var.alb_sg_id
+  ip_protocol                  = "tcp"
+  from_port = 8080
+  to_port   = 8080
+  description = "Allow HTTP traffic from ALB to backend pods"
+}

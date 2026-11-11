@@ -9,6 +9,10 @@ resource "aws_eks_addon" "this" {
   resolve_conflicts_on_update = each.value.resolve_conflicts_on_update
   depends_on                  = [aws_eks_node_group.this]
 
+  configuration_values = each.key == "vpc_cni" ? jsonencode({
+    enableNetworkPolicy = "true"
+  }) : null
+
   tags = merge(local.common_tags, {
     Name = "${local.name_prefix}-${each.value.addon_name}"
   })

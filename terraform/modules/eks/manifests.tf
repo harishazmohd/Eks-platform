@@ -7,6 +7,8 @@ resource "kubectl_manifest" "appproject" {
   })
   depends_on = [helm_release.argocd]
 }
+
+
 // ArgoCD watches the declared Git revision and reconciles the Helm chart.
 resource "kubectl_manifest" "argocd" {
   yaml_body = templatefile("${path.module}/helm/argocd.yaml.tfpl", {
@@ -27,6 +29,8 @@ resource "kubectl_manifest" "argocd" {
   ]
 }
 
+
+
 resource "time_sleep" "wait_for_argocd_cleanup" {
   depends_on = [
     helm_release.aws_load_balancer_controller,
@@ -35,4 +39,3 @@ resource "time_sleep" "wait_for_argocd_cleanup" {
   ]
   destroy_duration = "90s"
 }
-

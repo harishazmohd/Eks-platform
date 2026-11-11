@@ -46,6 +46,11 @@ variable "metadata" {
   })
 }
 
+variable "alb_sg_id" {
+  description = "ALB Security Group ID"
+  type = string
+}
+
 variable "common_tags" {
   description = "Additional tags applied to all resources."
   type        = map(string)
