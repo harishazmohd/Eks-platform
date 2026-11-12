@@ -16,6 +16,7 @@ settings:
   eksControlPlane: true
   isolateVPC: false
   enableZonalShift: false
+  disableDryRun: true
 
 controller:
   resources:

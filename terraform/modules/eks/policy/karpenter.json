@@ -4,7 +4,10 @@
     {
       "Sid": "AllowScopedEC2InstanceAccessActions",
       "Effect": "Allow",
-      "Action": ["ec2:RunInstances", "ec2:CreateFleet"],
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:CreateFleet"
+      ],
       "Resource": [
         "arn:${partition}:ec2:${region}::image/*",
         "arn:${partition}:ec2:${region}::snapshot/*",
@@ -17,14 +20,38 @@
     {
       "Sid": "AllowScopedEC2LaunchTemplateAccessActions",
       "Effect": "Allow",
-      "Action": ["ec2:RunInstances", "ec2:CreateFleet"],
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:CreateFleet"
+      ],
       "Resource": "arn:${partition}:ec2:${region}:*:launch-template/*",
-      "Condition": {"StringLike": {"aws:ResourceTag/karpenter.sh/nodepool": "*"}}
+      "Condition": {
+        "StringLike": {
+          "aws:ResourceTag/karpenter.sh/nodepool": "*"
+        }
+      }
+    },
+    {
+      "Sid": "AllowScopedLaunchTemplateActions",
+      "Effect": "Allow",
+      "Action": [
+        "ec2:CreateLaunchTemplate",
+        "ec2:CreateTags"
+      ],
+      "Resource": "arn:${partition}:ec2:${region}:*:launch-template/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestTag/eks:eks-cluster-name": "${cluster_name}"
+        }
+      }
     },
     {
       "Sid": "AllowScopedEC2InstanceActionsWithTags",
       "Effect": "Allow",
-      "Action": ["ec2:RunInstances", "ec2:CreateFleet", "ec2:CreateLaunchTemplate"],
+      "Action": [
+        "ec2:RunInstances",
+        "ec2:CreateFleet"
+      ],
       "Resource": [
         "arn:${partition}:ec2:${region}:*:fleet/*",
         "arn:${partition}:ec2:${region}:*:instance/*",
@@ -34,8 +61,12 @@
         "arn:${partition}:ec2:${region}:*:spot-instances-request/*"
       ],
       "Condition": {
-        "StringLike": {"aws:RequestTag/karpenter.sh/nodepool": "*"},
-        "StringEquals": {"aws:RequestTag/eks:eks-cluster-name": "${cluster_name}"}
+        "StringLike": {
+          "aws:RequestTag/karpenter.sh/nodepool": "*"
+        },
+        "StringEquals": {
+          "aws:RequestTag/eks:eks-cluster-name": "${cluster_name}"
+        }
       }
     },
     {
@@ -51,9 +82,19 @@
         "arn:${partition}:ec2:${region}:*:spot-instances-request/*"
       ],
       "Condition": {
-        "StringLike": {"aws:RequestTag/karpenter.sh/nodepool": "*"},
-        "StringEquals": {"aws:RequestTag/eks:eks-cluster-name": "${cluster_name}"},
-        "ForAllValues:StringEquals": {"aws:TagKeys": ["eks:eks-cluster-name", "karpenter.sh/nodeclaim", "Name"]}
+        "StringLike": {
+          "aws:RequestTag/karpenter.sh/nodepool": "*"
+        },
+        "StringEquals": {
+          "aws:RequestTag/eks:eks-cluster-name": "${cluster_name}"
+        },
+        "ForAllValues:StringEquals": {
+          "aws:TagKeys": [
+            "eks:eks-cluster-name",
+            "karpenter.sh/nodeclaim",
+            "Name"
+          ]
+        }
       }
     },
     {
@@ -62,27 +103,62 @@
       "Action": "ec2:CreateTags",
       "Resource": "arn:${partition}:ec2:${region}:*:instance/*",
       "Condition": {
-        "StringLike": {"aws:ResourceTag/karpenter.sh/nodepool": "*"},
-        "StringEqualsIfExists": {"aws:RequestTag/eks:eks-cluster-name": "${cluster_name}"},
-        "ForAllValues:StringEquals": {"aws:TagKeys": ["eks:eks-cluster-name", "karpenter.sh/nodeclaim", "Name"]}
+        "StringLike": {
+          "aws:ResourceTag/karpenter.sh/nodepool": "*"
+        },
+        "StringEqualsIfExists": {
+          "aws:RequestTag/eks:eks-cluster-name": "${cluster_name}"
+        },
+        "ForAllValues:StringEquals": {
+          "aws:TagKeys": [
+            "eks:eks-cluster-name",
+            "karpenter.sh/nodeclaim",
+            "Name"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "AllowScopedLaunchTemplateDeletion",
+      "Effect": "Allow",
+      "Action": "ec2:DeleteLaunchTemplate",
+      "Resource": "arn:${partition}:ec2:${region}:*:launch-template/*",
+      "Condition": {
+        "StringEquals": {
+          "aws:ResourceTag/eks:eks-cluster-name": "${cluster_name}"
+        }
       }
     },
     {
       "Sid": "AllowScopedDeletion",
       "Effect": "Allow",
-      "Action": ["ec2:TerminateInstances", "ec2:DeleteLaunchTemplate"],
+      "Action": [
+        "ec2:TerminateInstances",
+        "ec2:DeleteLaunchTemplate"
+      ],
       "Resource": [
         "arn:${partition}:ec2:${region}:*:instance/*",
         "arn:${partition}:ec2:${region}:*:launch-template/*"
       ],
-      "Condition": {"StringLike": {"aws:ResourceTag/karpenter.sh/nodepool": "*"}}
+      "Condition": {
+        "StringLike": {
+          "aws:ResourceTag/karpenter.sh/nodepool": "*"
+        }
+      }
     },
     {
       "Sid": "AllowPassingKarpenterNodeRole",
       "Effect": "Allow",
       "Action": "iam:PassRole",
       "Resource": "${karpenter_node_role_arn}",
-      "Condition": {"StringEquals": {"iam:PassedToService": ["ec2.amazonaws.com", "ec2.amazonaws.com.cn"]}}
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "ec2.amazonaws.com",
+            "ec2.amazonaws.com.cn"
+          ]
+        }
+      }
     },
     {
       "Sid": "AllowRegionalReadActions",
@@ -101,7 +177,11 @@
         "ec2:DescribeSubnets"
       ],
       "Resource": "*",
-      "Condition": {"StringEquals": {"aws:RequestedRegion": "${region}"}}
+      "Condition": {
+        "StringEquals": {
+          "aws:RequestedRegion": "${region}"
+        }
+      }
     },
     {
       "Sid": "AllowSSMReadActions",
@@ -120,6 +200,12 @@
       "Effect": "Allow",
       "Action": "eks:DescribeCluster",
       "Resource": "${cluster_arn}"
+    },
+    {
+      "Sid": "AllowUnscopedInstanceProfileListAction",
+      "Effect": "Allow",
+      "Resource": "*",
+      "Action": "iam:ListInstanceProfiles"
     }
   ]
 }
