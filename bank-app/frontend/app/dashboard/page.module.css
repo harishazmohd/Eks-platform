@@ -1,106 +1,318 @@
 .header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
   margin-bottom: 2rem;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.welcomeText {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
 }
 
 .title {
-  font-size: 1.875rem;
+  font-size: 1.75rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
-  margin-bottom: 0.5rem;
+  letter-spacing: -0.03em;
+  color: #ffffff;
 }
 
 .subtitle {
+  font-size: 0.875rem;
   color: var(--text-secondary);
 }
 
-.summaryGrid {
-  margin-bottom: 2.5rem;
+/* Net Worth Overview Card */
+.overviewCard {
+  background: linear-gradient(135deg, rgba(20, 27, 40, 0.8) 0%, rgba(10, 14, 22, 0.9) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 2rem;
+  flex-wrap: wrap;
+  box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5), var(--glass-highlight);
 }
 
-.cardHeader {
+.netWorthSection {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.labelRow {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
+  gap: 0.5rem;
+  font-size: 0.825rem;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
 }
 
-.cardLabel {
-  color: var(--text-secondary);
-  font-weight: 500;
-  font-size: 0.875rem;
+.totalAmount {
+  font-size: 2.75rem;
+  font-weight: 800;
+  letter-spacing: -0.035em;
+  color: #ffffff;
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.1;
+}
+
+.cashflowPills {
+  display: flex;
+  gap: 1.25rem;
+  flex-wrap: wrap;
+}
+
+.flowPill {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.15rem;
+  border-radius: 14px;
+  background-color: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-color);
+}
+
+.flowIconIn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: var(--accent-success-light);
+  color: var(--accent-success);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flowIconOut {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background-color: var(--accent-danger-light);
+  color: var(--accent-danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.flowMeta {
+  display: flex;
+  flex-direction: column;
+}
+
+.flowLabel {
+  font-size: 0.725rem;
+  color: var(--text-muted);
   text-transform: uppercase;
   letter-spacing: 0.05em;
+  font-weight: 600;
 }
 
-.cardAmount {
-  font-size: 2.5rem;
+.flowValue {
+  font-size: 1.05rem;
   font-weight: 700;
-  letter-spacing: -0.025em;
+  color: var(--text-primary);
+  font-family: 'JetBrains Mono', monospace;
 }
 
-.sectionHeader {
+/* Quick Action Bar */
+.actionsBar {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 1rem;
+  margin-bottom: 2.25rem;
+}
+
+.actionBtn {
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 14px;
+  padding: 1rem 1.25rem;
   display: flex;
   align-items: center;
+  gap: 0.85rem;
+  color: var(--text-primary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.actionBtn:hover {
+  background-color: var(--bg-tertiary);
+  border-color: rgba(99, 102, 241, 0.35);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.3);
+}
+
+.actionIconWrapper {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Section Header */
+.sectionHeader {
+  display: flex;
   justify-content: space-between;
-  margin-bottom: 1.5rem;
+  align-items: center;
+  margin-bottom: 1.15rem;
 }
 
 .sectionTitle {
   font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
 }
 
 .viewAll {
+  font-size: 0.825rem;
   color: var(--accent-primary);
-  font-size: 0.875rem;
-  font-weight: 500;
+  font-weight: 600;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .viewAll:hover {
   text-decoration: underline;
 }
 
+/* Accounts Grid */
 .accountsGrid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 3rem;
+  grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
 }
 
-.accountHeader {
+.accountCard {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 18px;
+  padding: 1.5rem;
   display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 170px;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.accountCard:hover {
+  border-color: rgba(255, 255, 255, 0.2);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.5);
+}
+
+.accountTop {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
 }
 
 .accountIconWrapper {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
-  background: rgba(59, 130, 246, 0.1);
-  color: var(--accent-primary);
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
   display: flex;
   align-items: center;
   justify-content: center;
+  color: var(--accent-primary);
 }
 
-.accountType {
+.accountTypeBadge {
+  font-size: 0.7rem;
   font-weight: 600;
-  color: var(--text-primary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.25rem 0.6rem;
+  border-radius: 6px;
+  background-color: rgba(255, 255, 255, 0.06);
+  color: var(--text-secondary);
 }
 
 .accountBalance {
   font-size: 1.75rem;
   font-weight: 700;
-  margin-bottom: 0.5rem;
+  letter-spacing: -0.025em;
+  color: #ffffff;
+  font-family: 'JetBrains Mono', monospace;
+  margin: 1rem 0 0.5rem;
+}
+
+.accountFooter {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.775rem;
+  color: var(--text-muted);
 }
 
 .accountNumber {
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  cursor: pointer;
+}
+
+.accountNumber:hover {
+  color: var(--text-primary);
+}
+
+.addAccountCard {
+  border: 1px dashed rgba(255, 255, 255, 0.15);
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  min-height: 170px;
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.02);
+  transition: all 0.2s;
   color: var(--text-secondary);
-  font-size: 0.875rem;
-  font-family: monospace;
+}
+
+.addAccountCard:hover {
+  background-color: rgba(99, 102, 241, 0.05);
+  border-color: rgba(99, 102, 241, 0.4);
+  color: var(--accent-primary);
+}
+
+/* Dashboard Two-Column Grid */
+.dashboardGrid {
+  display: grid;
+  grid-template-columns: 2fr 1.2fr;
+  gap: 1.75rem;
+  margin-bottom: 2rem;
+}
+
+/* Recent Activity Card */
+.transactionsCard {
+  padding: 0;
+  overflow: hidden;
 }
 
 .transactionList {
@@ -111,58 +323,67 @@
 .transactionItem {
   display: flex;
   align-items: center;
-  padding: 1rem 0;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
   border-bottom: 1px solid var(--border-color);
+  transition: background-color 0.15s;
 }
 
 .transactionItem:last-child {
   border-bottom: none;
-  padding-bottom: 0;
 }
 
-.transactionItem:first-child {
-  padding-top: 0;
+.transactionItem:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.txLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
 }
 
 .txIcon {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-right: 1rem;
+  flex-shrink: 0;
 }
 
 .txIncoming {
-  background: rgba(16, 185, 129, 0.1);
+  background-color: var(--accent-success-light);
   color: var(--accent-success);
 }
 
 .txOutgoing {
-  background: var(--bg-tertiary);
-  color: var(--text-secondary);
+  background-color: var(--accent-danger-light);
+  color: var(--accent-danger);
 }
 
 .txDetails {
-  flex: 1;
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
 }
 
 .txDesc {
-  font-weight: 500;
+  font-weight: 600;
+  font-size: 0.875rem;
   color: var(--text-primary);
 }
 
-.txDate {
+.txMeta {
   font-size: 0.75rem;
-  color: var(--text-secondary);
+  color: var(--text-muted);
 }
 
 .txAmount {
-  font-weight: 600;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: var(--text-primary);
 }
 
 .textSuccess {
@@ -170,7 +391,71 @@
 }
 
 .emptyState {
-  color: var(--text-secondary);
+  padding: 3rem 1.5rem;
   text-align: center;
-  padding: 2rem;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+/* Spending Breakdown Card */
+.insightsCard {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.categoryBar {
+  display: flex;
+  height: 10px;
+  border-radius: 9999px;
+  overflow: hidden;
+  background-color: var(--bg-tertiary);
+  margin-bottom: 0.5rem;
+}
+
+.categoryBarSegment {
+  height: 100%;
+  transition: width 0.3s;
+}
+
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.categoryItem {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.825rem;
+}
+
+.catLeft {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.catDot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.catName {
+  color: var(--text-secondary);
+}
+
+.catAmount {
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+@media (max-width: 1000px) {
+  .dashboardGrid {
+    grid-template-columns: 1fr;
+  }
 }

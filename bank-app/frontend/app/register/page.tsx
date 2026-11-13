@@ -6,18 +6,21 @@ import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import styles from '../auth.module.css';
 import Link from 'next/link';
-import { Wallet } from 'lucide-react';
+import { Wallet, User, Mail, Lock, Eye, EyeOff, Gift } from 'lucide-react';
 
 export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     try {
       const res = await fetch('/api/auth/register', {
@@ -28,13 +31,14 @@ export default function Register() {
 
       const data = await res.json();
       if (res.ok) {
-        router.push('/login');
+        router.push('/login?registered=true');
       } else {
         setError(data.error || 'Registration failed');
       }
-    } catch (err) {
-      console.error(err);
-      setError('An error occurred');
+    } catch {
+      setError('Unable to reach registration service');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -42,55 +46,101 @@ export default function Register() {
     <div className={styles.container}>
       <Card className={styles.authCard}>
         <div className={styles.logo}>
-          <Wallet size={32} className={styles.logoIcon} />
+          <div className={styles.logoIconWrapper}>
+            <Wallet size={22} />
+          </div>
           <span>NovaBank</span>
         </div>
-        
-        <h1 className={styles.title}>Create an account</h1>
-        <p className={styles.subtitle}>Start your financial journey with us today.</p>
+
+        <h1 className={styles.title}>Open Your Account</h1>
+        <p className={styles.subtitle}>
+          Instant activation with preloaded Checking and Savings accounts.
+        </p>
+
+        <div style={{
+          backgroundColor: 'rgba(16, 185, 129, 0.08)',
+          border: '1px solid rgba(16, 185, 129, 0.25)',
+          borderRadius: '10px',
+          padding: '0.65rem 0.85rem',
+          marginBottom: '1.25rem',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.6rem',
+          fontSize: '0.785rem',
+          color: '#34d399'
+        }}>
+          <Gift size={16} style={{ flexShrink: 0 }} />
+          <span>Includes <strong>$2,000.00</strong> welcome testing liquidity upon registration.</span>
+        </div>
 
         <form onSubmit={handleSubmit} className={styles.form}>
           <div className={styles.formGroup}>
-            <label>Full Name</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              required
-              className={styles.input}
-              placeholder="John Doe"
-            />
+            <label>Legal Full Name</label>
+            <div className={styles.inputWrapper}>
+              <User size={16} className={styles.inputIcon} />
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+                className={styles.input}
+                placeholder="Alex Morgan"
+                autoComplete="name"
+              />
+            </div>
           </div>
+
           <div className={styles.formGroup}>
-            <label>Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-              className={styles.input}
-              placeholder="name@example.com"
-            />
+            <label>Email Address</label>
+            <div className={styles.inputWrapper}>
+              <Mail size={16} className={styles.inputIcon} />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+                className={styles.input}
+                placeholder="alex.morgan@example.com"
+                autoComplete="email"
+              />
+            </div>
           </div>
+
           <div className={styles.formGroup}>
             <label>Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className={styles.input}
-              placeholder="••••••••"
-            />
+            <div className={styles.inputWrapper}>
+              <Lock size={16} className={styles.inputIcon} />
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                minLength={6}
+                className={styles.input}
+                placeholder="Minimum 6 characters"
+                autoComplete="new-password"
+              />
+              <button
+                type="button"
+                className={styles.passwordToggle}
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? 'Hide password' : 'Show password'}
+              >
+                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+              </button>
+            </div>
           </div>
 
           {error && <div className={styles.error}>{error}</div>}
 
-          <Button type="submit" fullWidth>Create Account</Button>
+          <Button type="submit" loading={loading} fullWidth size="lg">
+            Create Free Account
+          </Button>
         </form>
 
         <p className={styles.footerText}>
-          Already have an account? <Link href="/login" className={styles.link}>Sign in</Link>
+          Already have an account?
+          <Link href="/login" className={styles.link}>Sign In</Link>
         </p>
       </Card>
     </div>

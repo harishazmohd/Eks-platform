@@ -15,6 +15,10 @@ interface AuthContextType {
   login: (token: string, user: User) => void;
   logout: () => void;
   isAuthenticated: boolean;
+  privacyMode: boolean;
+  togglePrivacyMode: () => void;
+  refreshTrigger: number;
+  triggerRefresh: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -22,15 +26,25 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [privacyMode, setPrivacyMode] = useState<boolean>(false);
+  const [refreshTrigger, setRefreshTrigger] = useState<number>(0);
   const router = useRouter();
 
   useEffect(() => {
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
+    const storedPrivacy = localStorage.getItem('privacyMode');
     if (storedToken && storedUser) {
       // eslint-disable-next-line react-hooks/set-state-in-effect
       setToken(storedToken);
-      setUser(JSON.parse(storedUser));
+      try {
+        setUser(JSON.parse(storedUser));
+      } catch {
+        setUser(null);
+      }
+    }
+    if (storedPrivacy === 'true') {
+      setPrivacyMode(true);
     }
   }, []);
 
@@ -49,8 +63,32 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     router.push('/login');
   };
 
+  const togglePrivacyMode = () => {
+    setPrivacyMode((prev) => {
+      const next = !prev;
+      localStorage.setItem('privacyMode', String(next));
+      return next;
+    });
+  };
+
+  const triggerRefresh = () => {
+    setRefreshTrigger((prev) => prev + 1);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, isAuthenticated: !!token }}>
+    <AuthContext.Provider
+      value={{
+        user,
+        token,
+        login,
+        logout,
+        isAuthenticated: !!token,
+        privacyMode,
+        togglePrivacyMode,
+        refreshTrigger,
+        triggerRefresh,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
