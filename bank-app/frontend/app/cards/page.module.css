@@ -333,9 +333,121 @@
   color: #ffffff;
 }
 
+.cardVisa {
+  background: linear-gradient(135deg, #1b263b 0%, #0d1b2a 60%, #050b14 100%);
+}
+
+.cardMastercard {
+  background: linear-gradient(135deg, #2b1055 0%, #3b0764 50%, #0f172a 100%);
+}
+
+.cardSelector {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.cardTab {
+  padding: 0.5rem 0.85rem;
+  border-radius: 10px;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  transition: all 0.2s ease;
+}
+
+.cardTab:hover {
+  border-color: rgba(99, 102, 241, 0.4);
+  color: var(--text-primary);
+}
+
+.cardTabActive {
+  background-color: rgba(99, 102, 241, 0.15);
+  border-color: #6366f1;
+  color: #818cf8;
+  font-weight: 600;
+}
+
+.newCardTab {
+  padding: 0.5rem 0.85rem;
+  border-radius: 10px;
+  background-color: transparent;
+  border: 1px dashed rgba(255, 255, 255, 0.2);
+  color: var(--text-muted);
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  transition: all 0.2s ease;
+}
+
+.newCardTab:hover {
+  border-color: #6366f1;
+  color: #818cf8;
+}
+
+.vaultActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.25rem;
+}
+
+.vaultBtn {
+  flex: 1;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background-color: var(--bg-secondary);
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  transition: all 0.2s;
+}
+
+.vaultBtn:hover {
+  background-color: var(--bg-tertiary);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.vaultBtnDanger {
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  border: 1px solid rgba(244, 63, 94, 0.2);
+  background-color: rgba(244, 63, 94, 0.08);
+  color: var(--accent-danger);
+  font-size: 0.75rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+.vaultBtnDanger:hover {
+  background-color: rgba(244, 63, 94, 0.2);
+  border-color: var(--accent-danger);
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
   }
 }
+
 

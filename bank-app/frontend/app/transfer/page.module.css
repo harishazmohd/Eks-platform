@@ -302,8 +302,121 @@
   padding: 1.5rem 0;
 }
 
+.autocompleteList {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6);
+  z-index: 50;
+  overflow: hidden;
+}
+
+.autocompleteItem {
+  padding: 0.75rem 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  cursor: pointer;
+  transition: background-color 0.15s;
+}
+
+.autocompleteItem:hover {
+  background-color: var(--bg-tertiary);
+}
+
+.autocompleteName {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.autocompleteAcc {
+  font-size: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  color: #818cf8;
+}
+
+.splitBillPanel {
+  margin-top: 0.5rem;
+  padding: 1rem;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.splitBillHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.splitBillTitle {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.splitInputsRow {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+}
+
+.splitMiniGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.splitMiniLabel {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.splitMiniInput {
+  padding: 0.5rem 0.75rem;
+  background-color: var(--bg-tertiary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  color: #fff;
+  font-size: 0.85rem;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.splitResultRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 0.5rem;
+  border-top: 1px dashed rgba(255, 255, 255, 0.1);
+}
+
+.splitShareText {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+}
+
+.splitShareAmount {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #10b981;
+}
+
 @media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
   }
 }
+

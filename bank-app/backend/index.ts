@@ -604,6 +604,461 @@ app.get('/api/analytics/summary', authenticateToken, async (req: AuthRequest, re
   }
 });
 
+// --- SMART VAULTS / SAVINGS GOALS ROUTES ---
+
+// Get user vaults
+app.get('/api/vaults', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    const vaults = await prisma.vault.findMany({
+      where: { userId: req.user!.id },
+      orderBy: { createdAt: 'desc' }
+    });
+    res.status(200).json(vaults);
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch vaults' });
+  }
+});
+
+// Create vault
+app.post('/api/vaults', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const { name, targetAmount, initialDeposit, accountId, category } = req.body;
+  const parsedTarget = parseFloat(targetAmount);
+  const parsedInitial = parseFloat(initialDeposit) || 0;
+
+  if (!name || isNaN(parsedTarget) || parsedTarget <= 0) {
+    res.status(400).json({ error: 'Invalid vault name or target amount' });
+    return;
+  }
+
+  try {
+    let vault;
+    if (parsedInitial > 0 && accountId) {
+      const account = await prisma.account.findFirst({
+        where: { id: accountId, userId: req.user!.id }
+      });
+      if (!account || account.balance < parsedInitial) {
+        res.status(400).json({ error: 'Insufficient funds in selected account for initial deposit' });
+        return;
+      }
+
+      vault = await prisma.$transaction(async (tx) => {
+        await tx.account.update({
+          where: { id: account.id },
+          data: { balance: { decrement: parsedInitial } }
+        });
+
+        await tx.transaction.create({
+          data: {
+            accountId: account.id,
+            type: 'WITHDRAWAL',
+            amount: parsedInitial,
+            category: 'SAVINGS',
+            status: 'COMPLETED',
+            description: `Initial funding for vault: ${name}`
+          }
+        });
+
+        return await tx.vault.create({
+          data: {
+            userId: req.user!.id,
+            name,
+            targetAmount: parsedTarget,
+            currentAmount: parsedInitial,
+            category: category || 'SAVINGS'
+          }
+        });
+      });
+    } else {
+      vault = await prisma.vault.create({
+        data: {
+          userId: req.user!.id,
+          name,
+          targetAmount: parsedTarget,
+          currentAmount: 0,
+          category: category || 'SAVINGS'
+        }
+      });
+    }
+
+    res.status(201).json(vault);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to create vault' });
+  }
+});
+
+// Deposit into vault
+app.post('/api/vaults/:id/deposit', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const { accountId, amount } = req.body;
+  const parsedAmount = parseFloat(amount);
+
+  if (!accountId || isNaN(parsedAmount) || parsedAmount <= 0) {
+    res.status(400).json({ error: 'Invalid deposit amount or account' });
+    return;
+  }
+
+  try {
+    const vault = await prisma.vault.findFirst({
+      where: { id, userId: req.user!.id }
+    });
+    if (!vault) {
+      res.status(404).json({ error: 'Vault not found' });
+      return;
+    }
+
+    const account = await prisma.account.findFirst({
+      where: { id: accountId, userId: req.user!.id }
+    });
+    if (!account || account.balance < parsedAmount) {
+      res.status(400).json({ error: 'Insufficient funds in selected account' });
+      return;
+    }
+
+    const updatedVault = await prisma.$transaction(async (tx) => {
+      await tx.account.update({
+        where: { id: account.id },
+        data: { balance: { decrement: parsedAmount } }
+      });
+
+      await tx.transaction.create({
+        data: {
+          accountId: account.id,
+          type: 'WITHDRAWAL',
+          amount: parsedAmount,
+          category: 'SAVINGS',
+          status: 'COMPLETED',
+          description: `Deposit to Vault: ${vault.name}`
+        }
+      });
+
+      return await tx.vault.update({
+        where: { id: vault.id },
+        data: { currentAmount: { increment: parsedAmount } }
+      });
+    });
+
+    res.status(200).json({ message: 'Funds deposited to vault successfully', vault: updatedVault });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to deposit into vault' });
+  }
+});
+
+// Withdraw from vault
+app.post('/api/vaults/:id/withdraw', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const { accountId, amount } = req.body;
+  const parsedAmount = parseFloat(amount);
+
+  if (!accountId || isNaN(parsedAmount) || parsedAmount <= 0) {
+    res.status(400).json({ error: 'Invalid withdrawal amount or destination account' });
+    return;
+  }
+
+  try {
+    const vault = await prisma.vault.findFirst({
+      where: { id, userId: req.user!.id }
+    });
+    if (!vault) {
+      res.status(404).json({ error: 'Vault not found' });
+      return;
+    }
+
+    if (vault.currentAmount < parsedAmount) {
+      res.status(400).json({ error: 'Insufficient balance in vault' });
+      return;
+    }
+
+    const account = await prisma.account.findFirst({
+      where: { id: accountId, userId: req.user!.id }
+    });
+    if (!account) {
+      res.status(404).json({ error: 'Destination account not found' });
+      return;
+    }
+
+    const updatedVault = await prisma.$transaction(async (tx) => {
+      await tx.account.update({
+        where: { id: account.id },
+        data: { balance: { increment: parsedAmount } }
+      });
+
+      await tx.transaction.create({
+        data: {
+          accountId: account.id,
+          type: 'DEPOSIT',
+          amount: parsedAmount,
+          category: 'SAVINGS',
+          status: 'COMPLETED',
+          description: `Withdrawal from Vault: ${vault.name}`
+        }
+      });
+
+      return await tx.vault.update({
+        where: { id: vault.id },
+        data: { currentAmount: { decrement: parsedAmount } }
+      });
+    });
+
+    res.status(200).json({ message: 'Funds withdrawn from vault successfully', vault: updatedVault });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to withdraw from vault' });
+  }
+});
+
+// Delete/Close vault (refunds remaining balance)
+app.delete('/api/vaults/:id', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const vault = await prisma.vault.findFirst({
+      where: { id, userId: req.user!.id }
+    });
+    if (!vault) {
+      res.status(404).json({ error: 'Vault not found' });
+      return;
+    }
+
+    if (vault.currentAmount > 0) {
+      const primaryAccount = (await prisma.account.findFirst({
+        where: { userId: req.user!.id, accountType: 'CHECKING' }
+      })) || (await prisma.account.findFirst({
+        where: { userId: req.user!.id }
+      }));
+
+      if (primaryAccount) {
+        await prisma.$transaction(async (tx) => {
+          await tx.account.update({
+            where: { id: primaryAccount.id },
+            data: { balance: { increment: vault.currentAmount } }
+          });
+          await tx.transaction.create({
+            data: {
+              accountId: primaryAccount.id,
+              type: 'DEPOSIT',
+              amount: vault.currentAmount,
+              category: 'SAVINGS',
+              status: 'COMPLETED',
+              description: `Refund upon closing Vault: ${vault.name}`
+            }
+          });
+          await tx.vault.delete({ where: { id: vault.id } });
+        });
+        res.status(200).json({ message: `Vault closed and $${vault.currentAmount.toFixed(2)} refunded to your checking account.` });
+        return;
+      }
+    }
+
+    await prisma.vault.delete({ where: { id: vault.id } });
+    res.status(200).json({ message: 'Vault closed successfully' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to close vault' });
+  }
+});
+
+// --- VIRTUAL & PHYSICAL CARDS ROUTES ---
+
+function generateCardDetails(brand: string) {
+  const prefix = brand === 'MASTERCARD' ? '5425' : '4829';
+  let digits = prefix;
+  for (let i = 0; i < 12; i++) {
+    digits += Math.floor(Math.random() * 10).toString();
+  }
+  const cvv = Math.floor(100 + Math.random() * 900).toString();
+  const now = new Date();
+  const expMonth = String(now.getMonth() + 1).padStart(2, '0');
+  const expYear = String((now.getFullYear() + 3) % 100).padStart(2, '0');
+  const expiryDate = `${expMonth}/${expYear}`;
+  return { cardNumber: digits, cvv, expiryDate };
+}
+
+// Get user cards
+app.get('/api/cards', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  try {
+    let cards = await prisma.card.findMany({
+      where: { userId: req.user!.id },
+      orderBy: { createdAt: 'asc' }
+    });
+
+    // Auto-provision primary virtual card if none exists yet
+    if (cards.length === 0) {
+      const user = await prisma.user.findUnique({ where: { id: req.user!.id } });
+      const { cardNumber, cvv, expiryDate } = generateCardDetails('VISA');
+      const defaultCard = await prisma.card.create({
+        data: {
+          userId: req.user!.id,
+          cardNumber,
+          cardHolder: (user?.name || 'Nova Member').toUpperCase(),
+          expiryDate,
+          cvv,
+          brand: 'VISA',
+          label: 'Nova Infinite Platinum',
+          isFrozen: false,
+          dailyLimit: 2500.0,
+          allowOnline: true,
+          allowInternational: false
+        }
+      });
+      cards = [defaultCard];
+    }
+
+    res.status(200).json(cards);
+  } catch {
+    res.status(500).json({ error: 'Failed to fetch cards' });
+  }
+});
+
+// Issue new card
+app.post('/api/cards/create', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const { label, brand, dailyLimit, cardType } = req.body;
+  const selectedBrand = brand === 'MASTERCARD' ? 'MASTERCARD' : 'VISA';
+  const parsedLimit = parseFloat(dailyLimit) || 2500;
+
+  try {
+    const user = await prisma.user.findUnique({ where: { id: req.user!.id } });
+    const { cardNumber, cvv, expiryDate } = generateCardDetails(selectedBrand);
+
+    const newCard = await prisma.card.create({
+      data: {
+        userId: req.user!.id,
+        cardNumber,
+        cardHolder: (user?.name || 'Nova Member').toUpperCase(),
+        expiryDate,
+        cvv,
+        brand: selectedBrand,
+        cardType: cardType || 'VIRTUAL',
+        label: label || (selectedBrand === 'VISA' ? 'Nova Virtual Visa' : 'Nova Virtual Mastercard'),
+        isFrozen: false,
+        dailyLimit: parsedLimit,
+        allowOnline: true,
+        allowInternational: false
+      }
+    });
+
+    res.status(201).json(newCard);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Failed to issue card' });
+  }
+});
+
+// Toggle freeze card
+app.patch('/api/cards/:id/freeze', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const card = await prisma.card.findFirst({
+      where: { id, userId: req.user!.id }
+    });
+    if (!card) {
+      res.status(404).json({ error: 'Card not found' });
+      return;
+    }
+
+    const updated = await prisma.card.update({
+      where: { id: card.id },
+      data: { isFrozen: !card.isFrozen }
+    });
+
+    res.status(200).json({
+      message: `Card ${updated.isFrozen ? 'frozen' : 'unfrozen'} successfully`,
+      card: updated
+    });
+  } catch {
+    res.status(500).json({ error: 'Failed to toggle card freeze' });
+  }
+});
+
+// Update card settings (daily limit, online, international)
+app.patch('/api/cards/:id/settings', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const { id } = req.params;
+  const { dailyLimit, allowOnline, allowInternational } = req.body;
+  try {
+    const card = await prisma.card.findFirst({
+      where: { id, userId: req.user!.id }
+    });
+    if (!card) {
+      res.status(404).json({ error: 'Card not found' });
+      return;
+    }
+
+    const updated = await prisma.card.update({
+      where: { id: card.id },
+      data: {
+        ...(dailyLimit !== undefined ? { dailyLimit: parseFloat(dailyLimit) } : {}),
+        ...(allowOnline !== undefined ? { allowOnline: Boolean(allowOnline) } : {}),
+        ...(allowInternational !== undefined ? { allowInternational: Boolean(allowInternational) } : {})
+      }
+    });
+
+    res.status(200).json({ message: 'Card settings updated', card: updated });
+  } catch {
+    res.status(500).json({ error: 'Failed to update card settings' });
+  }
+});
+
+// Terminate card
+app.delete('/api/cards/:id', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const { id } = req.params;
+  try {
+    const card = await prisma.card.findFirst({
+      where: { id, userId: req.user!.id }
+    });
+    if (!card) {
+      res.status(404).json({ error: 'Card not found' });
+      return;
+    }
+
+    await prisma.card.delete({ where: { id: card.id } });
+    res.status(200).json({ message: 'Card terminated successfully' });
+  } catch {
+    res.status(500).json({ error: 'Failed to terminate card' });
+  }
+});
+
+// --- RECIPIENT SEARCH ROUTE ---
+app.get('/api/users/search', authenticateToken, async (req: AuthRequest, res: Response): Promise<void> => {
+  const query = req.query.q as string;
+  if (!query || query.trim().length < 2) {
+    res.status(200).json([]);
+    return;
+  }
+  try {
+    const accounts = await prisma.account.findMany({
+      where: {
+        AND: [
+          { userId: { not: req.user!.id } },
+          {
+            OR: [
+              { accountNumber: { contains: query.trim(), mode: 'insensitive' } },
+              { user: { name: { contains: query.trim(), mode: 'insensitive' } } },
+              { user: { email: { contains: query.trim(), mode: 'insensitive' } } }
+            ]
+          }
+        ]
+      },
+      include: {
+        user: {
+          select: { name: true, email: true }
+        }
+      },
+      take: 5
+    });
+
+    const results = accounts.map((a) => ({
+      accountNumber: a.accountNumber,
+      accountType: a.accountType,
+      recipientName: a.user.name,
+      email: a.user.email
+    }));
+
+    res.status(200).json(results);
+  } catch {
+    res.status(500).json({ error: 'Search failed' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Backend server running on port ${PORT}`);
 });

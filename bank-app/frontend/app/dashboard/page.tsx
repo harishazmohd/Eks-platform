@@ -49,11 +49,29 @@ interface AnalyticsData {
   categoryBreakdown: { category: string; amount: number; percentage: number }[];
 }
 
+interface VaultData {
+  id: string;
+  name: string;
+  currentAmount: number;
+  targetAmount: number;
+}
+
+interface CardData {
+  id: string;
+  label: string;
+  brand: string;
+  cardNumber: string;
+  isFrozen: boolean;
+  dailyLimit: number;
+}
+
 export default function Dashboard() {
   const { token, user, privacyMode, refreshTrigger, triggerRefresh } = useAuth();
   const [accounts, setAccounts] = useState<Account[]>([]);
   const [transactions, setTransactions] = useState<Transaction[]>([]);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
+  const [vaults, setVaults] = useState<VaultData[]>([]);
+  const [cards, setCards] = useState<CardData[]>([]);
   const [copiedAcc, setCopiedAcc] = useState<string | null>(null);
 
   // New Account Modal State
@@ -91,6 +109,26 @@ export default function Dashboard() {
           if (res.ok) {
             const data = await res.json();
             setAnalytics(data);
+          }
+        })
+        .catch(console.error);
+
+      // 4. Fetch Vaults
+      fetch('/api/vaults', { headers: { Authorization: `Bearer ${token}` } })
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) setVaults(data);
+          }
+        })
+        .catch(console.error);
+
+      // 5. Fetch Cards
+      fetch('/api/cards', { headers: { Authorization: `Bearer ${token}` } })
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data)) setCards(data);
           }
         })
         .catch(console.error);
@@ -400,6 +438,98 @@ export default function Dashboard() {
             )}
           </Card>
         </div>
+      </div>
+
+      {/* Smart Vaults & Active Cards Row */}
+      <div style={{ marginTop: '2.5rem', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '1.5rem' }}>
+        {/* Vaults Card */}
+        <Card style={{ padding: '1.5rem', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(16, 185, 129, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#10b981' }}>
+                <PiggyBank size={18} />
+              </div>
+              <h2 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: '#fff' }}>Savings Vaults</h2>
+            </div>
+            <Link href="/cards" style={{ fontSize: '0.8rem', color: '#818cf8', display: 'flex', alignItems: 'center', gap: '0.2rem', fontWeight: 500 }}>
+              <span>Manage</span>
+              <ChevronRight size={14} />
+            </Link>
+          </div>
+
+          {vaults.length === 0 ? (
+            <div style={{ textAlign: 'center', padding: '1.5rem 0', color: '#64748b', fontSize: '0.85rem' }}>
+              <p>No active savings vaults yet.</p>
+              <Link href="/cards" style={{ color: '#818cf8', fontWeight: 600, display: 'inline-block', marginTop: '0.5rem' }}>
+                + Start a Savings Goal
+              </Link>
+            </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              {vaults.slice(0, 3).map((v) => {
+                const pct = Math.min(100, Math.round((v.currentAmount / v.targetAmount) * 100));
+                return (
+                  <div key={v.id} style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.825rem' }}>
+                      <span style={{ fontWeight: 500, color: '#f8fafc' }}>{v.name}</span>
+                      <span style={{ fontFamily: 'JetBrains Mono, monospace', color: pct >= 100 ? '#10b981' : '#38bdf8', fontWeight: 600 }}>{pct}%</span>
+                    </div>
+                    <div style={{ width: '100%', height: '6px', backgroundColor: 'var(--bg-tertiary)', borderRadius: '9999px', overflow: 'hidden' }}>
+                      <div style={{ height: '100%', width: `${pct}%`, background: 'linear-gradient(90deg, #10b981, #06b6d4)', borderRadius: '9999px' }} />
+                    </div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.75rem', color: '#94a3b8' }}>
+                      <span>Saved: {privacyMode ? '••••' : `$${v.currentAmount.toFixed(2)}`}</span>
+                      <span>Target: ${v.targetAmount.toLocaleString()}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </Card>
+
+        {/* Cards Spotlight */}
+        <Card style={{ padding: '1.5rem', backgroundColor: 'var(--card-bg)', border: '1px solid var(--border-color)', borderRadius: '20px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+              <div style={{ width: '32px', height: '32px', borderRadius: '8px', backgroundColor: 'rgba(99, 102, 241, 0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#818cf8' }}>
+                <CreditCard size={18} />
+              </div>
+              <h2 style={{ fontSize: '1.05rem', fontWeight: 600, margin: 0, color: '#fff' }}>Virtual Cards</h2>
+            </div>
+            <Link href="/cards" style={{ fontSize: '0.8rem', color: '#818cf8', display: 'flex', alignItems: 'center', gap: '0.2rem', fontWeight: 500 }}>
+              <span>View All</span>
+              <ChevronRight size={14} />
+            </Link>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+            {cards.slice(0, 3).map((c) => (
+              <div key={c.id} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.75rem 1rem', backgroundColor: 'var(--bg-secondary)', border: '1px solid var(--border-color)', borderRadius: '12px' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <CreditCard size={16} color={c.brand === 'MASTERCARD' ? '#fb923c' : '#818cf8'} />
+                  <div>
+                    <div style={{ fontSize: '0.85rem', fontWeight: 600, color: '#fff' }}>{c.label}</div>
+                    <div style={{ fontSize: '0.75rem', fontFamily: 'JetBrains Mono, monospace', color: '#94a3b8' }}>
+                      •••• {c.cardNumber.slice(-4)}
+                    </div>
+                  </div>
+                </div>
+                <span style={{
+                  fontSize: '0.7rem',
+                  fontWeight: 600,
+                  padding: '0.2rem 0.5rem',
+                  borderRadius: '6px',
+                  backgroundColor: c.isFrozen ? 'rgba(244, 63, 94, 0.15)' : 'rgba(16, 185, 129, 0.15)',
+                  color: c.isFrozen ? '#f43f5e' : '#10b981',
+                  border: c.isFrozen ? '1px solid rgba(244, 63, 94, 0.3)' : '1px solid rgba(16, 185, 129, 0.3)'
+                }}>
+                  {c.isFrozen ? 'Frozen' : 'Active'}
+                </span>
+              </div>
+            ))}
+          </div>
+        </Card>
       </div>
 
       {/* New Account Modal */}

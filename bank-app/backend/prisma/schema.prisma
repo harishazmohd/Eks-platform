@@ -15,6 +15,8 @@ model User {
   accounts  Account[]
   loans     Loan[]
   contacts  Beneficiary[]
+  vaults    Vault[]
+  cards     Card[]
   createdAt DateTime      @default(now())
   updatedAt DateTime      @updatedAt
 }
@@ -62,4 +64,35 @@ model Loan {
   interestRate Float    @default(5.0)
   status       String   @default("PENDING") // "PENDING", "APPROVED", "REJECTED"
   createdAt    DateTime @default(now())
+}
+
+model Vault {
+  id            String   @id @default(uuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  name          String
+  targetAmount  Float
+  currentAmount Float    @default(0.0)
+  category      String   @default("SAVINGS") // "EMERGENCY", "TRAVEL", "TECH", "EDUCATION", "HOME", "SAVINGS"
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Card {
+  id                 String   @id @default(uuid())
+  userId             String
+  user               User     @relation(fields: [userId], references: [id])
+  cardNumber         String   @unique
+  cardHolder         String
+  expiryDate         String
+  cvv                String
+  cardType           String   @default("VIRTUAL") // "VIRTUAL", "PHYSICAL"
+  brand              String   @default("VISA")    // "VISA", "MASTERCARD"
+  label              String   @default("Primary Card")
+  isFrozen           Boolean  @default(false)
+  dailyLimit         Float    @default(2500.0)
+  allowOnline        Boolean  @default(true)
+  allowInternational Boolean  @default(false)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 }

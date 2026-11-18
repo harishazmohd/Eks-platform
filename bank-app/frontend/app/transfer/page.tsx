@@ -6,7 +6,7 @@ import { DashboardLayout } from '../components/DashboardLayout';
 import { Card } from '../components/Card';
 import { Button } from '../components/Button';
 import styles from './page.module.css';
-import { Send, Receipt, Trash2, CheckCircle2, Building } from 'lucide-react';
+import { Send, Receipt, Trash2, CheckCircle2, Building, Users, Calculator, X } from 'lucide-react';
 
 interface Account {
   id: string;
@@ -19,6 +19,13 @@ interface Beneficiary {
   id: string;
   name: string;
   accountNumber: string;
+}
+
+interface SearchRecipient {
+  accountNumber: string;
+  accountType: string;
+  recipientName: string;
+  email: string;
 }
 
 export default function Transfer() {
@@ -38,6 +45,16 @@ export default function Transfer() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+
+  // Live Recipient Search Autocomplete
+  const [searchResults, setSearchResults] = useState<SearchRecipient[]>([]);
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
+
+  // Split Bill Calculator State
+  const [showSplitCalc, setShowSplitCalc] = useState(false);
+  const [splitBillTotal, setSplitBillTotal] = useState('');
+  const [splitPeople, setSplitPeople] = useState('2');
+  const [splitTip, setSplitTip] = useState(15);
 
   // Beneficiary Form State
   const [newBenName, setNewBenName] = useState('');
@@ -69,6 +86,44 @@ export default function Transfer() {
         .catch(console.error);
     }
   }, [token, refreshTrigger]);
+
+  // Recipient search query debouncer
+  useEffect(() => {
+    if (!token || activeTab !== 'TRANSFER' || toAccountNumber.trim().length < 2) {
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      fetch(`/api/users/search?q=${encodeURIComponent(toAccountNumber.trim())}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      })
+        .then(async (res) => {
+          if (res.ok) {
+            const data = await res.json();
+            if (Array.isArray(data) && data.length > 0) {
+              setSearchResults(data);
+              setShowAutocomplete(true);
+            } else {
+              setSearchResults([]);
+              setShowAutocomplete(false);
+            }
+          }
+        })
+        .catch(() => {
+          setSearchResults([]);
+          setShowAutocomplete(false);
+        });
+    }, 250);
+
+    return () => clearTimeout(timer);
+  }, [toAccountNumber, token, activeTab]);
+
+  const calcSplitShare = () => {
+    const total = parseFloat(splitBillTotal) || 0;
+    const people = Math.max(1, parseInt(splitPeople) || 1);
+    const withTip = total * (1 + splitTip / 100);
+    return (withTip / people).toFixed(2);
+  };
 
   const selectedAccount = accounts.find((a) => a.id === fromAccountId);
 
@@ -248,16 +303,54 @@ export default function Transfer() {
 
             {/* Recipient Account or Biller */}
             {activeTab === 'TRANSFER' ? (
-              <div className={styles.formGroup}>
-                <label>Recipient Account Number</label>
+              <div className={styles.formGroup} style={{ position: 'relative' }}>
+                <label>
+                  <span>Recipient Account or Name</span>
+                  <span style={{ fontSize: '0.75rem', color: '#6366f1' }}>Live Search Enabled</span>
+                </label>
                 <input
                   type="text"
                   value={toAccountNumber}
-                  onChange={(e) => setToAccountNumber(e.target.value)}
-                  placeholder="e.g. CHK-12345 or select from saved beneficiaries"
+                  onChange={(e) => {
+                    setToAccountNumber(e.target.value);
+                    if (e.target.value.trim().length < 2) {
+                      setShowAutocomplete(false);
+                    }
+                  }}
+                  onFocus={() => {
+                    if (searchResults.length > 0 && toAccountNumber.trim().length >= 2) {
+                      setShowAutocomplete(true);
+                    }
+                  }}
+                  placeholder="Type account number (e.g. CHK-), member name or email"
                   required
                   className={styles.input}
                 />
+
+                {/* Autocomplete Dropdown */}
+                {showAutocomplete && searchResults.length > 0 && (
+                  <div className={styles.autocompleteList}>
+                    {searchResults.map((item) => (
+                      <div
+                        key={item.accountNumber}
+                        className={styles.autocompleteItem}
+                        onClick={() => {
+                          setToAccountNumber(item.accountNumber);
+                          setDescription(`Transfer to ${item.recipientName}`);
+                          setShowAutocomplete(false);
+                        }}
+                      >
+                        <div>
+                          <div className={styles.autocompleteName}>{item.recipientName}</div>
+                          <div style={{ fontSize: '0.75rem', color: '#94a3b8' }}>{item.email}</div>
+                        </div>
+                        <div className={styles.autocompleteAcc}>
+                          {item.accountNumber} ({item.accountType})
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             ) : (
               <div className={styles.formGroup}>
@@ -294,9 +387,124 @@ export default function Transfer() {
               </div>
             )}
 
-            {/* Amount */}
+            {/* Amount & Split Bill Calculator */}
             <div className={styles.formGroup}>
-              <label>Amount to Send</label>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <label style={{ margin: 0 }}>Amount to Send</label>
+                {activeTab === 'TRANSFER' && (
+                  <button
+                    type="button"
+                    onClick={() => setShowSplitCalc(!showSplitCalc)}
+                    style={{
+                      background: 'none',
+                      border: 'none',
+                      color: showSplitCalc ? '#818cf8' : '#94a3b8',
+                      fontSize: '0.75rem',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.35rem',
+                      cursor: 'pointer',
+                      fontWeight: 600
+                    }}
+                  >
+                    <Calculator size={13} />
+                    <span>{showSplitCalc ? 'Close Split Bill' : 'Split Bill & Tip'}</span>
+                  </button>
+                )}
+              </div>
+
+              {/* Split Bill Panel */}
+              {showSplitCalc && (
+                <div className={styles.splitBillPanel}>
+                  <div className={styles.splitBillHeader}>
+                    <span className={styles.splitBillTitle}>
+                      <Users size={14} color="#818cf8" />
+                      <span>Split Expense Calculator</span>
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() => setShowSplitCalc(false)}
+                      style={{ background: 'none', border: 'none', color: '#64748b', cursor: 'pointer' }}
+                    >
+                      <X size={14} />
+                    </button>
+                  </div>
+
+                  <div className={styles.splitInputsRow}>
+                    <div className={styles.splitMiniGroup}>
+                      <span className={styles.splitMiniLabel}>Total Bill ($)</span>
+                      <input
+                        type="number"
+                        placeholder="e.g. 120"
+                        value={splitBillTotal}
+                        onChange={(e) => setSplitBillTotal(e.target.value)}
+                        className={styles.splitMiniInput}
+                      />
+                    </div>
+                    <div className={styles.splitMiniGroup}>
+                      <span className={styles.splitMiniLabel}>Number of People</span>
+                      <input
+                        type="number"
+                        min="1"
+                        max="20"
+                        value={splitPeople}
+                        onChange={(e) => setSplitPeople(e.target.value)}
+                        className={styles.splitMiniInput}
+                      />
+                    </div>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span style={{ fontSize: '0.75rem', color: '#94a3b8' }}>Tip:</span>
+                    {[0, 10, 15, 20].map((t) => (
+                      <button
+                        key={t}
+                        type="button"
+                        onClick={() => setSplitTip(t)}
+                        style={{
+                          padding: '0.25rem 0.5rem',
+                          borderRadius: '6px',
+                          border: splitTip === t ? '1px solid #6366f1' : '1px solid rgba(255, 255, 255, 0.1)',
+                          backgroundColor: splitTip === t ? 'rgba(99, 102, 241, 0.2)' : 'transparent',
+                          color: splitTip === t ? '#818cf8' : '#94a3b8',
+                          fontSize: '0.75rem',
+                          cursor: 'pointer'
+                        }}
+                      >
+                        {t}%
+                      </button>
+                    ))}
+                  </div>
+
+                  {parseFloat(splitBillTotal) > 0 && (
+                    <div className={styles.splitResultRow}>
+                      <span className={styles.splitShareText}>
+                        Calculated Share per Person: <strong className={styles.splitShareAmount}>${calcSplitShare()}</strong>
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setAmount(calcSplitShare());
+                          setShowSplitCalc(false);
+                        }}
+                        style={{
+                          padding: '0.4rem 0.75rem',
+                          backgroundColor: '#6366f1',
+                          color: '#fff',
+                          border: 'none',
+                          borderRadius: '6px',
+                          fontSize: '0.75rem',
+                          fontWeight: 600,
+                          cursor: 'pointer'
+                        }}
+                      >
+                        Apply to Transfer
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+
               <div className={styles.amountInputWrapper}>
                 <span className={styles.currencySymbol}>$</span>
                 <input
