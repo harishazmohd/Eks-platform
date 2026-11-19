@@ -43,7 +43,7 @@ locals {
       storage_encrypted     = true
     }
 
-    multi_az                     = true
+    multi_az                     = false # change it to true if you are using db.t4g.small or higher
     backup_retention_period      = 1
     deletion_protection          = false
     maintenance_window           = "Sun:04:30-Sun:05:30"

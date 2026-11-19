@@ -92,6 +92,9 @@
           "aws:TagKeys": [
             "eks:eks-cluster-name",
             "karpenter.sh/nodeclaim",
+            "karpenter.sh/nodepool",
+            "karpenter.k8s.aws/ec2nodeclass",
+            "kubernetes.io/cluster/${cluster_name}",
             "Name"
           ]
         }
@@ -113,6 +116,9 @@
           "aws:TagKeys": [
             "eks:eks-cluster-name",
             "karpenter.sh/nodeclaim",
+            "karpenter.sh/nodepool",
+            "karpenter.k8s.aws/ec2nodeclass",
+            "kubernetes.io/cluster/${cluster_name}",
             "Name"
           ]
         }

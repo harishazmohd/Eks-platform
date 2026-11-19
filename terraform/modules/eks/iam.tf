@@ -120,7 +120,8 @@ resource "aws_iam_policy" "github_actions_ecr" {
           "ecr:CompleteLayerUpload",
           "ecr:InitiateLayerUpload",
           "ecr:PutImage",
-          "ecr:UploadLayerPart"
+          "ecr:UploadLayerPart",
+          "ecr:BatchGetImage"
         ]
 
         Resource = [
